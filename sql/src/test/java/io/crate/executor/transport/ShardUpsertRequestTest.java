@@ -23,8 +23,8 @@ package io.crate.executor.transport;
 
 import io.crate.analyze.symbol.Literal;
 import io.crate.analyze.symbol.Symbol;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.test.integration.CrateUnitTest;
@@ -44,9 +44,9 @@ public class ShardUpsertRequestTest extends CrateUnitTest {
     TableIdent charactersIdent = new TableIdent(null, "characters");
 
     Reference idRef = new Reference(
-            new ReferenceIdent(charactersIdent, "id"), RowGranularity.DOC, DataTypes.INTEGER);
+            charactersIdent, new ColumnIdent("id"), RowGranularity.DOC, DataTypes.INTEGER);
     Reference nameRef = new Reference(
-            new ReferenceIdent(charactersIdent, "name"), RowGranularity.DOC, DataTypes.STRING);
+            charactersIdent, new ColumnIdent("name"), RowGranularity.DOC, DataTypes.STRING);
 
     @Test
     public void testStreaming() throws Exception {

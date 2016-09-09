@@ -53,12 +53,12 @@ public class FetchPushDownTest {
     private static final Reference REF_SCORE = DocSysColumns.forTable(TABLE_IDENT, DocSysColumns.SCORE);
 
     private static final Reference REF_I = new Reference(
-        new ReferenceIdent(new TableIdent("s", "t"), "i"),
+        new TableIdent("s", "t"), new ColumnIdent("i"),
         RowGranularity.DOC,
         DataTypes.INTEGER);
 
     private static final Reference REF_A = new Reference(
-        new ReferenceIdent(new TableIdent("s", "t"), "a"),
+        new TableIdent("s", "t"), new ColumnIdent("a"),
         RowGranularity.DOC,
         DataTypes.STRING);
 

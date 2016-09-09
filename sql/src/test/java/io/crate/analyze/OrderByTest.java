@@ -23,8 +23,8 @@ package io.crate.analyze;
 
 import com.google.common.collect.ImmutableList;
 import io.crate.analyze.symbol.Symbol;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.test.integration.CrateUnitTest;
@@ -41,7 +41,7 @@ public class OrderByTest extends CrateUnitTest {
     private static final TableIdent TI =  new TableIdent("doc", "people");
 
     private Reference ref(String name){
-        return new Reference(new ReferenceIdent(TI, name), RowGranularity.DOC, DataTypes.STRING);
+        return new Reference(TI, new ColumnIdent(name), RowGranularity.DOC, DataTypes.STRING);
     }
 
     @Test

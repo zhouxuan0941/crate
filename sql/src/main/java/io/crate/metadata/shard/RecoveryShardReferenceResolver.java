@@ -22,7 +22,9 @@
 
 package io.crate.metadata.shard;
 
-import io.crate.metadata.*;
+import io.crate.metadata.AbstractReferenceResolver;
+import io.crate.metadata.Reference;
+import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.sys.SysShardsTableInfo;
 import io.crate.operation.reference.ReferenceResolver;
 import io.crate.operation.reference.sys.shard.ShardRecoveryExpression;
@@ -48,15 +50,14 @@ public class RecoveryShardReferenceResolver extends AbstractReferenceResolver {
 
     public RecoveryShardReferenceResolver(ReferenceResolver<ReferenceImplementation<?>> shardResolver, IndexShard indexShard) {
         staticReferencesResolver = shardResolver;
-        implementations.put(SysShardsTableInfo.ReferenceIdents.RECOVERY,
-                new ShardRecoveryExpression(indexShard));
+        implementations.put(SysShardsTableInfo.Refs.RECOVERY, new ShardRecoveryExpression(indexShard));
     }
 
     @Override
-    public ReferenceImplementation getImplementation(Reference refInfo) {
-        ReferenceImplementation impl = staticReferencesResolver.getImplementation(refInfo);
+    public ReferenceImplementation getImplementation(Reference ref) {
+        ReferenceImplementation impl = staticReferencesResolver.getImplementation(ref);
         if (impl == null) {
-            impl = super.getImplementation(refInfo);
+            impl = super.getImplementation(ref);
         }
         return impl;
     }

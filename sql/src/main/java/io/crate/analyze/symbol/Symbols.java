@@ -165,7 +165,7 @@ public class Symbols {
 
         @Override
         public Boolean visitReference(Reference symbol, ColumnIdent context) {
-            return context.equals(symbol.ident().columnIdent());
+            return context.equals(symbol.column());
         }
     }
 }

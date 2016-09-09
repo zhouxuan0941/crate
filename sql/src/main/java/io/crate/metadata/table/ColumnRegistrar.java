@@ -24,7 +24,10 @@ package io.crate.metadata.table;
 
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.types.DataType;
 
 import javax.annotation.Nullable;
@@ -50,14 +53,23 @@ public class ColumnRegistrar {
         return register(new ColumnIdent(column, path), type);
     }
 
-    public ColumnRegistrar register(ColumnIdent column, DataType type) {
-        Reference info = new Reference(new ReferenceIdent(tableIdent, column), rowGranularity, type);
-        if (info.ident().isColumn()) {
-            columnsBuilder.add(info);
+    public ColumnRegistrar register(Reference ref) {
+        if (ref.column().isColumn()) {
+            columnsBuilder.add(ref);
         }
-        infosBuilder.put(info.ident().columnIdent(), info);
+        infosBuilder.put(ref.column(), ref);
         return this;
     }
+
+    public ColumnRegistrar register(ColumnIdent column, DataType type) {
+        Reference info = new Reference(tableIdent, column, rowGranularity, type);
+        if (column.isColumn()) {
+            columnsBuilder.add(info);
+        }
+        infosBuilder.put(column, info);
+        return this;
+    }
+
 
     public ColumnRegistrar putInfoOnly(ColumnIdent columnIdent, Reference reference) {
         infosBuilder.put(columnIdent, reference);

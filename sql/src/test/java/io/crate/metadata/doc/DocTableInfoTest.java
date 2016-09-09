@@ -42,7 +42,7 @@ public class DocTableInfoTest extends CrateUnitTest {
         DocTableInfo info = new DocTableInfo(
             tableIdent,
             ImmutableList.of(
-                    new Reference(new ReferenceIdent(tableIdent, new ColumnIdent("o", ImmutableList.<String>of())), RowGranularity.DOC, DataTypes.OBJECT)
+                    new Reference(tableIdent, new ColumnIdent("o", ImmutableList.<String>of()), RowGranularity.DOC, DataTypes.OBJECT)
             ),
             ImmutableList.<Reference>of(),
             ImmutableList.<GeneratedReference>of(),
@@ -79,9 +79,9 @@ public class DocTableInfoTest extends CrateUnitTest {
     public void testGetColumnInfoStrictParent() throws Exception {
 
         TableIdent dummy = new TableIdent(null, "dummy");
-        ReferenceIdent foobarIdent = new ReferenceIdent(dummy, new ColumnIdent("foobar"));
         Reference strictParent = new Reference(
-                foobarIdent,
+            dummy,
+            new ColumnIdent("foobar"),
                 RowGranularity.DOC,
                 DataTypes.OBJECT,
                 ColumnPolicy.STRICT,

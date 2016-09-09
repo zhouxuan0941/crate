@@ -50,12 +50,13 @@ public class GeoReference extends Reference {
     private GeoReference() {
     }
 
-    public GeoReference(ReferenceIdent ident,
+    public GeoReference(TableIdent table,
+                        ColumnIdent column,
                         @Nullable String tree,
                         @Nullable String precision,
                         @Nullable Integer treeLevels,
                         @Nullable Double distanceErrorPct) {
-        super(ident, RowGranularity.DOC, DataTypes.GEO_SHAPE);
+        super(table, column, RowGranularity.DOC, DataTypes.GEO_SHAPE);
         this.geoTree = MoreObjects.firstNonNull(tree, DEFAULT_TREE);
         this.precision = precision;
         this.treeLevels = treeLevels;

@@ -22,6 +22,7 @@
 
 package io.crate.metadata;
 
+import io.crate.testing.TestingHelpers;
 import io.crate.types.DataTypes;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -38,8 +39,8 @@ public class AbstractReferenceResolverTest {
     static class RefResolver extends AbstractReferenceResolver {
 
         public RefResolver() {
-            ReferenceIdent ident = new ReferenceIdent(USERS_TI, new ColumnIdent("obj"));
-            implementations.put(ident, mock(ReferenceImplementation.class));
+            Reference ref = TestingHelpers.createReference("users", new ColumnIdent("obj"), DataTypes.OBJECT);
+            implementations.put(ref, mock(ReferenceImplementation.class));
         }
     }
 
@@ -47,7 +48,7 @@ public class AbstractReferenceResolverTest {
     public void testGetImplementation() throws Exception {
         RefResolver refResolver = new RefResolver();
         ReferenceImplementation implementation = refResolver.getImplementation(new Reference(
-                new ReferenceIdent(USERS_TI, new ColumnIdent("obj", Arrays.asList("x", "z"))), RowGranularity.DOC, DataTypes.STRING));
+                USERS_TI, new ColumnIdent("obj", Arrays.asList("x", "z")), RowGranularity.DOC, DataTypes.STRING));
 
         assertThat(implementation, Matchers.nullValue());
     }

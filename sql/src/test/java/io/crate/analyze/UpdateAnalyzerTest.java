@@ -23,15 +23,13 @@ package io.crate.analyze;
 
 import com.google.common.collect.ImmutableMap;
 import io.crate.analyze.relations.DocTableRelation;
-import io.crate.analyze.symbol.*;
-import io.crate.core.collections.Row;
-import io.crate.core.collections.RowN;
-import io.crate.core.collections.Rows;
-import io.crate.analyze.symbol.*;
 import io.crate.analyze.symbol.DynamicReference;
 import io.crate.analyze.symbol.Function;
 import io.crate.analyze.symbol.Literal;
 import io.crate.analyze.symbol.Symbol;
+import io.crate.core.collections.Row;
+import io.crate.core.collections.RowN;
+import io.crate.core.collections.Rows;
 import io.crate.exceptions.ColumnValidationException;
 import io.crate.exceptions.TableUnknownException;
 import io.crate.exceptions.UnsupportedFeatureException;
@@ -232,8 +230,8 @@ public class UpdateAnalyzerTest extends BaseAnalyzerTest {
         assertThat(((DocTableRelation) statement.sourceRelation()).tableInfo().ident(), is(new TableIdent(Schemas.DEFAULT_SCHEMA_NAME, "users")));
 
         Reference ref = statement1.assignments().keySet().iterator().next();
-        assertThat(ref.ident().tableIdent().name(), is("users"));
-        assertThat(ref.ident().columnIdent().name(), is("name"));
+        assertThat(ref.table().name(), is("users"));
+        assertThat(ref.column().name(), is("name"));
         assertTrue(statement1.assignments().containsKey(ref));
 
         Symbol value = statement1.assignments().entrySet().iterator().next().getValue();
@@ -249,8 +247,8 @@ public class UpdateAnalyzerTest extends BaseAnalyzerTest {
         Reference ref = statement.assignments().keySet().iterator().next();
         assertThat(ref, instanceOf(DynamicReference.class));
         Assert.assertEquals(DataTypes.LONG, ref.valueType());
-        assertThat(ref.ident().columnIdent().isColumn(), is(false));
-        assertThat(ref.ident().columnIdent().fqn(), is("details.arms"));
+        assertThat(ref.column().isColumn(), is(false));
+        assertThat(ref.column().fqn(), is("details.arms"));
     }
 
     @Test( expected = ColumnValidationException.class)

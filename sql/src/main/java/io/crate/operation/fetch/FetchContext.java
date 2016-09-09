@@ -79,7 +79,7 @@ public class FetchContext extends AbstractExecutionSubContext {
         }
         Set<TableIdent> tablesWithFetchRefs = new HashSet<>();
         for (Reference reference : phase.fetchRefs()) {
-            tablesWithFetchRefs.add(reference.ident().tableIdent());
+            tablesWithFetchRefs.add(reference.table());
         }
 
 
@@ -117,7 +117,7 @@ public class FetchContext extends AbstractExecutionSubContext {
             }
         }
         for (Reference reference : phase.fetchRefs()) {
-            Collection<Reference> references = toFetch.get(reference.ident().tableIdent());
+            Collection<Reference> references = toFetch.get(reference.table());
             if (references != null) {
                 references.add(reference);
             }

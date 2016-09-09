@@ -54,10 +54,8 @@ public class BaseTransportExecutorTest extends SQLTransportIntegrationTest {
 
     TableIdent charactersIdent = new TableIdent(null, "characters");
 
-    Reference idRef = new Reference(
-            new ReferenceIdent(charactersIdent, "id"), RowGranularity.DOC, DataTypes.INTEGER);
-    Reference nameRef = new Reference(
-            new ReferenceIdent(charactersIdent, "name"), RowGranularity.DOC, DataTypes.STRING);
+    Reference idRef = new Reference(charactersIdent, new ColumnIdent("id"), RowGranularity.DOC, DataTypes.INTEGER);
+    Reference nameRef = new Reference(charactersIdent, new ColumnIdent("name"), RowGranularity.DOC, DataTypes.STRING);
     Reference femaleRef = TestingHelpers.createReference(charactersIdent.name(), new ColumnIdent("female"), DataTypes.BOOLEAN);
 
 

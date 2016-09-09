@@ -55,7 +55,7 @@ public class GroupByConsumer {
         // as clustered by column == pk column  in that case
         Symbol groupByKey = groupBySymbols.get(0);
         return (groupByKey instanceof Reference
-                && ((Reference) groupByKey).ident().columnIdent()
+                && ((Reference) groupByKey).column()
                     .equals(tableRelation.tableInfo().clusteredBy()));
     }
 
@@ -67,7 +67,7 @@ public class GroupByConsumer {
         for (int i = 0, groupBySize = groupBy.size(); i < groupBySize; i++) {
             Symbol groupBySymbol = groupBy.get(i);
             if (groupBySymbol instanceof Reference) {
-                ColumnIdent columnIdent = ((Reference) groupBySymbol).ident().columnIdent();
+                ColumnIdent columnIdent = ((Reference) groupBySymbol).column();
                 ColumnIdent pkIdent = primaryKeys.get(i);
                 if (!pkIdent.equals(columnIdent)) {
                     return false;

@@ -36,6 +36,7 @@ import io.crate.jobs.JobContextService;
 import io.crate.jobs.JobExecutionContext;
 import io.crate.metadata.*;
 import io.crate.metadata.doc.DocSchemaInfo;
+import io.crate.metadata.doc.DocSysColumns;
 import io.crate.operation.NodeOperation;
 import io.crate.operation.operator.EqOperator;
 import io.crate.planner.distribution.DistributionInfo;
@@ -65,15 +66,17 @@ public class DocLevelCollectTest extends SQLTransportIntegrationTest {
 
     private static final String TEST_TABLE_NAME = "test_table";
     private static final Reference testDocLevelReference = new Reference(
-        new ReferenceIdent(new TableIdent(null, TEST_TABLE_NAME), "doc"),
+        new TableIdent(null, TEST_TABLE_NAME), new ColumnIdent("doc"),
         RowGranularity.DOC,
         DataTypes.INTEGER);
     private static final Reference underscoreIdReference = new Reference(
-        new ReferenceIdent(new TableIdent(null, TEST_TABLE_NAME), "_id"),
+        new TableIdent(null, TEST_TABLE_NAME),
+        DocSysColumns.ID,
         RowGranularity.DOC,
         DataTypes.STRING);
     private static final Reference underscoreRawReference = new Reference(
-        new ReferenceIdent(new TableIdent(null, TEST_TABLE_NAME), "_raw"),
+        new TableIdent(null, TEST_TABLE_NAME),
+        DocSysColumns.RAW,
         RowGranularity.DOC,
         DataTypes.STRING );
 
@@ -188,10 +191,10 @@ public class DocLevelCollectTest extends SQLTransportIntegrationTest {
         TableIdent tableIdent = new TableIdent(Schemas.DEFAULT_SCHEMA_NAME, PARTITIONED_TABLE_NAME);
         RoutedCollectPhase collectNode = getCollectNode(
                 Arrays.<Symbol>asList(
-                        new Reference(new ReferenceIdent(tableIdent, "id"),
+                        new Reference(tableIdent, new ColumnIdent("id"),
                                 RowGranularity.DOC,
                                 DataTypes.INTEGER),
-                        new Reference(new ReferenceIdent(tableIdent, "date"),
+                        new Reference(tableIdent, new ColumnIdent("date"),
                                 RowGranularity.SHARD,
                                 DataTypes.TIMESTAMP)),
                 routing,

@@ -31,7 +31,11 @@ import io.crate.analyze.symbol.InputColumn;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.symbol.ValueSymbolVisitor;
 import io.crate.analyze.where.DocKeys;
-import io.crate.metadata.*;
+import io.crate.metadata.PartitionName;
+import io.crate.metadata.Reference;
+import io.crate.metadata.Routing;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.planner.Plan;
 import io.crate.planner.Planner;
@@ -215,7 +219,7 @@ public class UpdateConsumer implements Consumer {
         if (!whereClause.noMatch() || !(tableInfo.isPartitioned() && whereClause.partitions().isEmpty())) {
             // for updates, we always need to collect the `_uid`
             Reference uidReference = new Reference(
-                new ReferenceIdent(tableInfo.ident(), "_uid"), RowGranularity.DOC, DataTypes.STRING);
+                tableInfo.ident(), DocSysColumns.UID, RowGranularity.DOC, DataTypes.STRING);
 
             Tuple<String[], Symbol[]> assignments = Assignments.convert(nestedAnalysis.assignments());
 

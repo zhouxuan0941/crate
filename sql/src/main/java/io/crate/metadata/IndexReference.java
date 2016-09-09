@@ -23,7 +23,6 @@ package io.crate.metadata;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import io.crate.analyze.symbol.SymbolType;
 import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataTypes;
@@ -47,14 +46,15 @@ public class IndexReference extends Reference {
     };
 
     public static class Builder {
-        private final ReferenceIdent ident;
+        private final TableIdent table;
+        private final ColumnIdent column;
         private IndexType indexType = IndexType.ANALYZED;
         private List<Reference> columns = new ArrayList<>();
         private String analyzer = null;
 
-        public Builder(ReferenceIdent ident) {
-            Preconditions.checkNotNull(ident, "ident is null");
-            this.ident = ident;
+        public Builder(TableIdent table, ColumnIdent column) {
+            this.table = table;
+            this.column = column;
         }
 
         public Builder indexType(IndexType indexType) {
@@ -73,7 +73,7 @@ public class IndexReference extends Reference {
         }
 
         public IndexReference build() {
-            return new IndexReference(ident, indexType, columns, analyzer);
+            return new IndexReference(table, column, indexType, columns, analyzer);
         }
     }
 
@@ -84,11 +84,12 @@ public class IndexReference extends Reference {
     private IndexReference() {
     }
 
-    public IndexReference(ReferenceIdent ident,
+    public IndexReference(TableIdent table,
+                          ColumnIdent column,
                           IndexType indexType,
                           List<Reference> columns,
                           @Nullable String analyzer) {
-        super(ident, RowGranularity.DOC, DataTypes.STRING, ColumnPolicy.DYNAMIC, indexType, false);
+        super(table, column, RowGranularity.DOC, DataTypes.STRING, ColumnPolicy.DYNAMIC, indexType, false);
         this.columns = MoreObjects.firstNonNull(columns, Collections.<Reference>emptyList());
         this.analyzer = analyzer;
     }

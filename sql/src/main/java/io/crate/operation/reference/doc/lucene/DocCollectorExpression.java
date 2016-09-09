@@ -49,13 +49,13 @@ public class DocCollectorExpression extends LuceneCollectorExpression<Map<String
     }
 
     public static LuceneCollectorExpression<?> create(final Reference reference) {
-        assert reference.ident().columnIdent().name().equals(DocSysColumns.DOC.name());
-        if (reference.ident().columnIdent().path().size() == 0) {
+        assert reference.column().name().equals(DocSysColumns.DOC.name());
+        if (reference.column().path().size() == 0) {
             return new DocCollectorExpression();
         }
 
-        assert reference.ident().columnIdent().path().size() > 0;
-        final String fqn = Joiner.on(".").join(reference.ident().columnIdent().path());
+        assert reference.column().path().size() > 0;
+        final String fqn = Joiner.on(".").join(reference.column().path());
         return new ChildDocCollectorExpression() {
 
             @Override

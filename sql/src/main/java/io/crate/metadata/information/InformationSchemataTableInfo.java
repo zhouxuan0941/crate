@@ -23,7 +23,10 @@ package io.crate.metadata.information;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedMap;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.cluster.ClusterService;
@@ -38,11 +41,11 @@ public class InformationSchemataTableInfo extends InformationTableInfo {
     }
 
     public static class References {
-        public static final Reference SCHEMA_NAME = info(Columns.SCHEMA_NAME, DataTypes.STRING);
+        public static final Reference SCHEMA_NAME = ref(Columns.SCHEMA_NAME, DataTypes.STRING);
     }
 
-    private static Reference info(ColumnIdent columnIdent, DataType dataType) {
-        return new Reference(new ReferenceIdent(IDENT, columnIdent), RowGranularity.DOC, dataType);
+    private static Reference ref(ColumnIdent columnIdent, DataType dataType) {
+        return new Reference(IDENT, columnIdent, RowGranularity.DOC, dataType);
     }
 
     protected InformationSchemataTableInfo(ClusterService clusterService) {

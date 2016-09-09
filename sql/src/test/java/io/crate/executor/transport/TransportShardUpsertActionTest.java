@@ -66,7 +66,7 @@ public class TransportShardUpsertActionTest extends CrateUnitTest {
     private final static TableIdent TABLE_IDENT = new TableIdent(null, "characters");
     private final static String PARTITION_INDEX = new PartitionName(TABLE_IDENT, Arrays.asList(new BytesRef("1395874800000"))).asIndexName();
     private final static Reference ID_REF = new Reference(
-            new ReferenceIdent(TABLE_IDENT, "id"), RowGranularity.DOC, DataTypes.SHORT);
+            TABLE_IDENT, new ColumnIdent("id"), RowGranularity.DOC, DataTypes.SHORT);
 
 
     static class TestingTransportShardUpsertAction extends TransportShardUpsertAction {
@@ -296,9 +296,9 @@ public class TransportShardUpsertActionTest extends CrateUnitTest {
     @Test
     public void testBuildMapFromSource() throws Exception {
         Reference tsRef = new Reference(
-                new ReferenceIdent(TABLE_IDENT, "ts"), RowGranularity.DOC, DataTypes.TIMESTAMP);
+                TABLE_IDENT, new ColumnIdent("ts"), RowGranularity.DOC, DataTypes.TIMESTAMP);
         Reference nameRef = new Reference(
-                new ReferenceIdent(TABLE_IDENT, "user", Arrays.asList("name")), RowGranularity.DOC, DataTypes.TIMESTAMP);
+                TABLE_IDENT, new ColumnIdent("user", Arrays.asList("name")), RowGranularity.DOC, DataTypes.TIMESTAMP);
 
 
         Reference[] insertColumns = new Reference[]{tsRef, nameRef};
@@ -312,7 +312,7 @@ public class TransportShardUpsertActionTest extends CrateUnitTest {
     @Test
     public void testBuildMapFromRawSource() throws Exception {
         Reference rawRef = new Reference(
-                new ReferenceIdent(TABLE_IDENT, DocSysColumns.RAW), RowGranularity.DOC, DataTypes.STRING);
+                TABLE_IDENT, DocSysColumns.RAW, RowGranularity.DOC, DataTypes.STRING);
 
         BytesRef bytesRef = XContentFactory.jsonBuilder().startObject()
                 .field("ts", 1448274317000L)

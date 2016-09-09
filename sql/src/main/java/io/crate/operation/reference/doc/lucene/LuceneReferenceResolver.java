@@ -46,56 +46,57 @@ public class LuceneReferenceResolver implements ReferenceResolver<LuceneCollecto
     public LuceneCollectorExpression<?> getImplementation(Reference refInfo) {
         assert refInfo.granularity() == RowGranularity.DOC;
 
-        if (RawCollectorExpression.COLUMN_NAME.equals(refInfo.ident().columnIdent().name())){
-            if (refInfo.ident().columnIdent().isColumn()){
+        String name = refInfo.column().name();
+        if (RawCollectorExpression.COLUMN_NAME.equals(name)){
+            if (refInfo.column().isColumn()){
                 return new RawCollectorExpression();
             } else {
                 // TODO: implement an Object source expression which may support subscripts
                 throw new UnsupportedFeatureException(
                         String.format(Locale.ENGLISH, "_source expression does not support subscripts %s",
-                        refInfo.ident().columnIdent().fqn()));
+                        refInfo.column().fqn()));
             }
-        } else if (IdCollectorExpression.COLUMN_NAME.equals(refInfo.ident().columnIdent().name())) {
+        } else if (IdCollectorExpression.COLUMN_NAME.equals(name)) {
             return new IdCollectorExpression();
-        } else if (DocCollectorExpression.COLUMN_NAME.equals(refInfo.ident().columnIdent().name())) {
+        } else if (DocCollectorExpression.COLUMN_NAME.equals(name)) {
             return DocCollectorExpression.create(refInfo);
-        } else if (DocIdCollectorExpression.COLUMN_NAME.equals(refInfo.ident().columnIdent().name())) {
+        } else if (DocIdCollectorExpression.COLUMN_NAME.equals(name)) {
             return new DocIdCollectorExpression();
-        } else if (ScoreCollectorExpression.COLUMN_NAME.equals(refInfo.ident().columnIdent().name())) {
+        } else if (ScoreCollectorExpression.COLUMN_NAME.equals(name)) {
             return new ScoreCollectorExpression();
         }
 
-        String colName = refInfo.ident().columnIdent().fqn();
-        if (this.mapperService != null && mapperService.smartNameFieldType(colName) == null) {
+        String fqn = refInfo.column().fqn();
+        if (this.mapperService != null && mapperService.smartNameFieldType(fqn) == null) {
             return NULL_COLLECTOR_EXPRESSION;
         }
 
         switch (refInfo.valueType().id()) {
             case ByteType.ID:
-                return new ByteColumnReference(colName);
+                return new ByteColumnReference(fqn);
             case ShortType.ID:
-                return new ShortColumnReference(colName);
+                return new ShortColumnReference(fqn);
             case IpType.ID:
-                return new IpColumnReference(colName);
+                return new IpColumnReference(fqn);
             case StringType.ID:
-                return new BytesRefColumnReference(colName);
+                return new BytesRefColumnReference(fqn);
             case DoubleType.ID:
-                return new DoubleColumnReference(colName);
+                return new DoubleColumnReference(fqn);
             case BooleanType.ID:
-                return new BooleanColumnReference(colName);
+                return new BooleanColumnReference(fqn);
             case ObjectType.ID:
-                return new ObjectColumnReference(colName);
+                return new ObjectColumnReference(fqn);
             case FloatType.ID:
-                return new FloatColumnReference(colName);
+                return new FloatColumnReference(fqn);
             case LongType.ID:
             case TimestampType.ID:
-                return new LongColumnReference(colName);
+                return new LongColumnReference(fqn);
             case IntegerType.ID:
-                return new IntegerColumnReference(colName);
+                return new IntegerColumnReference(fqn);
             case GeoPointType.ID:
-                return new GeoPointColumnReference(colName);
+                return new GeoPointColumnReference(fqn);
             case GeoShapeType.ID:
-                return new GeoShapeColumnReference(colName);
+                return new GeoShapeColumnReference(fqn);
             default:
                 throw new UnhandledServerException(String.format(Locale.ENGLISH, "unsupported type '%s'", refInfo.valueType().getName()));
         }

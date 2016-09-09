@@ -21,19 +21,18 @@
 
 package io.crate.operation.reference.sys.node.local;
 
-import io.crate.metadata.ReferenceIdent;
+import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceImplementation;
-import io.crate.operation.reference.sys.node.local.NodeSysExpression;
 import org.elasticsearch.common.inject.AbstractModule;
 import org.elasticsearch.common.inject.multibindings.MapBinder;
 
 public class SysNodeExpressionModule extends AbstractModule {
 
-    private MapBinder<ReferenceIdent, ReferenceImplementation> refBinder;
+    private MapBinder<Reference, ReferenceImplementation> refBinder;
 
     @Override
     protected void configure() {
-        refBinder = MapBinder.newMapBinder(binder(), ReferenceIdent.class, ReferenceImplementation.class);
+        refBinder = MapBinder.newMapBinder(binder(), Reference.class, ReferenceImplementation.class);
         bind(NodeSysExpression.class).asEagerSingleton();
     }
 }

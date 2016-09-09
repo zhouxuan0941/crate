@@ -182,7 +182,7 @@ public class LuceneOrderedDocCollector extends OrderedDocCollector {
                     continue;
                 }
                 QueryBuilderHelper helper = QueryBuilderHelper.forType(order.valueType());
-                String columnName = ((Reference) order).ident().columnIdent().fqn();
+                String columnName = ((Reference) order).column().fqn();
 
                 Query orderQuery;
                 // nulls already gone, so they should be excluded

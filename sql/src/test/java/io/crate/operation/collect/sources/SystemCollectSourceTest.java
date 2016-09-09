@@ -55,7 +55,7 @@ public class SystemCollectSourceTest extends SQLTransportIntegrationTest {
         SystemCollectSource systemCollectSource = internalCluster().getInstance(SystemCollectSource.class);
 
         Reference shardId = new Reference(
-            new ReferenceIdent(new TableIdent("sys", "shards"), "id"), RowGranularity.SHARD, DataTypes.INTEGER);
+            new TableIdent("sys", "shards"), new ColumnIdent("id"), RowGranularity.SHARD, DataTypes.INTEGER);
 
         RoutedCollectPhase collectPhase = new RoutedCollectPhase(
             UUID.randomUUID(),

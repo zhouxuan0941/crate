@@ -26,8 +26,8 @@ import com.carrotsearch.randomizedtesting.RandomizedTest;
 import com.google.common.collect.ImmutableList;
 import io.crate.analyze.OrderBy;
 import io.crate.analyze.symbol.Symbol;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.operation.reference.doc.lucene.LuceneMissingValue;
@@ -59,7 +59,8 @@ import static org.hamcrest.core.Is.is;
 
 public class LuceneOrderedDocCollectorTest extends RandomizedTest {
 
-    private static final Reference REFERENCE = new Reference(new ReferenceIdent(new TableIdent(null, "table"), "value"), RowGranularity.DOC, DataTypes.LONG);
+    private static final Reference REFERENCE = new Reference(
+        new TableIdent(null, "table"), new ColumnIdent("value"), RowGranularity.DOC, DataTypes.LONG);
 
     private Directory createLuceneIndex() throws IOException {
         Path tmpDir = newTempDir();

@@ -90,19 +90,23 @@ public class SysShardsTableInfo extends StaticTableInfo {
                 new ColumnIdent("recovery", ImmutableList.of("size", "percent"));
     }
 
-    public static class ReferenceIdents {
-        public static final ReferenceIdent ID = new ReferenceIdent(IDENT, Columns.ID);
-        public static final ReferenceIdent SCHEMA_NAME = new ReferenceIdent(IDENT, Columns.SCHEMA_NAME);
-        public static final ReferenceIdent TABLE_NAME = new ReferenceIdent(IDENT, Columns.TABLE_NAME);
-        public static final ReferenceIdent PARTITION_IDENT = new ReferenceIdent(IDENT, Columns.PARTITION_IDENT);
-        public static final ReferenceIdent NUM_DOCS = new ReferenceIdent(IDENT, Columns.NUM_DOCS);
-        public static final ReferenceIdent PRIMARY = new ReferenceIdent(IDENT, Columns.PRIMARY);
-        public static final ReferenceIdent RELOCATING_NODE = new ReferenceIdent(IDENT, Columns.RELOCATING_NODE);
-        public static final ReferenceIdent SIZE = new ReferenceIdent(IDENT, Columns.SIZE);
-        public static final ReferenceIdent STATE = new ReferenceIdent(IDENT, Columns.STATE);
-        public static final ReferenceIdent ROUTING_STATE = new ReferenceIdent(IDENT, Columns.ROUTING_STATE);
-        public static final ReferenceIdent ORPHAN_PARTITION = new ReferenceIdent(IDENT, Columns.ORPHAN_PARTITION);
-        public static final ReferenceIdent RECOVERY = new ReferenceIdent(IDENT, Columns.RECOVERY);
+    private static Reference createRef(ColumnIdent columnIdent, DataType dataType) {
+        return new Reference(IDENT, columnIdent, RowGranularity.SHARD, dataType);
+    }
+
+    public static class Refs {
+        public static final Reference ID = createRef(Columns.ID, DataTypes.INTEGER);
+        public static final Reference SCHEMA_NAME = createRef(Columns.SCHEMA_NAME, DataTypes.STRING);
+        public static final Reference TABLE_NAME = createRef(Columns.TABLE_NAME, DataTypes.STRING);
+        public static final Reference PARTITION_IDENT = createRef(Columns.PARTITION_IDENT, DataTypes.STRING);
+        public static final Reference NUM_DOCS = createRef(Columns.NUM_DOCS, DataTypes.LONG);
+        public static final Reference PRIMARY = createRef(Columns.PRIMARY, DataTypes.BOOLEAN);
+        public static final Reference RELOCATING_NODE = createRef(Columns.RELOCATING_NODE, DataTypes.STRING);
+        public static final Reference SIZE = createRef(Columns.SIZE, DataTypes.LONG);
+        public static final Reference STATE = createRef(Columns.STATE, DataTypes.STRING);
+        public static final Reference ROUTING_STATE = createRef(Columns.ROUTING_STATE, DataTypes.STRING);
+        public static final Reference ORPHAN_PARTITION = createRef(Columns.ORPHAN_PARTITION, DataTypes.BOOLEAN);
+        public static final Reference RECOVERY = createRef(Columns.RECOVERY, DataTypes.OBJECT);
     }
 
     private static final ImmutableList<ColumnIdent> PRIMARY_KEY = ImmutableList.of(

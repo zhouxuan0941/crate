@@ -101,7 +101,7 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
                                           @Nullable ColumnPolicy policy,
                                           Boolean partitionColumn) {
         return new Reference(
-                new ReferenceIdent(tableIdent, name, path),
+                tableIdent, new ColumnIdent(name, path),
                 partitionColumn ? RowGranularity.PARTITION : RowGranularity.DOC,
                 type,
                 policy == null ? ColumnPolicy.DYNAMIC : policy,
@@ -111,7 +111,7 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
     private static ImmutableMap<ColumnIdent, Reference> referencesMap(List<Reference> columns) {
         ImmutableMap.Builder<ColumnIdent, Reference> referencesMap = ImmutableMap.builder();
         for (Reference info : columns) {
-            referencesMap.put(info.ident().columnIdent(), info);
+            referencesMap.put(info.column(), info);
         }
         return referencesMap.build();
     }
@@ -234,9 +234,9 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
     public void testBuildCreateTableNotNull() throws Exception {
         TableIdent ident = new TableIdent("myschema", "test");
 
-        Reference colA = new Reference(new ReferenceIdent(ident, "col_a", null),
+        Reference colA = new Reference(ident, new ColumnIdent("col_a"),
             RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NOT_ANALYZED, true);
-        Reference colB = new Reference(new ReferenceIdent(ident, "col_b", null),
+        Reference colB = new Reference(ident, new ColumnIdent("col_b"),
             RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.ANALYZED, false);
         List<Reference> columns = ImmutableList.of(colA, colB);
 
@@ -340,7 +340,7 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
                 ImmutableList.<ColumnIdent>of(),
                 new ColumnIdent("cluster_column"),
                 ImmutableMap.<String, Object>of(),
-                ImmutableList.of(columns.get(1).ident().columnIdent()),
+                ImmutableList.of(columns.get(1).column()),
                 ColumnPolicy.DYNAMIC);
 
         CreateTable node = MetaDataToASTNodeResolver.resolveCreateTable(tableInfo);
@@ -362,15 +362,15 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
     @Test
     public void testBuildCreateTableIndexes() throws Exception {
         TableIdent ident = new TableIdent("myschema", "test");
-        Reference colA = new Reference(new ReferenceIdent(ident, "col_a", null),
+        Reference colA = new Reference(ident, new ColumnIdent("col_a"),
                 RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NOT_ANALYZED, true);
-        Reference colB = new Reference(new ReferenceIdent(ident, "col_b", null),
+        Reference colB = new Reference(ident, new ColumnIdent("col_b"),
                 RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.ANALYZED, true);
-        Reference colC = new Reference(new ReferenceIdent(ident, "col_c", null),
+        Reference colC = new Reference(ident, new ColumnIdent("col_c"),
                 RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NO, true);
-        Reference colD = new Reference(new ReferenceIdent(ident, "col_d", null),
+        Reference colD = new Reference(ident, new ColumnIdent("col_d"),
                 RowGranularity.DOC, DataTypes.OBJECT);
-        Reference colE = new Reference(new ReferenceIdent(ident, "col_d", Arrays.asList("a")),
+        Reference colE = new Reference(ident, new ColumnIdent("col_d", Arrays.asList("a")),
                 RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NOT_ANALYZED, true);
 
         List<Reference> columns = ImmutableList.of(
@@ -381,10 +381,10 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
         ImmutableMap.Builder<ColumnIdent, IndexReference> indexBuilder = ImmutableMap.builder();
         indexBuilder
                 .put(new ColumnIdent("col_a_col_b_ft"),
-                        new IndexReference(new ReferenceIdent(ident, "col_a_col_b_ft"), Reference.IndexType.ANALYZED,
+                        new IndexReference(ident, new ColumnIdent("col_a_col_b_ft"), Reference.IndexType.ANALYZED,
                                 ImmutableList.of(colA, colB), "english"))
                 .put(new ColumnIdent("col_d_a_ft"),
-                        new IndexReference(new ReferenceIdent(ident, "col_d_a_ft"), Reference.IndexType.ANALYZED,
+                        new IndexReference(ident, new ColumnIdent("col_d_a_ft"), Reference.IndexType.ANALYZED,
                                 ImmutableList.of(colE), "custom_analyzer"));
 
         DocTableInfo tableInfo = new TestDocTableInfo(

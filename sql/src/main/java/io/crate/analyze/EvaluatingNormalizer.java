@@ -120,7 +120,7 @@ public class EvaluatingNormalizer {
                 for (Map.Entry<Field, Double> entry : fieldBoostMap.entrySet()) {
                     Symbol resolved = process(entry.getKey(), null);
                     if (resolved instanceof Reference) {
-                        fqnBoostMap.put(((Reference) resolved).ident().columnIdent().fqn(), entry.getValue());
+                        fqnBoostMap.put(((Reference) resolved).column().fqn(), entry.getValue());
                     } else {
                         return matchPredicate;
                     }

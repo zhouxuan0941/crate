@@ -1,7 +1,10 @@
 package io.crate.metadata.doc;
 
 import com.google.common.collect.ImmutableMap;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.collect.Tuple;
@@ -36,20 +39,20 @@ public class DocSysColumns {
             .put(ID, UID.name())
             .build();
 
-    private static Reference newInfo(TableIdent table, ColumnIdent column, DataType dataType) {
-        return new Reference(new ReferenceIdent(table, column), RowGranularity.DOC, dataType);
+    private static Reference createRef(TableIdent table, ColumnIdent column, DataType dataType) {
+        return new Reference(table, column, RowGranularity.DOC, dataType);
     }
 
     public static List<Tuple<ColumnIdent, Reference>> forTable(TableIdent tableIdent) {
         List<Tuple<ColumnIdent, Reference>> columns = new ArrayList<>(COLUMN_IDENTS.size());
         for (Map.Entry<ColumnIdent, DataType> entry : COLUMN_IDENTS.entrySet()) {
-            columns.add(new Tuple<>(entry.getKey(), newInfo(tableIdent, entry.getKey(), entry.getValue())));
+            columns.add(new Tuple<>(entry.getKey(), createRef(tableIdent, entry.getKey(), entry.getValue())));
         }
         return columns;
     }
 
     public static Reference forTable(TableIdent table, ColumnIdent column){
-        return newInfo(table, column, COLUMN_IDENTS.get(column));
+        return createRef(table, column, COLUMN_IDENTS.get(column));
     }
 
     public static String nameForLucene(ColumnIdent ident) {

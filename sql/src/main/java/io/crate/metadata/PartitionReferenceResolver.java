@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class PartitionReferenceResolver implements NestedReferenceResolver {
 
-    private final Map<ReferenceIdent, PartitionExpression> expressionMap = new HashMap<>();
+    private final Map<Reference, PartitionExpression> expressionMap = new HashMap<>();
     private final NestedReferenceResolver fallbackResolver;
     private final List<PartitionExpression> partitionExpressions;
 
@@ -38,14 +38,14 @@ public class PartitionReferenceResolver implements NestedReferenceResolver {
         this.fallbackResolver = fallbackReferenceResolver;
         this.partitionExpressions = partitionExpressions;
         for (PartitionExpression partitionExpression : partitionExpressions) {
-            expressionMap.put(partitionExpression.info().ident(), partitionExpression);
+            expressionMap.put(partitionExpression.info(), partitionExpression);
         }
     }
 
     @Override
-    public ReferenceImplementation getImplementation(Reference refInfo) {
-        PartitionExpression expression = expressionMap.get(refInfo.ident());
-        assert expression != null || fallbackResolver.getImplementation(refInfo) == null
+    public ReferenceImplementation getImplementation(Reference ref) {
+        PartitionExpression expression = expressionMap.get(ref);
+        assert expression != null || fallbackResolver.getImplementation(ref) == null
                 : "granularity < PARTITION should have been resolved already";
         return expression;
     }

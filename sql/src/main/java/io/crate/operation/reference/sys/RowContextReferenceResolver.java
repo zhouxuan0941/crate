@@ -600,11 +600,11 @@ public class RowContextReferenceResolver implements ReferenceResolver<RowCollect
             Map<TableIdent, Map<ColumnIdent, RowCollectExpressionFactory>> factoryMap,
             Reference info) {
 
-        Map<ColumnIdent, RowCollectExpressionFactory> innerFactories = factoryMap.get(info.ident().tableIdent());
+        Map<ColumnIdent, RowCollectExpressionFactory> innerFactories = factoryMap.get(info.table());
         if (innerFactories == null) {
             return null;
         }
-        ColumnIdent columnIdent = info.ident().columnIdent();
+        ColumnIdent columnIdent = info.column();
         RowCollectExpressionFactory factory = innerFactories.get(columnIdent);
         if (factory != null) {
             return factory.create();

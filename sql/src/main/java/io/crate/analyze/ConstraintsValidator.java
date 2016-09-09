@@ -35,7 +35,7 @@ public final class ConstraintsValidator {
         // Validate NOT NULL constraint
         if (value == null && !targetColumn.isNullable()) {
             throw new IllegalArgumentException(String.format(Locale.ENGLISH,
-                "Cannot insert null value for column %s", targetColumn.ident().columnIdent().fqn()));
+                "Cannot insert null value for column %s", targetColumn.column().fqn()));
         }
     }
 

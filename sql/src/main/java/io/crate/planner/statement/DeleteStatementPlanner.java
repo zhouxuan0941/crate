@@ -30,9 +30,9 @@ import io.crate.analyze.symbol.InputColumn;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.where.DocKeys;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.Routing;
 import io.crate.metadata.RowGranularity;
+import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.metadata.table.TableInfo;
 import io.crate.planner.NoopPlan;
@@ -124,8 +124,7 @@ public class DeleteStatementPlanner {
                                              WhereClause whereClause,
                                              Planner.Context plannerContext) {
         // for delete, we always need to collect the `_uid`
-        Reference uidReference = new Reference(
-            new ReferenceIdent(tableInfo.ident(), "_uid"), RowGranularity.DOC, DataTypes.STRING);
+        Reference uidReference = new Reference(tableInfo.ident(), DocSysColumns.UID, RowGranularity.DOC, DataTypes.STRING);
 
         DeleteProjection deleteProjection = new DeleteProjection(
                 new InputColumn(0, DataTypes.STRING));

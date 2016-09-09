@@ -45,7 +45,7 @@ public class InformationTableInfoTest extends CrateUnitTest {
         @Override
         public Comparable apply(@Nullable Reference input) {
             assert input != null;
-            return input.ident().columnIdent().fqn();
+            return input.column().fqn();
         }
     };
 

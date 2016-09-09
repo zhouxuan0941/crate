@@ -64,7 +64,7 @@ public class IsNullPredicateTest extends CrateUnitTest {
     @Test
     public void testNormalizeReference() throws Exception {
         Reference name_ref = new Reference(
-                new ReferenceIdent(new TableIdent(null, "dummy"), "name"),
+                new TableIdent(null, "dummy"), new ColumnIdent("name"),
                 RowGranularity.DOC,
                 DataTypes.STRING);
         Function isNull = new Function(predicate.info(), Arrays.<Symbol>asList(name_ref));
@@ -75,7 +75,7 @@ public class IsNullPredicateTest extends CrateUnitTest {
     @Test
     public void testNormalizeDynamicReference() throws Exception {
         DynamicReference name_ref = new DynamicReference(
-            new ReferenceIdent(new TableIdent(null, "dummy"), "name"), RowGranularity.DOC);
+            new TableIdent(null, "dummy"), new ColumnIdent("name"), RowGranularity.DOC);
         Function isNull = new Function(predicate.info(), Arrays.<Symbol>asList(name_ref));
         Symbol symbol = predicate.normalizeSymbol(isNull, stmtCtx);
         assertThat(symbol, isLiteral(true));

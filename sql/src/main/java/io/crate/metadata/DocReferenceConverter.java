@@ -41,8 +41,7 @@ public class DocReferenceConverter {
         public boolean apply(@Nullable Reference input) {
             assert input != null;
 
-            ReferenceIdent ident = input.ident();
-            String schema = ident.tableIdent().schema();
+            String schema = input.table().schema();
             return ReferenceInfos.isDefaultOrCustomSchema(schema);
         }
     };
@@ -55,13 +54,12 @@ public class DocReferenceConverter {
     }
 
     public static Reference toSourceLookup(Reference reference) {
-        ReferenceIdent ident = reference.ident();
-        if (ident.columnIdent().isSystemColumn()) {
+        if (reference.column().isSystemColumn()) {
             return reference;
         }
         if (reference.granularity() == RowGranularity.DOC) {
             return reference.getRelocated(
-                    new ReferenceIdent(ident.tableIdent(), ident.columnIdent().prepend(DocSysColumns.DOC.name())));
+                    reference.table(), reference.column().prepend(DocSysColumns.DOC.name()));
         }
         return reference;
     }

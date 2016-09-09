@@ -33,12 +33,14 @@ public class EvaluatingNormalizerTest extends CrateUnitTest {
 
     @Before
     public void prepare() throws Exception {
-        Map<ReferenceIdent, ReferenceImplementation> referenceImplementationMap = new HashMap<>(1, 1);
+        Map<Reference, ReferenceImplementation> referenceImplementationMap = new HashMap<>(1, 1);
 
-        ReferenceIdent dummyLoadIdent = new ReferenceIdent(new TableIdent("test", "dummy"), "load");
-        dummyLoadInfo = new Reference(dummyLoadIdent, RowGranularity.NODE, DataTypes.DOUBLE);
+        dummyLoadInfo = new Reference(
+            new TableIdent("test", "dummy"),
+            new ColumnIdent("load"),
+            RowGranularity.NODE, DataTypes.DOUBLE);
 
-        referenceImplementationMap.put(dummyLoadIdent, new SimpleObjectExpression<Double>() {
+        referenceImplementationMap.put(dummyLoadInfo, new SimpleObjectExpression<Double>() {
             @Override
             public Double value() {
                 return 0.08;
@@ -66,7 +68,7 @@ public class EvaluatingNormalizerTest extends CrateUnitTest {
                 functionInfo(EqOperator.NAME, DataTypes.DOUBLE), Arrays.<Symbol>asList(load_1, d01));
 
         Symbol name_ref = new Reference(
-                        new ReferenceIdent(new TableIdent(null, "foo"), "name"),
+                        new TableIdent(null, "foo"), new ColumnIdent("name"),
                         RowGranularity.DOC,
                         DataTypes.STRING);
         Symbol x_literal = Literal.newLiteral("x");

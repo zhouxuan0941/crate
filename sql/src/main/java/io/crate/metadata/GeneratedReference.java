@@ -51,22 +51,24 @@ public class GeneratedReference extends Reference {
     private GeneratedReference() {
     }
 
-    public GeneratedReference(ReferenceIdent ident,
+    public GeneratedReference(TableIdent table,
+                              ColumnIdent column,
                               RowGranularity granularity,
                               DataType type,
                               ColumnPolicy columnPolicy,
                               IndexType indexType,
                               String formattedGeneratedExpression,
                               boolean nullable) {
-        super(ident, granularity, type, columnPolicy, indexType, nullable);
+        super(table, column, granularity, type, columnPolicy, indexType, nullable);
         this.formattedGeneratedExpression = formattedGeneratedExpression;
     }
 
-    public GeneratedReference(ReferenceIdent ident,
+    public GeneratedReference(TableIdent table,
+                              ColumnIdent column,
                               RowGranularity granularity,
                               DataType type,
                               String formattedGeneratedExpression) {
-        super(ident, granularity, type);
+        super(table, column, granularity, type);
         this.formattedGeneratedExpression = formattedGeneratedExpression;
     }
 

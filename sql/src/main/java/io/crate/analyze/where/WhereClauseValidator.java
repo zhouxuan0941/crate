@@ -58,7 +58,7 @@ public abstract class WhereClauseValidator {
 
         @Override
         public Symbol visitReference(Reference symbol, Context context) {
-            validateSysReference(context, symbol.ident().columnIdent().name());
+            validateSysReference(context, symbol.column().name());
             return super.visitReference(symbol, context);
         }
 

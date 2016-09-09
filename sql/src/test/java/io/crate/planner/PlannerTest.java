@@ -408,9 +408,9 @@ public class PlannerTest extends AbstractPlannerTest {
 
         assertThat(upsertById.insertColumns().length, is(2));
         Reference idRef = upsertById.insertColumns()[0];
-        assertThat(idRef.ident().columnIdent().fqn(), is("id"));
+        assertThat(idRef.column().fqn(), is("id"));
         Reference nameRef = upsertById.insertColumns()[1];
-        assertThat(nameRef.ident().columnIdent().fqn(), is("name"));
+        assertThat(nameRef.column().fqn(), is("name"));
 
         assertThat(upsertById.items().size(), is(1));
         UpsertById.Item item = upsertById.items().get(0);
@@ -429,9 +429,9 @@ public class PlannerTest extends AbstractPlannerTest {
 
         assertThat(upsertById.insertColumns().length, is(2));
         Reference idRef = upsertById.insertColumns()[0];
-        assertThat(idRef.ident().columnIdent().fqn(), is("id"));
+        assertThat(idRef.column().fqn(), is("id"));
         Reference nameRef = upsertById.insertColumns()[1];
-        assertThat(nameRef.ident().columnIdent().fqn(), is("name"));
+        assertThat(nameRef.column().fqn(), is("name"));
 
         assertThat(upsertById.items().size(), is(2));
 
@@ -468,7 +468,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(aggregationInput.symbolType(), is(SymbolType.INPUT_COLUMN));
 
         assertThat(collectPhase.toCollect().get(0), instanceOf(Reference.class));
-        assertThat(((Reference) collectPhase.toCollect().get(0)).ident().columnIdent().name(), is("name"));
+        assertThat(((Reference) collectPhase.toCollect().get(0)).column().name(), is("name"));
 
         MergePhase mergeNode = globalAggregate.localMerge();
         assertThat(mergeNode.projections().size(), is(2));
@@ -610,8 +610,8 @@ public class PlannerTest extends AbstractPlannerTest {
         // collect
         assertThat(collectPhase.toCollect().get(0), instanceOf(Reference.class));
         assertThat(collectPhase.toCollect().size(), is(2));
-        assertThat(((Reference)collectPhase.toCollect().get(0)).ident().columnIdent().name(), is("id"));
-        assertThat(((Reference)collectPhase.toCollect().get(1)).ident().columnIdent().name(), is("name"));
+        assertThat(((Reference)collectPhase.toCollect().get(0)).column().name(), is("id"));
+        assertThat(((Reference)collectPhase.toCollect().get(1)).column().name(), is("name"));
         Projection projection = collectPhase.projections().get(0);
         assertThat(projection, instanceOf(GroupProjection.class));
         GroupProjection groupProjection = (GroupProjection)projection;
@@ -667,7 +667,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(collectPhase.projections().get(0), instanceOf(UpdateProjection.class));
         assertThat(collectPhase.toCollect().size(), is(1));
         assertThat(collectPhase.toCollect().get(0), instanceOf(Reference.class));
-        assertThat(((Reference)collectPhase.toCollect().get(0)).ident().columnIdent().fqn(), is("_uid"));
+        assertThat(((Reference)collectPhase.toCollect().get(0)).column().fqn(), is("_uid"));
 
         UpdateProjection updateProjection = (UpdateProjection)collectPhase.projections().get(0);
         assertThat(updateProjection.uidSymbol(), instanceOf(InputColumn.class));
@@ -737,8 +737,8 @@ public class PlannerTest extends AbstractPlannerTest {
         RoutedCollectPhase node = ((RoutedCollectPhase) innerPlan.collectPhase());
         Reference nameRef = (Reference)node.toCollect().get(0);
 
-        assertThat(nameRef.ident().columnIdent().name(), is(DocSysColumns.DOC.name()));
-        assertThat(nameRef.ident().columnIdent().path().get(0), is("name"));
+        assertThat(nameRef.column().name(), is(DocSysColumns.DOC.name()));
+        assertThat(nameRef.column().path().get(0), is("name"));
     }
 
     @Test
@@ -880,8 +880,8 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(projection.primaryKeys().size(), is(1));
         assertThat(projection.primaryKeys().get(0).fqn(), is("id"));
         assertThat(projection.columnReferences().size(), is(2));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("id"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("name"));
 
         assertNotNull(projection.clusteredByIdent());
         assertThat(projection.clusteredByIdent().fqn(), is("id"));
@@ -908,7 +908,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(projection.primaryKeys().get(1).fqn(), is("date"));
 
         assertThat(projection.columnReferences().size(), is(1));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("id"));
 
         assertThat(projection.partitionedBySymbols().size(), is(1));
         assertThat(((InputColumn) projection.partitionedBySymbols().get(0)).index(), is(1));
@@ -941,8 +941,8 @@ public class PlannerTest extends AbstractPlannerTest {
         ColumnIndexWriterProjection projection = (ColumnIndexWriterProjection)mergeNode.projections().get(2);
 
         assertThat(projection.columnReferences().size(), is(2));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("name"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("id"));
 
         assertThat(projection.columnSymbols().size(), is(2));
         assertThat(((InputColumn)projection.columnSymbols().get(0)).index(), is(0));
@@ -970,9 +970,9 @@ public class PlannerTest extends AbstractPlannerTest {
         ColumnIndexWriterProjection projection = (ColumnIndexWriterProjection)collectPhase.projections().get(0);
 
         assertThat(projection.columnReferences().size(), is(3));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("date"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("id"));
-        assertThat(projection.columnReferences().get(2).ident().columnIdent().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("date"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(2).column().fqn(), is("name"));
         assertThat(((InputColumn) projection.ids().get(0)).index(), is(1));
         assertThat(((InputColumn) projection.clusteredBy()).index(), is(1));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
@@ -996,8 +996,8 @@ public class PlannerTest extends AbstractPlannerTest {
         ColumnIndexWriterProjection projection = (ColumnIndexWriterProjection)nestedLoop.nestedLoopPhase().projections().get(1);
 
         assertThat(projection.columnReferences().size(), is(2));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("id"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("name"));
         assertThat(((InputColumn) projection.ids().get(0)).index(), is(0));
         assertThat(((InputColumn) projection.clusteredBy()).index(), is(0));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
@@ -1144,7 +1144,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(toCollect.get(0), isFunction("to_long"));
         assertThat(((Function) toCollect.get(0)).arguments().get(0), isReference("_doc['id']"));
         assertThat((Reference) toCollect.get(1), equalTo(new Reference(
-                new ReferenceIdent(new TableIdent(Schemas.DEFAULT_SCHEMA_NAME, "parted"), "date"), RowGranularity.PARTITION, DataTypes.TIMESTAMP)));
+                new TableIdent(Schemas.DEFAULT_SCHEMA_NAME, "parted"),new ColumnIdent("date"), RowGranularity.PARTITION, DataTypes.TIMESTAMP)));
     }
 
     @Test
@@ -1491,9 +1491,9 @@ public class PlannerTest extends AbstractPlannerTest {
 
         assertThat(node.insertColumns().length, is(2));
         Reference idRef = node.insertColumns()[0];
-        assertThat(idRef.ident().columnIdent().fqn(), is("id"));
+        assertThat(idRef.column().fqn(), is("id"));
         Reference nameRef = node.insertColumns()[1];
-        assertThat(nameRef.ident().columnIdent().fqn(), is("name"));
+        assertThat(nameRef.column().fqn(), is("name"));
 
         assertThat(node.items().size(), is(1));
         UpsertById.Item item = node.items().get(0);

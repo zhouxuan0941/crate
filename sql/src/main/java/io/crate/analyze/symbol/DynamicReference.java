@@ -21,9 +21,10 @@
 
 package io.crate.analyze.symbol;
 
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
@@ -39,12 +40,12 @@ public class DynamicReference extends Reference {
 
     public DynamicReference() {}
 
-    public DynamicReference(ReferenceIdent ident, RowGranularity granularity) {
-        super(ident, granularity, DataTypes.UNDEFINED);
+    public DynamicReference(TableIdent table, ColumnIdent column, RowGranularity granularity) {
+        super(table, column, granularity, DataTypes.UNDEFINED);
     }
 
-    public DynamicReference(ReferenceIdent ident, RowGranularity granularity, ColumnPolicy columnPolicy) {
-        super(ident, granularity, DataTypes.UNDEFINED, columnPolicy, IndexType.NOT_ANALYZED, true);
+    public DynamicReference(TableIdent table, ColumnIdent column, RowGranularity granularity, ColumnPolicy columnPolicy) {
+        super(table, column, granularity, DataTypes.UNDEFINED, columnPolicy, IndexType.NOT_ANALYZED, true);
     }
 
     @Override

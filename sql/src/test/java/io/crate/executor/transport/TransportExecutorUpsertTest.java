@@ -30,6 +30,7 @@ import io.crate.analyze.symbol.Literal;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.core.collections.Bucket;
 import io.crate.metadata.*;
+import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.table.TableInfo;
 import io.crate.operation.operator.EqOperator;
 import io.crate.planner.Plan;
@@ -187,7 +188,7 @@ public class TransportExecutorUpsertTest extends BaseTransportExecutorTest {
             ctx.nextExecutionPhaseId(),
             false,
             0,
-            new String[]{nameRef.ident().columnIdent().fqn()},
+            new String[]{nameRef.column().fqn()},
             null);
         upsertById.add("characters", "1", "1", new Symbol[]{Literal.newLiteral("Vogon lyric fan")}, null);
 
@@ -215,7 +216,7 @@ public class TransportExecutorUpsertTest extends BaseTransportExecutorTest {
             ctx.nextExecutionPhaseId(),
             false,
             0,
-            new String[]{nameRef.ident().columnIdent().fqn()},
+            new String[]{nameRef.column().fqn()},
             new Reference[]{idRef, nameRef, femaleRef});
 
         upsertById.add("characters", "5", "5", new Symbol[]{Literal.newLiteral("Zaphod Beeblebrox")}, null, missingAssignments);
@@ -243,7 +244,7 @@ public class TransportExecutorUpsertTest extends BaseTransportExecutorTest {
             ctx.nextExecutionPhaseId(),
             false,
             0,
-            new String[]{femaleRef.ident().columnIdent().fqn()},
+            new String[]{femaleRef.column().fqn()},
             new Reference[]{idRef, nameRef, femaleRef});
         upsertById.add("characters", "1", "1", new Symbol[]{Literal.newLiteral(true)}, null, missingAssignments);
         CollectingRowReceiver rowReceiver = new CollectingRowReceiver();
@@ -272,7 +273,7 @@ public class TransportExecutorUpsertTest extends BaseTransportExecutorTest {
         TableInfo tableInfo = docSchemaInfo.getTableInfo("characters");
         assert tableInfo != null;
         Reference uidReference = new Reference(
-            new ReferenceIdent(tableInfo.ident(), "_uid"), RowGranularity.DOC, DataTypes.STRING);
+            tableInfo.ident(), DocSysColumns.UID, RowGranularity.DOC, DataTypes.STRING);
 
         // 1st collect and merge nodes
         Function query = new Function(new FunctionInfo(

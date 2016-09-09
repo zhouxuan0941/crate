@@ -21,7 +21,7 @@
 
 package io.crate.metadata.shard;
 
-import io.crate.metadata.ReferenceIdent;
+import io.crate.metadata.Reference;
 import org.elasticsearch.common.inject.AbstractModule;
 import org.elasticsearch.common.inject.multibindings.MapBinder;
 
@@ -33,7 +33,7 @@ public class MetaDataShardModule extends AbstractModule {
     }
 
     protected void bindShardReferences() {
-        MapBinder.newMapBinder(binder(), ReferenceIdent.class, ShardReferenceImplementation.class);
+        MapBinder.newMapBinder(binder(), Reference.class, ShardReferenceImplementation.class);
         bind(ShardReferenceResolver.class).asEagerSingleton();
     }
 }

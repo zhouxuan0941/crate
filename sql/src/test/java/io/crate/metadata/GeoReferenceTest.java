@@ -34,8 +34,8 @@ public class GeoReferenceTest extends CrateUnitTest {
     @Test
     public void testStreaming() throws Exception {
         TableIdent tableIdent = new TableIdent("doc", "test");
-        ReferenceIdent referenceIdent = new ReferenceIdent(tableIdent, "geo_column");
-        GeoReference geoReferenceInfo = new GeoReference(referenceIdent, "some_tree", "1m", 3, 0.5d);
+        ColumnIdent columnIdent = new ColumnIdent("geo_column");
+        GeoReference geoReferenceInfo = new GeoReference(tableIdent, columnIdent, "some_tree", "1m", 3, 0.5d);
 
         BytesStreamOutput out = new BytesStreamOutput();
         Reference.toStream(geoReferenceInfo, out);
@@ -44,7 +44,7 @@ public class GeoReferenceTest extends CrateUnitTest {
 
         assertThat(geoReferenceInfo2, is(geoReferenceInfo));
 
-        GeoReference geoReferenceInfo3 = new GeoReference(referenceIdent, "some_tree", null, null, null);
+        GeoReference geoReferenceInfo3 = new GeoReference(tableIdent, columnIdent, "some_tree", null, null, null);
         out = new BytesStreamOutput();
         Reference.toStream(geoReferenceInfo3, out);
         in = StreamInput.wrap(out.bytes());

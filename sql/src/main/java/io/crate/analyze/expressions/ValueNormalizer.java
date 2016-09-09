@@ -78,7 +78,7 @@ public class ValueNormalizer {
             literal = Literal.convert(literal, reference.valueType());
         } catch (ConversionException e) {
             throw new ColumnValidationException(
-                    reference.ident().columnIdent().name(),
+                    reference.column().name(),
                     String.format(Locale.ENGLISH, "%s cannot be cast to type %s", SymbolPrinter.INSTANCE.printSimple(valueSymbol),
                             reference.valueType().getName()));
         }
@@ -95,7 +95,7 @@ public class ValueNormalizer {
             }
         } catch (ConversionException e) {
             throw new ColumnValidationException(
-                    reference.ident().columnIdent().name(),
+                    reference.column().name(),
                     SymbolFormatter.format(
                             "\"%s\" has a type that can't be implicitly cast to that of \"%s\" (" + reference.valueType().getName() + ")",
                             literal,
@@ -119,8 +119,8 @@ public class ValueNormalizer {
     @SuppressWarnings("unchecked")
     private void normalizeObjectValue(Map<String, Object> value, Reference info) {
         for (Map.Entry<String, Object> entry : value.entrySet()) {
-            ColumnIdent nestedIdent = ColumnIdent.getChild(info.ident().columnIdent(), entry.getKey());
-            TableInfo tableInfo = schemas.getTableInfo(info.ident().tableIdent());
+            ColumnIdent nestedIdent = ColumnIdent.getChild(info.column(), entry.getKey());
+            TableInfo tableInfo = schemas.getTableInfo(info.table());
             Reference nestedInfo = tableInfo.getReference(nestedIdent);
             if (nestedInfo == null) {
                 if (info.columnPolicy() == ColumnPolicy.IGNORED) {
@@ -135,7 +135,7 @@ public class ValueNormalizer {
                 }
                 DataType type = DataTypes.guessType(entry.getValue());
                 if (type == null) {
-                    throw new ColumnValidationException(info.ident().columnIdent().sqlFqn(), "Invalid value");
+                    throw new ColumnValidationException(info.column().sqlFqn(), "Invalid value");
                 }
                 dynamicReference.valueType(type);
                 nestedInfo = dynamicReference;
@@ -175,7 +175,7 @@ public class ValueNormalizer {
         try {
             return info.valueType().value(primitiveValue);
         } catch (Exception e) {
-            throw new ColumnValidationException(info.ident().columnIdent().sqlFqn(),
+            throw new ColumnValidationException(info.column().sqlFqn(),
                     String.format(Locale.ENGLISH, "Invalid %s", info.valueType().getName())
             );
         }

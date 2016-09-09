@@ -271,16 +271,16 @@ public class SymbolPrinter {
         }
 
         @Override
-        public Void visitReference(Reference symbol, SymbolPrinterContext context) {
+        public Void visitReference(Reference ref, SymbolPrinterContext context) {
             if (context.verifyMaxDepthReached()) {
                 return null;
             }
 
             if (context.isFullQualified()) {
-                context.builder.append(symbol.ident().tableIdent().sqlFqn())
+                context.builder.append(ref.table().sqlFqn())
                         .append(DOT);
             }
-            context.builder.append(symbol.ident().columnIdent().quotedOutputName());
+            context.builder.append(ref.column().quotedOutputName());
             return null;
         }
 

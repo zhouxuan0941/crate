@@ -295,7 +295,8 @@ public class SysNodesTableInfo extends StaticTableInfo {
 
     public static Reference tableColumnInfo(TableIdent tableIdent) {
         return new Reference(
-            new ReferenceIdent(tableIdent, SYS_COL_IDENT),
+            tableIdent,
+            SYS_COL_IDENT,
             RowGranularity.NODE,
             ObjectType.INSTANCE,
             ColumnPolicy.STRICT,

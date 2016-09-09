@@ -76,7 +76,7 @@ public class FetchRequiredVisitor extends SymbolVisitor<FetchRequiredVisitor.Con
     public Boolean visitReference(Reference symbol, Context context) {
         if (context.isQuerySymbol(symbol)) {
             return false;
-        } else if (symbol.ident().columnIdent().equals(DocSysColumns.SCORE)) {
+        } else if (symbol.column().equals(DocSysColumns.SCORE)) {
             context.allocateQuerySymbol(symbol);
             return false;
         }

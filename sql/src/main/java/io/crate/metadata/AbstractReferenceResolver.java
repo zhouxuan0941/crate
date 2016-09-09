@@ -26,19 +26,20 @@ import java.util.Map;
 
 public abstract class AbstractReferenceResolver implements NestedReferenceResolver {
 
-    protected final Map<ReferenceIdent, ReferenceImplementation> implementations = new HashMap<>();
+    protected final Map<Reference, ReferenceImplementation> implementations = new HashMap<>();
 
     @Override
-    public ReferenceImplementation getImplementation(Reference refInfo) {
-        ReferenceIdent ident = refInfo.ident();
-        if (ident.isColumn()) {
-            return implementations.get(ident);
+    public ReferenceImplementation getImplementation(Reference ref) {
+        if (ref.column().isColumn()) {
+            return implementations.get(ref);
         }
-        ReferenceImplementation impl = implementations.get(ident.columnReferenceIdent());
+        ColumnIdent root = ref.column().getRoot();
+        Reference rootRef = ref.getRelocated(ref.table(), root);
+        ReferenceImplementation impl = implementations.get(rootRef);
         if (impl == null) {
             return null;
         }
-        for (String part : ident.columnIdent().path()) {
+        for (String part : ref.column().path()) {
             impl = impl.getChildImplementation(part);
             if (impl == null) {
                 return null;

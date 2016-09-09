@@ -22,7 +22,7 @@
 package io.crate.metadata.shard.blob;
 
 import io.crate.metadata.AbstractReferenceResolver;
-import io.crate.metadata.ReferenceIdent;
+import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceImplementation;
 import org.elasticsearch.common.inject.Inject;
 
@@ -31,8 +31,8 @@ import java.util.Map;
 public class BlobShardReferenceResolver extends AbstractReferenceResolver {
 
     @Inject
-    public BlobShardReferenceResolver(final Map<ReferenceIdent, ReferenceImplementation> globalImplementations,
-                                      final Map<ReferenceIdent, BlobShardReferenceImplementation> blobShardImplementations) {
+    public BlobShardReferenceResolver(final Map<Reference, ReferenceImplementation> globalImplementations,
+                                      final Map<Reference, BlobShardReferenceImplementation> blobShardImplementations) {
         this.implementations.putAll(globalImplementations);
         this.implementations.putAll(blobShardImplementations);
     }

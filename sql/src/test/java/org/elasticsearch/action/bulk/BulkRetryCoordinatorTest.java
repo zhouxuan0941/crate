@@ -26,8 +26,8 @@ import com.google.common.util.concurrent.SettableFuture;
 import io.crate.executor.transport.ShardResponse;
 import io.crate.executor.transport.ShardUpsertRequest;
 import io.crate.executor.transport.TransportShardUpsertAction;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.test.integration.CrateUnitTest;
@@ -54,7 +54,7 @@ public class BulkRetryCoordinatorTest extends CrateUnitTest {
 
     private static TableIdent charactersIdent = new TableIdent(null, "foo");
     private static Reference fooRef = new Reference(
-        new ReferenceIdent(charactersIdent, "bar"), RowGranularity.DOC, DataTypes.STRING);
+        charactersIdent, new ColumnIdent("bar"), RowGranularity.DOC, DataTypes.STRING);
     private static ShardId shardId = new ShardId("foo", 1);
 
     abstract class MockShardUpsertActionDelegate extends TransportShardUpsertActionDelegate {

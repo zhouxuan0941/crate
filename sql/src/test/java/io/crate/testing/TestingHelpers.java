@@ -25,8 +25,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import io.crate.analyze.relations.AnalyzedRelation;
-import io.crate.analyze.relations.AnalyzedRelationVisitor;
 import io.crate.analyze.symbol.*;
 import io.crate.analyze.where.DocKeys;
 import io.crate.core.collections.Bucket;
@@ -34,7 +32,6 @@ import io.crate.core.collections.Buckets;
 import io.crate.core.collections.Row;
 import io.crate.core.collections.Sorted;
 import io.crate.metadata.*;
-import io.crate.metadata.table.Operation;
 import io.crate.operation.Input;
 import io.crate.operation.aggregation.impl.AggregationImplModule;
 import io.crate.operation.operator.OperatorModule;
@@ -42,7 +39,6 @@ import io.crate.operation.predicate.PredicateModule;
 import io.crate.operation.scalar.ScalarFunctionModule;
 import io.crate.operation.tablefunctions.TableFunctionModule;
 import io.crate.sql.Identifiers;
-import io.crate.sql.tree.QualifiedName;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.apache.lucene.util.BytesRef;
@@ -170,9 +166,10 @@ public class TestingHelpers {
 
     public static Reference createReference(String tableName, ColumnIdent columnIdent, DataType dataType) {
         return new Reference(
-                new ReferenceIdent(new TableIdent(null, tableName), columnIdent),
-                RowGranularity.DOC,
-                dataType);
+            new TableIdent(null, tableName),
+            columnIdent,
+            RowGranularity.DOC,
+            dataType);
     }
 
     public static String readFile(String path) throws IOException {
@@ -378,7 +375,7 @@ public class TestingHelpers {
                     desc.appendText("not a Reference: ").appendText(item.getClass().getName());
                     return false;
                 }
-                String name = ((Reference) item).ident().columnIdent().outputName();
+                String name = ((Reference) item).column().outputName();
                 if (!name.equals(Identifiers.quoteIfNeeded(expectedName))) {
                     desc.appendText("different name ").appendValue(name);
                     return false;
@@ -514,7 +511,8 @@ public class TestingHelpers {
 
     public static Reference refInfo(String fqColumnName, DataType dataType, RowGranularity rowGranularity, String... nested) {
         String[] parts = fqColumnName.split("\\.");
-        ReferenceIdent refIdent;
+        TableIdent table;
+        ColumnIdent column;
 
         List<String> nestedParts = null;
         if (nested.length > 0) {
@@ -522,15 +520,17 @@ public class TestingHelpers {
         }
         switch (parts.length) {
             case 2:
-                refIdent = new ReferenceIdent(new TableIdent(null, parts[0]), parts[1], nestedParts);
+                table = new TableIdent(null, parts[0]);
+                column =  new ColumnIdent(parts[1], nestedParts);
                 break;
             case 3:
-                refIdent = new ReferenceIdent(new TableIdent(parts[0], parts[1]), parts[2], nestedParts);
+                table = new TableIdent(parts[0], parts[1]);
+                column = new ColumnIdent(parts[2], nestedParts);
                 break;
             default:
                 throw new IllegalArgumentException("fqColumnName must contain <table>.<column> or <schema>.<table>.<column>");
         }
-        return new Reference(refIdent, rowGranularity, dataType);
+        return new Reference(table, column, rowGranularity, dataType);
     }
 
     public static <T> Matcher<T> isSQL(final String stmt) {

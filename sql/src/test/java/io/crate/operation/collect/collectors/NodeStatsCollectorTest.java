@@ -27,7 +27,6 @@ import io.crate.analyze.symbol.Symbol;
 import io.crate.executor.transport.NodeStatsRequest;
 import io.crate.executor.transport.TransportNodeStatsAction;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.sys.SysNodesTableInfo;
 import io.crate.operation.collect.CollectInputSymbolVisitor;
@@ -64,14 +63,20 @@ public class NodeStatsCollectorTest extends CrateUnitTest {
     @Before
     public void prepare() {
         idRef = new Reference(
-            new ReferenceIdent(SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.ID),
-            RowGranularity.DOC, DataTypes.STRING);
+            SysNodesTableInfo.IDENT,
+            SysNodesTableInfo.Columns.ID,
+            RowGranularity.DOC,
+            DataTypes.STRING);
         nameRef = new Reference(
-            new ReferenceIdent(SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.ID),
-            RowGranularity.DOC, DataTypes.STRING);
+            SysNodesTableInfo.IDENT,
+            SysNodesTableInfo.Columns.ID,
+            RowGranularity.DOC,
+            DataTypes.STRING);
         hostnameRef = new Reference(
-            new ReferenceIdent(SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.HOSTNAME),
-                RowGranularity.DOC, DataTypes.STRING);
+            SysNodesTableInfo.IDENT,
+            SysNodesTableInfo.Columns.HOSTNAME,
+            RowGranularity.DOC,
+            DataTypes.STRING);
         collectPhase = mock(RoutedCollectPhase.class);
         when(collectPhase.whereClause()).thenReturn(WhereClause.NO_MATCH);
 

@@ -42,9 +42,9 @@ public class ShardReferenceResolver extends AbstractReferenceResolver {
     @Inject
     public ShardReferenceResolver(Index index,
                                   Schemas schemas,
-                                  final Map<ReferenceIdent, ReferenceImplementation> globalImplementations,
-                                  final Map<ReferenceIdent, ShardReferenceImplementation> shardImplementations) {
-        ImmutableMap.Builder<ReferenceIdent, ReferenceImplementation> builder = ImmutableMap.builder();
+                                  final Map<Reference, ReferenceImplementation> globalImplementations,
+                                  final Map<Reference, ShardReferenceImplementation> shardImplementations) {
+        ImmutableMap.Builder<Reference, ReferenceImplementation> builder = ImmutableMap.builder();
                 builder.putAll(globalImplementations)
                 .putAll(shardImplementations);
 
@@ -66,7 +66,7 @@ public class ShardReferenceResolver extends AbstractReferenceResolver {
 
                     assert partitionName.values().size() == numPartitionedColumns : "invalid number of partitioned columns";
                     for (Reference partitionedInfo : info.partitionedByColumns()) {
-                        builder.put(partitionedInfo.ident(), new PartitionedColumnExpression(
+                        builder.put(partitionedInfo, new PartitionedColumnExpression(
                                 partitionedInfo,
                                 partitionName.values().get(i)
                         ));

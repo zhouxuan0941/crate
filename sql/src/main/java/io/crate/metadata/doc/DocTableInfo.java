@@ -467,12 +467,12 @@ public class DocTableInfo implements TableInfo, ShardedTable {
     }
 
     @Nullable
-    public DynamicReference getDynamic(ColumnIdent ident, boolean forWrite) {
+    public DynamicReference getDynamic(ColumnIdent column, boolean forWrite) {
         boolean parentIsIgnored = false;
         ColumnPolicy parentPolicy = columnPolicy();
-        if (!ident.isColumn()) {
+        if (!column.isColumn()) {
             // see if parent is strict object
-            ColumnIdent parentIdent = ident.getParent();
+            ColumnIdent parentIdent = column.getParent();
             Reference parentInfo = null;
 
             while (parentIdent != null) {
@@ -493,7 +493,7 @@ public class DocTableInfo implements TableInfo, ShardedTable {
                 if (!forWrite) return null;
                 break;
             case STRICT:
-                if (forWrite) throw new ColumnUnknownException(ident.sqlFqn());
+                if (forWrite) throw new ColumnUnknownException(column.sqlFqn());
                 return null;
             case IGNORED:
                 parentIsIgnored = true;
@@ -502,9 +502,9 @@ public class DocTableInfo implements TableInfo, ShardedTable {
                 break;
         }
         if (parentIsIgnored) {
-            return new DynamicReference(new ReferenceIdent(ident(), ident), rowGranularity(), ColumnPolicy.IGNORED);
+            return new DynamicReference(ident(), column, rowGranularity(), ColumnPolicy.IGNORED);
         }
-        return new DynamicReference(new ReferenceIdent(ident(), ident), rowGranularity());
+        return new DynamicReference(ident(), column, rowGranularity());
     }
 
     @Override

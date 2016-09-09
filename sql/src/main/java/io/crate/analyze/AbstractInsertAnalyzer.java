@@ -26,7 +26,6 @@ import io.crate.exceptions.InvalidColumnNameException;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.GeneratedReference;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.sql.tree.Insert;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public abstract class AbstractInsertAnalyzer {
                 if (i >= maxInsertValues) {
                     break;
                 }
-                addColumn(columnInfo.ident().columnIdent().name(), context, i);
+                addColumn(columnInfo.column().name(), context, i);
                 i++;
             }
 
@@ -105,7 +104,7 @@ public abstract class AbstractInsertAnalyzer {
             for (Reference referencedReference : ((GeneratedReference) reference).referencedReferences()) {
                 for (Reference column : context.columns()) {
                     if (column.equals(referencedReference) ||
-                        referencedReference.ident().columnIdent().isChildOf(column.ident().columnIdent())) {
+                        referencedReference.column().isChildOf(column.column())) {
                         return true;
                     }
                 }
@@ -121,18 +120,7 @@ public abstract class AbstractInsertAnalyzer {
      * the created column reference is returned
      */
     protected Reference addColumn(String column, AbstractInsertAnalyzedStatement context, int i) {
-        assert context.tableInfo() != null;
-        return addColumn(new ReferenceIdent(context.tableInfo().ident(), column), context, i);
-    }
-
-    /**
-     * validates the column and sets primary key / partitioned by / routing information as well as a
-     * column Reference to the context.
-     *
-     * the created column reference is returned
-     */
-    protected Reference addColumn(ReferenceIdent ident, AbstractInsertAnalyzedStatement context, int i) {
-        final ColumnIdent columnIdent = ident.columnIdent();
+        final ColumnIdent columnIdent = new ColumnIdent(column);
         Preconditions.checkArgument(!columnIdent.name().startsWith("_"), "Inserting system columns is not allowed");
         if (ColumnIdent.INVALID_COLUMN_NAME_PREDICATE.apply(columnIdent.name())) {
             throw new InvalidColumnNameException(columnIdent.name());
@@ -159,7 +147,7 @@ public abstract class AbstractInsertAnalyzer {
         }
 
         // ensure that every column is only listed once
-        Reference columnReference = context.allocateUniqueReference(ident);
+        Reference columnReference = context.allocateUniqueReference(columnIdent);
         context.columns().add(columnReference);
         return columnReference;
     }

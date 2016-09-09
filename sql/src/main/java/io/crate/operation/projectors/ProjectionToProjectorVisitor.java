@@ -410,7 +410,7 @@ public class ProjectionToProjectorVisitor
             Input<?> targetCol = inputSymbolVisitor.process(ref, writeCtx);
             if (!(targetCol instanceof WritableExpression)) {
                 throw new IllegalArgumentException(String.format(Locale.ENGLISH,
-                    "Column \"%s\" cannot be updated", ref.ident().columnIdent()));
+                    "Column \"%s\" cannot be updated", ref.column()));
             }
 
             Input<?> sourceInput = inputSymbolVisitor.process(e.getValue(), readCtx);

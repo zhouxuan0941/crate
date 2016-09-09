@@ -23,7 +23,6 @@ package io.crate.metadata;
 
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.symbol.SymbolType;
 import io.crate.analyze.symbol.SymbolVisitor;
@@ -44,7 +43,7 @@ public class Reference extends Symbol implements Streamable {
     public static final Comparator<Reference> COMPARE_BY_COLUMN_IDENT = new Comparator<Reference>() {
         @Override
         public int compare(Reference o1, Reference o2) {
-            return o1.ident().columnIdent().compareTo(o2.ident().columnIdent());
+            return o1.column.compareTo(o2.column);
         }
     };
 
@@ -52,7 +51,7 @@ public class Reference extends Symbol implements Streamable {
         @Nullable
         @Override
         public ColumnIdent apply(@Nullable Reference input) {
-            return input == null ? null : input.ident.columnIdent();
+            return input == null ? null : input.column;
         }
     };
 
@@ -60,9 +59,17 @@ public class Reference extends Symbol implements Streamable {
         @Nullable
         @Override
         public String apply(@Nullable Reference input) {
-            return input == null ? null : input.ident.columnIdent().sqlFqn();
+            return input == null ? null : input.column.sqlFqn();
         }
     };
+
+    public ColumnIdent column() {
+        return column;
+    }
+
+    public TableIdent table() {
+        return table;
+    }
 
     public enum IndexType {
         ANALYZED,
@@ -82,7 +89,8 @@ public class Reference extends Symbol implements Streamable {
     };
 
     protected DataType type;
-    private ReferenceIdent ident;
+    private ColumnIdent column;
+    private TableIdent table;
     private ColumnPolicy columnPolicy = ColumnPolicy.DYNAMIC;
     private RowGranularity granularity;
     private IndexType indexType = IndexType.NOT_ANALYZED;
@@ -92,19 +100,22 @@ public class Reference extends Symbol implements Streamable {
 
     }
 
-    public Reference(ReferenceIdent ident,
+    public Reference(TableIdent table,
+                     ColumnIdent column,
                      RowGranularity granularity,
                      DataType type) {
-        this(ident, granularity, type, ColumnPolicy.DYNAMIC, IndexType.NOT_ANALYZED, true);
+        this(table, column, granularity, type, ColumnPolicy.DYNAMIC, IndexType.NOT_ANALYZED, true);
     }
 
-    public Reference(ReferenceIdent ident,
+    public Reference(TableIdent table,
+                     ColumnIdent column,
                      RowGranularity granularity,
                      DataType type,
                      ColumnPolicy columnPolicy,
                      IndexType indexType,
                      boolean nullable) {
-        this.ident = ident;
+        this.table = table;
+        this.column = column;
         this.type = type;
         this.granularity = granularity;
         this.columnPolicy = columnPolicy;
@@ -115,8 +126,8 @@ public class Reference extends Symbol implements Streamable {
     /**
      * Returns a cloned Reference with the given ident
      */
-    public Reference getRelocated(ReferenceIdent newIdent){
-        return new Reference(newIdent, granularity, type, columnPolicy, indexType, nullable);
+    public Reference getRelocated(TableIdent table, ColumnIdent column) {
+        return new Reference(table, column, granularity, type, columnPolicy, indexType, nullable);
     }
 
     @Override
@@ -132,11 +143,6 @@ public class Reference extends Symbol implements Streamable {
     @Override
     public DataType valueType() {
         return type;
-    }
-
-
-    public ReferenceIdent ident() {
-        return ident;
     }
 
     public RowGranularity granularity() {
@@ -156,31 +162,10 @@ public class Reference extends Symbol implements Streamable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Reference that = (Reference) o;
-
-        if (granularity != that.granularity) return false;
-        if (ident != null ? !ident.equals(that.ident) : that.ident != null) return false;
-        if (columnPolicy.ordinal() != that.columnPolicy.ordinal()) { return false; }
-        if (indexType.ordinal() != that.indexType.ordinal()) { return false; }
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-        if (nullable != that.nullable) return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(granularity, ident, type, columnPolicy, indexType);
-        return 31 * result + (nullable ? 1 : 0);
-    }
-
-    @Override
     public String toString() {
         MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this)
-                .add("ident", ident)
+                .add("table", table)
+                .add("column", column)
                 .add("granularity", granularity)
                 .add("type", type);
         if (type.equals(DataTypes.OBJECT)) {
@@ -193,8 +178,8 @@ public class Reference extends Symbol implements Streamable {
 
     @Override
     public void readFrom(StreamInput in) throws IOException {
-        ident = new ReferenceIdent();
-        ident.readFrom(in);
+        table = TableIdent.fromStream(in);
+        column = ColumnIdent.fromStream(in);
         type = DataTypes.fromStream(in);
         granularity = RowGranularity.fromStream(in);
 
@@ -205,7 +190,8 @@ public class Reference extends Symbol implements Streamable {
 
     @Override
     public void writeTo(StreamOutput out) throws IOException {
-        ident.writeTo(out);
+        table.writeTo(out);
+        column.writeTo(out);
         DataTypes.toStream(type, out);
         RowGranularity.toStream(granularity, out);
 
@@ -224,5 +210,34 @@ public class Reference extends Symbol implements Streamable {
         Symbol symbol = SymbolType.values()[in.readVInt()].newInstance();
         symbol.readFrom(in);
         return (R) symbol;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Reference reference = (Reference) o;
+
+        if (nullable != reference.nullable) return false;
+        if (!type.equals(reference.type)) return false;
+        if (!column.equals(reference.column)) return false;
+        if (!table.equals(reference.table)) return false;
+        if (columnPolicy != reference.columnPolicy) return false;
+        if (granularity != reference.granularity) return false;
+        return indexType == reference.indexType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + column.hashCode();
+        result = 31 * result + table.hashCode();
+        result = 31 * result + columnPolicy.hashCode();
+        result = 31 * result + granularity.hashCode();
+        result = 31 * result + indexType.hashCode();
+        result = 31 * result + (nullable ? 1 : 0);
+        return result;
     }
 }

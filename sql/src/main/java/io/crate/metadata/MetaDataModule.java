@@ -28,7 +28,7 @@ import org.elasticsearch.common.inject.multibindings.MapBinder;
 
 public class MetaDataModule extends AbstractModule {
 
-    protected MapBinder<ReferenceIdent, ReferenceImplementation> referenceBinder;
+    protected MapBinder<Reference, ReferenceImplementation> referenceBinder;
     protected MapBinder<FunctionIdent, FunctionImplementation> functionBinder;
     protected MapBinder<String, SchemaInfo> schemaBinder;
 
@@ -40,7 +40,7 @@ public class MetaDataModule extends AbstractModule {
     }
 
     protected void bindReferences() {
-        referenceBinder = MapBinder.newMapBinder(binder(), ReferenceIdent.class, ReferenceImplementation.class);
+        referenceBinder = MapBinder.newMapBinder(binder(), Reference.class, ReferenceImplementation.class);
         bind(NestedReferenceResolver.class).to(GlobalReferenceResolver.class).asEagerSingleton();
     }
 

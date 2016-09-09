@@ -23,7 +23,9 @@ package io.crate.action.sql.query;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-import io.crate.analyze.symbol.*;
+import io.crate.analyze.symbol.Function;
+import io.crate.analyze.symbol.Symbol;
+import io.crate.analyze.symbol.SymbolVisitor;
 import io.crate.analyze.symbol.format.SymbolFormatter;
 import io.crate.executor.transport.task.elasticsearch.SortOrder;
 import io.crate.metadata.ColumnIdent;
@@ -38,7 +40,6 @@ import io.crate.types.DataTypes;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.SortField;
 import org.elasticsearch.index.fielddata.IndexFieldData;
-import org.elasticsearch.index.mapper.FieldMapper;
 import org.elasticsearch.index.mapper.MappedFieldType;
 import org.elasticsearch.search.MultiValueMode;
 import org.elasticsearch.search.sort.SortParseElement;
@@ -114,7 +115,7 @@ public class SortSymbolVisitor extends SymbolVisitor<SortSymbolVisitor.SortSymbo
         // with the reference valueType.
         // this is why we use a custom comparator source with the same logic as ES
 
-        ColumnIdent columnIdent = symbol.ident().columnIdent();
+        ColumnIdent columnIdent = symbol.column();
 
         if (columnIdent.isColumn()) {
             if (SortParseElement.SCORE_FIELD_NAME.equals(columnIdent.name())) {

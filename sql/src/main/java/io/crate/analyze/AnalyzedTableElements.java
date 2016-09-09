@@ -276,16 +276,18 @@ public class AnalyzedTableElements {
         Reference reference;
         if (columnDefinition.generatedExpression() == null) {
             reference = new Reference(
-                    new ReferenceIdent(tableIdent, columnDefinition.ident()),
-                    RowGranularity.DOC,
-                    DataTypes.ofMappingNameSafe(columnDefinition.dataType()));
+                tableIdent,
+                columnDefinition.ident(),
+                RowGranularity.DOC,
+                DataTypes.ofMappingNameSafe(columnDefinition.dataType()));
         } else {
             reference = new GeneratedReference(
-                    new ReferenceIdent(tableIdent, columnDefinition.ident()),
-                    RowGranularity.DOC,
-                    columnDefinition.dataType() ==
-                    null ? DataTypes.UNDEFINED : DataTypes.ofMappingNameSafe(columnDefinition.dataType()),
-                    "dummy expression, real one not needed here");
+                tableIdent,
+                columnDefinition.ident(),
+                RowGranularity.DOC,
+                columnDefinition.dataType() ==
+                null ? DataTypes.UNDEFINED : DataTypes.ofMappingNameSafe(columnDefinition.dataType()),
+                "dummy expression, real one not needed here");
         }
         references.add(reference);
         for (AnalyzedColumnDefinition childDefinition : columnDefinition.children()) {

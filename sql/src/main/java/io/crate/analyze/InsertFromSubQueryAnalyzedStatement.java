@@ -85,7 +85,7 @@ public class InsertFromSubQueryAnalyzedStatement implements AnalyzedRelation, An
         Map<ColumnIdent, Integer> columnPositions = new HashMap<>(targetColumns.size(), 1);
         ListIterator<Reference> it = targetColumns.listIterator();
         while (it.hasNext()) {
-            columnPositions.put(it.next().ident().columnIdent(), it.previousIndex());
+            columnPositions.put(it.next().column(), it.previousIndex());
         }
         return columnPositions;
     }

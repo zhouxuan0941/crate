@@ -52,11 +52,11 @@ public class FileLineReferenceResolver implements ReferenceResolver<LineCollecto
     }
 
     public LineCollectorExpression<?> getImplementation(Reference refInfo) {
-        ExpressionBuilder builder = expressionBuilder.get(refInfo.ident().columnIdent().name());
+        ExpressionBuilder builder = expressionBuilder.get(refInfo.column().name());
         if (builder != null) {
             return builder.create();
         }
-        return new ColumnExtractingLineExpression(refInfo.ident().columnIdent());
+        return new ColumnExtractingLineExpression(refInfo.column());
     }
 
 

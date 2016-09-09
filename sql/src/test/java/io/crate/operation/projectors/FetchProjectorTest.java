@@ -153,8 +153,9 @@ public class FetchProjectorTest extends CrateUnitTest {
         Map<String, TableIdent> indexToTable = new HashMap<>(1);
         indexToTable.put("t1", USER_TABLE_IDENT);
 
-        ReferenceIdent referenceIdent = new ReferenceIdent(USER_TABLE_IDENT, "id");
-        Reference reference = new Reference(referenceIdent,
+        Reference reference = new Reference(
+            USER_TABLE_IDENT,
+            new ColumnIdent("id"),
             RowGranularity.DOC,
             LongType.INSTANCE,
             ColumnPolicy.STRICT,
@@ -179,8 +180,9 @@ public class FetchProjectorTest extends CrateUnitTest {
         List<Symbol> outputSymbols = new ArrayList<>(2);
 
         InputColumn inputColumn = new InputColumn(0);
-        ReferenceIdent referenceIdent = new ReferenceIdent(USER_TABLE_IDENT, "id");
-        Reference reference = new Reference(referenceIdent,
+        Reference reference = new Reference(
+            USER_TABLE_IDENT,
+            new ColumnIdent("id"),
             RowGranularity.DOC,
             LongType.INSTANCE,
             ColumnPolicy.STRICT,

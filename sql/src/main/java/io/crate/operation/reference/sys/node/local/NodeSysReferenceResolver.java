@@ -22,10 +22,10 @@
 
 package io.crate.operation.reference.sys.node.local;
 
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.NestedReferenceResolver;
-import io.crate.metadata.ReferenceIdent;
-import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.Reference;
+import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.sys.SysNodesTableInfo;
 
 import java.util.HashMap;
@@ -51,14 +51,14 @@ public class NodeSysReferenceResolver implements NestedReferenceResolver {
     }
 
     @Override
-    public ReferenceImplementation getImplementation(Reference refInfo) {
-        ReferenceIdent ident = refInfo.ident();
-        if (SysNodesTableInfo.SYS_COL_NAME.equals(ident.columnIdent().name())) {
-            if (ident.columnIdent().isColumn()) {
+    public ReferenceImplementation getImplementation(Reference ref) {
+        ColumnIdent column = ref.column();
+        if (SysNodesTableInfo.SYS_COL_NAME.equals(column.name())) {
+            if (column.isColumn()) {
                 return nodeSysExpression;
             }
             ReferenceImplementation impl = null;
-            for (String part : ident.columnIdent().path()) {
+            for (String part : column.path()) {
                 if (impl == null) {
                     impl = getCachedImplementation(part);
                 } else {

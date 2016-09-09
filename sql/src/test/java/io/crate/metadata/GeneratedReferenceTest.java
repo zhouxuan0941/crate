@@ -31,8 +31,8 @@ import io.crate.testing.SqlExpressions;
 import io.crate.testing.T3;
 import io.crate.types.StringType;
 import org.elasticsearch.common.collect.MapBuilder;
-import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.BytesStreamOutput;
+import org.elasticsearch.common.io.stream.StreamInput;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -48,9 +48,9 @@ public class GeneratedReferenceTest extends CrateUnitTest {
 
     @Test
     public void testStreaming() throws Exception {
-        ReferenceIdent referenceIdent = new ReferenceIdent(T3.T1_INFO.ident(), "generated_column");
+        ColumnIdent column = new ColumnIdent("generated_column");
         String formattedGeneratedExpression = "concat(a, 'bar')";
-        GeneratedReference generatedReferenceInfo = new GeneratedReference(referenceIdent, RowGranularity.DOC,
+        GeneratedReference generatedReferenceInfo = new GeneratedReference(T3.T1_INFO.ident(), column, RowGranularity.DOC,
                 StringType.INSTANCE, ColumnPolicy.STRICT, Reference.IndexType.ANALYZED,
                 formattedGeneratedExpression, false);
 

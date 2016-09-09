@@ -100,7 +100,7 @@ public class CompoundLiteralTest extends CrateUnitTest {
                             }
                         },
                         mock(Functions.class)),
-                new GlobalReferenceResolver(Collections.<ReferenceIdent, ReferenceImplementation>emptyMap())
+                new GlobalReferenceResolver(Collections.<Reference, ReferenceImplementation>emptyMap())
         );
     }
 

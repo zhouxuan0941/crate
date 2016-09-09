@@ -102,7 +102,8 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
 
         if (dataType != null) {
             return new Reference(
-                reference.ident(),
+                reference.table(),
+                reference.column(),
                 reference.granularity(),
                 dataType,
                 reference.columnPolicy(),
@@ -134,7 +135,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
                 if (reference.valueType().equals(DataTypes.NOT_SUPPORTED)) {
                     continue;
                 }
-                ColumnIdent columnIdent = reference.ident().columnIdent();
+                ColumnIdent columnIdent = reference.column();
                 outputs.add(getField(columnIdent));
             }
         }
@@ -157,7 +158,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
      * returns false if info has no parent column.
      */
     private boolean hasMatchingParent(Reference info, Predicate<Reference> parentMatchPredicate) {
-        ColumnIdent parent = info.ident().columnIdent().getParent();
+        ColumnIdent parent = info.column().getParent();
         while (parent != null) {
             Reference parentInfo = tableInfo.getReference(parent);
             if (parentMatchPredicate.apply(parentInfo)) {
@@ -169,7 +170,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
     }
 
     private boolean hasNestedObjectReference(Reference info) {
-        ColumnIdent parent = info.ident().columnIdent().getParent();
+        ColumnIdent parent = info.column().getParent();
         if (parent != null) {
             Reference parentRef = tableInfo.getReference(parent);
             if (parentRef.valueType().id() == ObjectType.ID) {

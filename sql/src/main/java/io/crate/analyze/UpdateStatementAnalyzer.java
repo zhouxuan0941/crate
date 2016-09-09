@@ -164,7 +164,7 @@ public class UpdateStatementAnalyzer extends DefaultTraversalVisitor<AnalyzedSta
             columnExpressionAnalyzer.convert(node.columnName(), expressionAnalysisContext),
             expressionAnalysisContext.statementContext());
 
-        final ColumnIdent ident = reference.ident().columnIdent();
+        final ColumnIdent ident = reference.column();
         if (hasMatchingParent(tableInfo, reference, IS_OBJECT_ARRAY)) {
             // cannot update fields of object arrays
             throw new IllegalArgumentException("Updating fields of object arrays is not supported");
@@ -183,7 +183,7 @@ public class UpdateStatementAnalyzer extends DefaultTraversalVisitor<AnalyzedSta
 
 
     private boolean hasMatchingParent(TableInfo tableInfo, Reference info, Predicate<Reference> parentMatchPredicate) {
-        ColumnIdent parent = info.ident().columnIdent().getParent();
+        ColumnIdent parent = info.column().getParent();
         while (parent != null) {
             Reference parentInfo = tableInfo.getReference(parent);
             if (parentMatchPredicate.apply(parentInfo)) {

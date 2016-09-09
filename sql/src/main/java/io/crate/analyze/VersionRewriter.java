@@ -70,7 +70,7 @@ public class VersionRewriter {
                 }
 
                 Reference reference = (Reference) left;
-                ColumnIdent columnIdent = reference.ident().columnIdent();
+                ColumnIdent columnIdent = reference.column();
 
                 if (DocSysColumns.VERSION.equals(columnIdent)) {
                     assert context.version == null;

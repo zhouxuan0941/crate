@@ -131,7 +131,7 @@ public class ValueNormalizerTest extends CrateUnitTest {
     @Test
     public void testNormalizePrimitiveLiteral() throws Exception {
         Reference ref = new Reference(
-                new ReferenceIdent(TEST_TABLE_IDENT, new ColumnIdent("bool")),
+                TEST_TABLE_IDENT, new ColumnIdent("bool"),
                 RowGranularity.DOC,
                 DataTypes.BOOLEAN
         );
@@ -149,7 +149,7 @@ public class ValueNormalizerTest extends CrateUnitTest {
     @Test
     public void testNormalizeScalar() throws Exception {
         Reference info = new Reference(
-                new ReferenceIdent(TEST_TABLE_IDENT, new ColumnIdent("double")),
+                TEST_TABLE_IDENT, new ColumnIdent("double"),
                 RowGranularity.DOC,
                 DataTypes.DOUBLE);
         Function f = new Function(TEST_FUNCTION_INFO, Arrays.<Symbol>asList(Literal.newLiteral(-9.9)));

@@ -140,7 +140,7 @@ public class InformationSchemaIterables {
                 @Override
                 public boolean apply(@Nullable Reference input) {
                     return input != null
-                            && !input.ident().columnIdent().isSystemColumn()
+                            && !input.column().isSystemColumn()
                             && input.valueType() != DataTypes.NOT_SUPPORTED;
                 }
             }).iterator();

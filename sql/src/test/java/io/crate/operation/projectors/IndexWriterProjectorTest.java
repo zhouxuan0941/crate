@@ -74,7 +74,7 @@ public class IndexWriterProjectorTest extends SQLTransportIntegrationTest {
                 internalCluster().getInstance(TransportActionProvider.class),
                 IndexNameResolver.forTable(new TableIdent(null, "bulk_import")),
                 internalCluster().getInstance(BulkRetryCoordinatorPool.class),
-                new Reference(new ReferenceIdent(bulkImportIdent, DocSysColumns.RAW), RowGranularity.DOC, DataTypes.STRING),
+                new Reference(bulkImportIdent, DocSysColumns.RAW, RowGranularity.DOC, DataTypes.STRING),
                 Arrays.asList(ID_IDENT),
                 Arrays.<Symbol>asList(new InputColumn(0)),
                 null,

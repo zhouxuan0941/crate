@@ -90,7 +90,7 @@ public class ProjectionToProjectorVisitorTest extends CrateUnitTest {
     @Before
     public void prepare() {
         MockitoAnnotations.initMocks(this);
-        NestedReferenceResolver referenceResolver = new GlobalReferenceResolver(new HashMap<ReferenceIdent, ReferenceImplementation>());
+        NestedReferenceResolver referenceResolver = new GlobalReferenceResolver(new HashMap<Reference, ReferenceImplementation>());
         functions = getFunctions();
         threadPool = new ThreadPool("testing");
         ImplementationSymbolVisitor symbolvisitor = new ImplementationSymbolVisitor(functions);

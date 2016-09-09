@@ -144,10 +144,10 @@ public class MultiSourceFetchPushDown {
     }
 
     private void allocateFetchedReference(FetchReference fr, DocTableRelation rel) {
-        FetchSource fs = fetchSources.get(fr.ref().ident().tableIdent());
+        FetchSource fs = fetchSources.get(fr.ref().table());
         if (fs == null) {
             fs = new FetchSource(rel.tableInfo().partitionedByColumns());
-            fetchSources.put(fr.ref().ident().tableIdent(), fs);
+            fetchSources.put(fr.ref().table(), fs);
         }
         fs.docIdCols().add((InputColumn) fr.docId());
         if (fr.ref().granularity() == RowGranularity.DOC) {

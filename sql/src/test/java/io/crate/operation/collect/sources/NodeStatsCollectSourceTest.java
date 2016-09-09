@@ -27,7 +27,10 @@ import com.google.common.collect.Lists;
 import io.crate.analyze.WhereClause;
 import io.crate.analyze.relations.AnalyzedRelation;
 import io.crate.analyze.relations.TableRelation;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.metadata.sys.SysNodesTableInfo;
 import io.crate.sql.tree.QualifiedName;
 import io.crate.test.integration.CrateUnitTest;
@@ -62,15 +65,15 @@ public class NodeStatsCollectSourceTest extends CrateUnitTest {
         SysNodesTableInfo tableInfo = mock(SysNodesTableInfo.class);
         when(tableInfo.ident()).thenReturn(new TableIdent("sys", "nodes"));
         when(tableInfo.getReference(new ColumnIdent("id"))).thenReturn(
-            new Reference(new ReferenceIdent(new TableIdent("sys", "nodes"), "id"), RowGranularity.DOC, DataTypes.STRING));
+            new Reference(new TableIdent("sys", "nodes"), new ColumnIdent("id"), RowGranularity.DOC, DataTypes.STRING));
         when(tableInfo.getReference(SysNodesTableInfo.Columns.NAME)).thenReturn(
             new Reference(
-                new ReferenceIdent(SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.NAME),
+                SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.NAME,
                 RowGranularity.DOC, DataTypes.STRING)
         );
         when(tableInfo.getReference(SysNodesTableInfo.Columns.HOSTNAME)).thenReturn(
             new Reference(
-                new ReferenceIdent(SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.HOSTNAME),
+                SysNodesTableInfo.IDENT, SysNodesTableInfo.Columns.HOSTNAME,
                 RowGranularity.DOC, DataTypes.STRING)
         );
 

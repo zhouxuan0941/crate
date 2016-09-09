@@ -21,7 +21,7 @@
 
 package io.crate.operation.reference.sys.shard;
 
-import io.crate.metadata.ReferenceIdent;
+import io.crate.metadata.Reference;
 import io.crate.metadata.shard.ShardReferenceImplementation;
 import io.crate.metadata.sys.SysShardsTableInfo;
 import org.elasticsearch.common.inject.AbstractModule;
@@ -32,19 +32,19 @@ public class SysShardExpressionModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        MapBinder<ReferenceIdent, ShardReferenceImplementation> b = MapBinder
-                .newMapBinder(binder(), ReferenceIdent.class, ShardReferenceImplementation.class);
+        MapBinder<Reference, ShardReferenceImplementation> b = MapBinder
+                .newMapBinder(binder(), Reference.class, ShardReferenceImplementation.class);
 
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.ID).to(ShardIdExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.SIZE).to(ShardSizeExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.NUM_DOCS).to(ShardNumDocsExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.PRIMARY).to(ShardPrimaryExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.STATE).to(ShardStateExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.ROUTING_STATE).to(ShardRoutingStateExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.RELOCATING_NODE).to(ShardRelocatingNodeExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.TABLE_NAME).to(ShardTableNameExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.SCHEMA_NAME).to(ShardSchemaNameExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.PARTITION_IDENT).to(ShardPartitionIdentExpression.class).asEagerSingleton();
-        b.addBinding(SysShardsTableInfo.ReferenceIdents.ORPHAN_PARTITION).to(ShardPartitionOrphanedExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.ID).to(ShardIdExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.SIZE).to(ShardSizeExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.NUM_DOCS).to(ShardNumDocsExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.PRIMARY).to(ShardPrimaryExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.STATE).to(ShardStateExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.ROUTING_STATE).to(ShardRoutingStateExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.RELOCATING_NODE).to(ShardRelocatingNodeExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.TABLE_NAME).to(ShardTableNameExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.SCHEMA_NAME).to(ShardSchemaNameExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.PARTITION_IDENT).to(ShardPartitionIdentExpression.class).asEagerSingleton();
+        b.addBinding(SysShardsTableInfo.Refs.ORPHAN_PARTITION).to(ShardPartitionOrphanedExpression.class).asEagerSingleton();
     }
 }

@@ -156,10 +156,11 @@ public class TestingTableInfo extends DocTableInfo {
             );
         }
 
-        private Reference genInfo(ColumnIdent columnIdent, DataType type) {
+        private Reference createRef(ColumnIdent columnIdent, DataType type) {
             return new Reference(
-                    new ReferenceIdent(ident, columnIdent.name(), columnIdent.path()),
-                    RowGranularity.DOC, type
+                ident,
+                new ColumnIdent(columnIdent.name(), columnIdent.path()),
+                RowGranularity.DOC, type
             );
         }
 
@@ -167,7 +168,7 @@ public class TestingTableInfo extends DocTableInfo {
             for (Map.Entry<ColumnIdent, DataType> entry : DocSysColumns.COLUMN_IDENTS.entrySet()) {
                 references.put(
                         entry.getKey(),
-                        genInfo(entry.getKey(), entry.getValue())
+                        createRef(entry.getKey(), entry.getValue())
                 );
             }
         }
@@ -198,15 +199,15 @@ public class TestingTableInfo extends DocTableInfo {
             if (partitionBy) {
                 rowGranularity = RowGranularity.PARTITION;
             }
-            Reference info = new Reference(new ReferenceIdent(ident, column, path),
+            Reference info = new Reference(ident, new ColumnIdent(column, path),
                     rowGranularity, type, columnPolicy, indexType, nullable);
-            if (info.ident().isColumn()) {
+            if (info.column().isColumn()) {
                 columns.add(info);
             }
-            references.put(info.ident().columnIdent(), info);
+            references.put(info.column(), info);
             if (partitionBy) {
                 partitionedByColumns.add(info);
-                partitionedBy.add(info.ident().columnIdent());
+                partitionedBy.add(info.column());
             }
             return this;
         }
@@ -221,27 +222,28 @@ public class TestingTableInfo extends DocTableInfo {
             if (partitionBy) {
                 rowGranularity = RowGranularity.PARTITION;
             }
-            GeneratedReference info = new GeneratedReference(new ReferenceIdent(ident, column),
+            GeneratedReference info = new GeneratedReference(ident, new ColumnIdent(column),
                 rowGranularity, type, ColumnPolicy.DYNAMIC, Reference.IndexType.NOT_ANALYZED, expression, nullable);
 
             generatedColumns.add(info);
-            if (info.ident().isColumn()) {
+            if (info.column().isColumn()) {
                 columns.add(info);
             }
-            references.put(info.ident().columnIdent(), info);
+            references.put(info.column(), info);
             if (partitionBy) {
                 partitionedByColumns.add(info);
-                partitionedBy.add(info.ident().columnIdent());
+                partitionedBy.add(info.column());
             }
             return this;
         }
 
         public Builder addIndex(ColumnIdent columnIdent, Reference.IndexType indexType) {
             IndexReference info = new IndexReference(
-                    new ReferenceIdent(ident, columnIdent),
-                    indexType,
-                    Collections.<Reference>emptyList(),
-                    null);
+                ident,
+                columnIdent,
+                indexType,
+                Collections.<Reference>emptyList(),
+                null);
             indexColumns.put(columnIdent, info);
             return this;
         }

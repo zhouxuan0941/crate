@@ -152,7 +152,7 @@ public class DateTruncFunctionTest extends AbstractScalarFunctionsTest {
     @Test
     public void testNormalizeSymbolReferenceTimestamp() throws Exception {
         Function function = new Function(func.info(),
-                Arrays.<Symbol>asList(new Reference(null,null, DataTypes.STRING), new Reference(null,null, DataTypes.TIMESTAMP)));
+                Arrays.<Symbol>asList(new Reference(null, null, null, DataTypes.STRING), new Reference(null, null,null, DataTypes.TIMESTAMP)));
         Symbol result = func.normalizeSymbol(function, stmtCtx);
         assertSame(function, result);
     }
@@ -251,7 +251,7 @@ public class DateTruncFunctionTest extends AbstractScalarFunctionsTest {
     public void testNormalizeSymbolTzAwareReferenceTimestamp() throws Exception {
         Function function = new Function(funcTZ.info(),
                 Arrays.<Symbol>asList(Literal.newLiteral("day"), Literal.newLiteral("+01:00"),
-                        new Reference(null,null,DataTypes.TIMESTAMP)));
+                        new Reference(null, null,null,DataTypes.TIMESTAMP)));
         Symbol result = funcTZ.normalizeSymbol(function, stmtCtx);
         assertSame(function, result);
     }

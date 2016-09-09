@@ -299,11 +299,11 @@ public class ESGetTask extends JobTask {
     private static FetchSourceContext getFetchSourceContext(List<Reference> references) {
         List<String> includes = new ArrayList<>(references.size());
         for (Reference ref : references) {
-            if (ref.ident().columnIdent().isSystemColumn() &&
-                FETCH_SOURCE_COLUMNS.contains(ref.ident().columnIdent())) {
+            if (ref.column().isSystemColumn() &&
+                FETCH_SOURCE_COLUMNS.contains(ref.column())) {
                 return new FetchSourceContext(true);
             }
-            includes.add(ref.ident().columnIdent().name());
+            includes.add(ref.column().name());
         }
         if (includes.size() > 0) {
             return new FetchSourceContext(includes.toArray(new String[includes.size()]));
@@ -354,7 +354,7 @@ public class ESGetTask extends JobTask {
 
         @Override
         public Function<GetResponse, Object> build(final Reference reference, final GetResponseContext context) {
-            final String field = reference.ident().columnIdent().fqn();
+            final String field = reference.column().fqn();
 
             if (field.startsWith("_")) {
                 switch (field) {
@@ -388,8 +388,8 @@ public class ESGetTask extends JobTask {
                         };
                 }
             } else if (context.node.tableInfo().isPartitioned()
-                    && context.node.tableInfo().partitionedBy().contains(reference.ident().columnIdent())) {
-                final int pos = context.node.tableInfo().primaryKey().indexOf(reference.ident().columnIdent());
+                    && context.node.tableInfo().partitionedBy().contains(reference.column())) {
+                final int pos = context.node.tableInfo().primaryKey().indexOf(reference.column());
                 if (pos >= 0) {
                     return new Function<GetResponse, Object>() {
                         @Override

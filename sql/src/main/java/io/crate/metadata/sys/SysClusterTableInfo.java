@@ -23,16 +23,14 @@ package io.crate.metadata.sys;
 
 import com.google.common.collect.ImmutableList;
 import io.crate.analyze.WhereClause;
-import io.crate.metadata.ColumnIdent;
-import io.crate.metadata.Routing;
-import io.crate.metadata.RowGranularity;
-import io.crate.metadata.TableIdent;
+import io.crate.metadata.*;
 import io.crate.metadata.settings.CrateSettings;
 import io.crate.metadata.table.ColumnRegistrar;
 import io.crate.metadata.table.StaticTableInfo;
 import io.crate.operation.reference.sys.cluster.ClusterLoggingOverridesExpression;
 import io.crate.operation.reference.sys.cluster.ClusterSettingsExpression;
 import io.crate.types.ArrayType;
+import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.cluster.ClusterService;
 import org.elasticsearch.common.inject.Inject;
@@ -48,13 +46,25 @@ public class SysClusterTableInfo extends StaticTableInfo {
 
     private final ClusterService clusterService;
 
+    private static Reference newRef(String name, DataType type) {
+        return new Reference(IDENT, new ColumnIdent(name), RowGranularity.CLUSTER, type);
+    }
+
+    public static class Refs {
+        public static final Reference ID = newRef("id", DataTypes.STRING);
+        public static final Reference NAME = newRef("name", DataTypes.STRING);
+        public static final Reference MASTER_NODE = newRef("master_node", DataTypes.STRING);
+        public static final Reference SETTINGS = newRef("settings", DataTypes.OBJECT);
+
+    }
+
     @Inject
     public SysClusterTableInfo(ClusterService clusterService) {
         super(IDENT, new ColumnRegistrar(IDENT, RowGranularity.CLUSTER)
-                        .register("id", DataTypes.STRING, null)
-                        .register("name", DataTypes.STRING, null)
-                        .register("master_node", DataTypes.STRING, null)
-                        .register(ClusterSettingsExpression.NAME, DataTypes.OBJECT, null)
+                        .register(Refs.ID)
+                        .register(Refs.NAME)
+                        .register(Refs.MASTER_NODE)
+                        .register(Refs.SETTINGS)
                         .register(ClusterSettingsExpression.NAME, DataTypes.OBJECT, ImmutableList.of(CrateSettings.STATS.name()))
                         .register(ClusterSettingsExpression.NAME, DataTypes.INTEGER, ImmutableList.of(CrateSettings.STATS.name(),
                                 CrateSettings.STATS_JOBS_LOG_SIZE.name()))

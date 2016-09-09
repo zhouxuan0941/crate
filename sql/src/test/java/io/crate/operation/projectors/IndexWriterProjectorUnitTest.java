@@ -28,7 +28,11 @@ import io.crate.analyze.symbol.Symbol;
 import io.crate.core.collections.Row;
 import io.crate.core.collections.RowN;
 import io.crate.executor.transport.TransportActionProvider;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
+import io.crate.metadata.doc.DocSysColumns;
 import io.crate.operation.collect.CollectExpression;
 import io.crate.operation.collect.InputCollectExpression;
 import io.crate.test.integration.CrateUnitTest;
@@ -57,7 +61,7 @@ public class IndexWriterProjectorUnitTest extends CrateUnitTest {
     private final static ColumnIdent ID_IDENT = new ColumnIdent("id");
     private static final TableIdent bulkImportIdent = new TableIdent(null, "bulk_import");
     private static Reference rawSourceReference = new Reference(
-            new ReferenceIdent(bulkImportIdent, "_raw"), RowGranularity.DOC, DataTypes.STRING);
+            bulkImportIdent, DocSysColumns.RAW, RowGranularity.DOC, DataTypes.STRING);
 
     @Mock(answer = Answers.RETURNS_MOCKS)
     ClusterService clusterService;

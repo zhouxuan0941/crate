@@ -35,10 +35,8 @@ import io.crate.metadata.Reference;
 import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.metadata.table.Operation;
-import io.crate.sql.tree.QualifiedName;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 
 public class DocTableRelation extends AbstractTableRelation<DocTableInfo> {
@@ -58,7 +56,7 @@ public class DocTableRelation extends AbstractTableRelation<DocTableInfo> {
 
         @Override
         public Void visitReference(Reference symbol, DocTableRelation context) {
-            if (context.tableInfo.partitionedBy().contains(symbol.ident().columnIdent())) {
+            if (context.tableInfo.partitionedBy().contains(symbol.column())) {
                 throw new UnsupportedOperationException(
                         SymbolFormatter.format(
                                 "cannot use partitioned column %s in ORDER BY clause", symbol));
@@ -136,7 +134,7 @@ public class DocTableRelation extends AbstractTableRelation<DocTableInfo> {
             if (idx >= 0) {
                 GeneratedReference generatedReference = generatedReferences.get(idx);
                 for (Reference reference : generatedReference.referencedReferences()) {
-                    ensureNotUpdated(ci, reference.ident().columnIdent(),
+                    ensureNotUpdated(ci, reference.column(),
                         "Updating a column which is referenced in a partitioned by generated column expression is not supported");
                 }
             }

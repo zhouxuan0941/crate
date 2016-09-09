@@ -156,8 +156,8 @@ public class NodeStatsCollector implements CrateCollector {
         }
 
         @Override
-        public Void visitReference(Reference symbol, Context context) {
-            context.add(symbol.ident().columnReferenceIdent().columnIdent());
+        public Void visitReference(Reference ref, Context context) {
+            context.add(ref.column().getRoot());
             return null;
         }
     }

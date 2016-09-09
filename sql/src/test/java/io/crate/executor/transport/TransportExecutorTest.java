@@ -24,7 +24,7 @@ package io.crate.executor.transport;
 import com.google.common.collect.ImmutableList;
 import io.crate.analyze.symbol.DynamicReference;
 import io.crate.analyze.symbol.Symbol;
-import io.crate.metadata.ReferenceIdent;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.StmtCtx;
 import io.crate.metadata.TableIdent;
@@ -62,7 +62,7 @@ public class TransportExecutorTest extends BaseTransportExecutorTest {
         setup.setUpCharacters();
 
         ImmutableList<Symbol> outputs = ImmutableList.<Symbol>of(idRef, new DynamicReference(
-                new ReferenceIdent(new TableIdent(null, "characters"), "foo"), RowGranularity.DOC));
+                new TableIdent(null, "characters"), new ColumnIdent("foo"), RowGranularity.DOC));
         Planner.Context ctx = newPlannerContext();
         Plan plan = newGetNode("characters", outputs, "2", ctx.nextExecutionPhaseId());
         CollectingRowReceiver rowReceiver = new CollectingRowReceiver();

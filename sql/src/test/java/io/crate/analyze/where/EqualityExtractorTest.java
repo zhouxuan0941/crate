@@ -66,17 +66,17 @@ public class EqualityExtractorTest extends BaseAnalyzerTest {
 
 
     private List<List<Symbol>> analyzeParentX(Symbol query) {
-        return getExtractor().extractParentMatches(ImmutableList.of(Ref("x").ident().columnIdent()), query, stmtCtx);
+        return getExtractor().extractParentMatches(ImmutableList.of(Ref("x").column()), query, stmtCtx);
 
     }
 
     private List<List<Symbol>> analyzeExactX(Symbol query) {
-        return analyzeExact(query, ImmutableList.of(Ref("x").ident().columnIdent()));
+        return analyzeExact(query, ImmutableList.of(Ref("x").column()));
     }
 
 
     private List<List<Symbol>> analyzeExactXY(Symbol query) {
-        return analyzeExact(query, ImmutableList.of(Ref("x").ident().columnIdent(), Ref("y").ident().columnIdent()));
+        return analyzeExact(query, ImmutableList.of(Ref("x").column(), Ref("y").column()));
     }
 
     private List<List<Symbol>> analyzeExact(Symbol query, List<ColumnIdent> cols) {
@@ -118,7 +118,7 @@ public class EqualityExtractorTest extends BaseAnalyzerTest {
 
     private Reference Ref(String name, DataType type) {
         return new Reference(
-                new ReferenceIdent(new TableIdent("testschema", "test"), name),
+                new TableIdent("testschema", "test"), new ColumnIdent(name),
                 RowGranularity.DOC,
                 type
         );

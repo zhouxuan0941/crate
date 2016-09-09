@@ -53,7 +53,7 @@ public class NotPredicateTest extends CrateUnitTest {
         NotPredicate notPredicate = new NotPredicate();
 
         Reference name_ref = new Reference(
-                new ReferenceIdent(new TableIdent(null, "dummy"), "foo"),
+                new TableIdent(null, "dummy"), new ColumnIdent("foo"),
                 RowGranularity.DOC, DataTypes.STRING);
         Function eqName = new Function(
                 new FunctionInfo(

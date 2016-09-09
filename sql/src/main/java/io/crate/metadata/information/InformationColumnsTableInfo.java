@@ -23,7 +23,10 @@ package io.crate.metadata.information;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedMap;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.cluster.ClusterService;
@@ -45,18 +48,18 @@ public class InformationColumnsTableInfo extends InformationTableInfo {
     }
 
     public static class References {
-        public static final Reference SCHEMA_NAME = info(Columns.SCHEMA_NAME, DataTypes.STRING);
-        public static final Reference TABLE_NAME = info(Columns.TABLE_NAME, DataTypes.STRING);
-        public static final Reference COLUMN_NAME = info(Columns.COLUMN_NAME, DataTypes.STRING);
-        public static final Reference ORDINAL_POSITION = info(Columns.ORDINAL_POSITION, DataTypes.SHORT);
-        public static final Reference DATA_TYPE = info(Columns.DATA_TYPE, DataTypes.STRING);
-        public static final Reference IS_GENERATED = info(Columns.IS_GENERATED, DataTypes.BOOLEAN);
-        public static final Reference IS_NULLABLE = info(Columns.IS_NULLABLE, DataTypes.BOOLEAN);
-        public static final Reference GENERATION_EXPRESSION = info(Columns.GENERATION_EXPRESSION, DataTypes.STRING);
+        public static final Reference SCHEMA_NAME = ref(Columns.SCHEMA_NAME, DataTypes.STRING);
+        public static final Reference TABLE_NAME = ref(Columns.TABLE_NAME, DataTypes.STRING);
+        public static final Reference COLUMN_NAME = ref(Columns.COLUMN_NAME, DataTypes.STRING);
+        public static final Reference ORDINAL_POSITION = ref(Columns.ORDINAL_POSITION, DataTypes.SHORT);
+        public static final Reference DATA_TYPE = ref(Columns.DATA_TYPE, DataTypes.STRING);
+        public static final Reference IS_GENERATED = ref(Columns.IS_GENERATED, DataTypes.BOOLEAN);
+        public static final Reference IS_NULLABLE = ref(Columns.IS_NULLABLE, DataTypes.BOOLEAN);
+        public static final Reference GENERATION_EXPRESSION = ref(Columns.GENERATION_EXPRESSION, DataTypes.STRING);
     }
 
-    private static Reference info(ColumnIdent columnIdent, DataType dataType) {
-        return new Reference(new ReferenceIdent(IDENT, columnIdent), RowGranularity.DOC, dataType);
+    private static Reference ref(ColumnIdent columnIdent, DataType dataType) {
+        return new Reference(IDENT, columnIdent, RowGranularity.DOC, dataType);
     }
 
     protected InformationColumnsTableInfo(ClusterService clusterService) {

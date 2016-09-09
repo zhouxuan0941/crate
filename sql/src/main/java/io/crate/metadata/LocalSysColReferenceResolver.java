@@ -42,7 +42,7 @@ public class LocalSysColReferenceResolver implements NestedReferenceResolver {
 
     @Override
     public ReferenceImplementation<?> getImplementation(Reference ref) {
-        return expressionMap.get(ref.ident().columnIdent());
+        return expressionMap.get(ref.column());
     }
 
     public Collection<RowContextCollectorExpression> expressions() {

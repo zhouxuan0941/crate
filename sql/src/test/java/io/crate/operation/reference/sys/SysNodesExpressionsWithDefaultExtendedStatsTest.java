@@ -70,7 +70,7 @@ public class SysNodesExpressionsWithDefaultExtendedStatsTest extends CrateUnitTe
         prepare(true);
         Reference refInfo = refInfo("sys.nodes.load", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression load =
-            (io.crate.operation.reference.NestedObjectExpression) resolver.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) resolver.getChildImplementation(refInfo.column().name());
         Map<String, Object> loadValue = load.value();
         assertThat((Double) loadValue.get("1"), is(-1.0d));
         assertThat((Double) loadValue.get("5"), is(-1.0d));
@@ -82,7 +82,7 @@ public class SysNodesExpressionsWithDefaultExtendedStatsTest extends CrateUnitTe
         prepare(true);
         Reference refInfo = refInfo("sys.nodes.fs", DataTypes.STRING, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression fs = (io.crate.operation.reference.NestedObjectExpression)
-            resolver.getChildImplementation(refInfo.ident().columnIdent().name());
+            resolver.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = fs.value();
         //noinspection unchecked
@@ -100,7 +100,7 @@ public class SysNodesExpressionsWithDefaultExtendedStatsTest extends CrateUnitTe
         prepare(true);
         Reference refInfo = refInfo("sys.nodes.os", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression os = (io.crate.operation.reference.NestedObjectExpression)
-            resolver.getChildImplementation(refInfo.ident().columnIdent().name());
+            resolver.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = os.value();
 
@@ -117,7 +117,7 @@ public class SysNodesExpressionsWithDefaultExtendedStatsTest extends CrateUnitTe
     public void testFsDataOnNonDataNode() throws Exception {
         prepare(false);
         Reference refInfo = refInfo("sys.nodes.fs", DataTypes.STRING, RowGranularity.NODE, "data");
-        ColumnIdent columnIdent = refInfo.ident().columnIdent();
+        ColumnIdent columnIdent = refInfo.column();
         NestedObjectExpression fs = (NestedObjectExpression)
             resolver.getChildImplementation(columnIdent.name());
         assertThat(((Object[])fs.getChildImplementation(columnIdent.path().get(0)).value()).length, is(0));

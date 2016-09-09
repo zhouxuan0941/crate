@@ -176,12 +176,11 @@ public class BlobTableInfo implements TableInfo, ShardedTable {
 
     private void registerStaticColumns() {
         for (Tuple<String, DataType> column : staticColumns) {
-            Reference info = new Reference(new ReferenceIdent(ident(), column.v1(), null),
-                    RowGranularity.DOC, column.v2());
-            if (info.ident().isColumn()) {
+            Reference info = new Reference(ident(), new ColumnIdent(column.v1()), RowGranularity.DOC, column.v2());
+            if (info.column().isColumn()) {
                 columns.add(info);
             }
-            INFOS.put(info.ident().columnIdent(), info);
+            INFOS.put(info.column(), info);
         }
     }
 

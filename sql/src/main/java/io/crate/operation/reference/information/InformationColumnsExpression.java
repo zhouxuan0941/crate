@@ -32,8 +32,8 @@ public abstract class InformationColumnsExpression<T>
 
         @Override
         public BytesRef value() {
-            assert row.info.ident().tableIdent().schema() != null : "table schema can't be null";
-            return new BytesRef(row.info.ident().tableIdent().schema());
+            assert row.info.table().schema() != null : "table schema can't be null";
+            return new BytesRef(row.info.table().schema());
         }
     }
 
@@ -41,8 +41,8 @@ public abstract class InformationColumnsExpression<T>
 
         @Override
         public BytesRef value() {
-            assert row.info.ident().tableIdent().name() != null : "table name can't be null";
-            return new BytesRef(row.info.ident().tableIdent().name());
+            assert row.info.table().name() != null : "table name can't be null";
+            return new BytesRef(row.info.table().name());
         }
     }
 
@@ -50,8 +50,8 @@ public abstract class InformationColumnsExpression<T>
 
         @Override
         public BytesRef value() {
-            assert row.info.ident().tableIdent().name() != null : "column name name can't be null";
-            return new BytesRef(row.info.ident().columnIdent().sqlFqn());
+            assert row.info.table().name() != null : "column name name can't be null";
+            return new BytesRef(row.info.column().sqlFqn());
         }
     }
 
@@ -76,7 +76,7 @@ public abstract class InformationColumnsExpression<T>
 
         @Override
         public Boolean value() {
-            if (row.tableInfo.primaryKey().contains(row.info.ident().columnIdent())) {
+            if (row.tableInfo.primaryKey().contains(row.info.column())) {
                 return false;
             } else {
                 return row.info.isNullable();

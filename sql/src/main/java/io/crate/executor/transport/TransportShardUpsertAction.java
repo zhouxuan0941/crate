@@ -336,7 +336,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                 if (ref.granularity() == RowGranularity.DOC) {
                     // don't include values for partitions in the _source
                     // ideally columns with partition granularity shouldn't be part of the request
-                    builder.field(ref.ident().columnIdent().fqn(), value);
+                    builder.field(ref.column().fqn(), value);
                     if (ref instanceof GeneratedReference) {
                         generatedReferencesWithValue.add((GeneratedReference) ref);
                     }
@@ -474,7 +474,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
         } else {
             sourceAsMap = new LinkedHashMap<>(insertColumns.length);
             for (int i = 0; i < insertColumns.length; i++) {
-                sourceAsMap.put(insertColumns[i].ident().columnIdent().fqn(), insertValues[i]);
+                sourceAsMap.put(insertColumns[i].column().fqn(), insertValues[i]);
             }
         }
         return sourceAsMap;
@@ -498,7 +498,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
         for (GeneratedReference reference : tableInfo.generatedColumns()) {
             // partitionedBy columns cannot be updated
             if (!tableInfo.partitionedByColumns().contains(reference)) {
-                Object userSuppliedValue = updatedGeneratedColumns.get(reference.ident().columnIdent().fqn());
+                Object userSuppliedValue = updatedGeneratedColumns.get(reference.column().fqn());
                 if (validateConstraints) {
                     ConstraintsValidator.validate(userSuppliedValue, reference);
                 }
@@ -512,7 +512,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
                     if (userSuppliedValue == null) {
                         // add column & value
-                        updatedColumns.put(reference.ident().columnIdent().fqn(), generatedValue);
+                        updatedColumns.put(reference.column().fqn(), generatedValue);
                     } else if (validateConstraints && reference.valueType().compareValueTo(generatedValue, userSuppliedValue) != 0) {
                         throw new IllegalArgumentException(String.format(Locale.ENGLISH,
                                 "Given value %s for generated column does not match defined generated expression value %s",
@@ -527,8 +527,8 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                                                         Collection<String> updatedColumns) {
         for (Reference reference : referencedReferences) {
             for (String columnName : updatedColumns) {
-                if (reference.ident().columnIdent().fqn().equals(columnName)
-                    || reference.ident().columnIdent().isChildOf(ColumnIdent.fromPath(columnName))) {
+                if (reference.column().fqn().equals(columnName)
+                    || reference.column().isChildOf(ColumnIdent.fromPath(columnName))) {
                     return true;
                 }
             }
@@ -580,14 +580,14 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
         if (targetColumns != null) {
             for (Reference targetColumn : targetColumns) {
-                targetColumnsSet.add(targetColumn.ident().columnIdent().fqn());
+                targetColumnsSet.add(targetColumn.column().fqn());
             }
         }
 
         for (Reference reference : tableInfo.columns()) {
             if (!(reference instanceof GeneratedReference) && !reference.isNullable()) {
-                if (!targetColumnsSet.contains(reference.ident().columnIdent().fqn())) {
-                    columnsNotUsed.add(reference.ident().columnIdent());
+                if (!targetColumnsSet.contains(reference.column().fqn())) {
+                    columnsNotUsed.add(reference.column());
                 }
             }
         }
@@ -630,9 +630,9 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                 return super.referenceValue(reference);
             }
 
-            Object value = updatedColumnValues.get(reference.ident().columnIdent().fqn());
-            if (value == null && !reference.ident().isColumn()) {
-                value = XContentMapValues.extractValue(reference.ident().columnIdent().fqn(), updatedColumnValues);
+            Object value = updatedColumnValues.get(reference.column().fqn());
+            if (value == null && !reference.column().isColumn()) {
+                value = XContentMapValues.extractValue(reference.column().fqn(), updatedColumnValues);
             }
             return reference.valueType().value(value);
         }
@@ -648,7 +648,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                         return null;
                     }
                     return reference.valueType().value(XContentMapValues.extractValue(
-                            reference.ident().columnIdent().fqn(), getResult.sourceAsMap()));
+                            reference.column().fqn(), getResult.sourceAsMap()));
                 }
             };
         }

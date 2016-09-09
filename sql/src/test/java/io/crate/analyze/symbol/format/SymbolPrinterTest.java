@@ -146,18 +146,18 @@ public class SymbolPrinterTest extends CrateUnitTest {
 
     @Test
     public void testReference() throws Exception {
-        Reference r = new Reference(new ReferenceIdent(
+        Reference r = new Reference(
                 new TableIdent("sys", "table"),
-                new ColumnIdent("column", Arrays.asList("path", "nested"))),
+                new ColumnIdent("column", Arrays.asList("path", "nested")),
                 RowGranularity.DOC, DataTypes.STRING);
         assertPrint(r, "sys.\"table\".\"column\"['path']['nested']");
     }
 
     @Test
     public void testDocReference() throws Exception {
-        Reference r = new Reference(new ReferenceIdent(
+        Reference r = new Reference(
                 new TableIdent("doc", "table"),
-                new ColumnIdent("column", Arrays.asList("path", "nested"))),
+                new ColumnIdent("column", Arrays.asList("path", "nested")),
                 RowGranularity.DOC, DataTypes.STRING);
         assertPrint(r, "doc.\"table\".\"column\"['path']['nested']");
     }
@@ -165,16 +165,16 @@ public class SymbolPrinterTest extends CrateUnitTest {
     @Test
     public void testDynamicReference() throws Exception {
         Reference r = new DynamicReference(
-            new ReferenceIdent(new TableIdent("schema", "table"), new ColumnIdent("column", Arrays.asList("path", "nested"))),
+            new TableIdent("schema", "table"), new ColumnIdent("column", Arrays.asList("path", "nested")),
             RowGranularity.DOC);
         assertPrint(r, "schema.\"table\".\"column\"['path']['nested']");
     }
 
     @Test
     public void testReferenceEscaped() throws Exception {
-        Reference r = new Reference(new ReferenceIdent(
+        Reference r = new Reference(
                 new TableIdent("doc", "table"),
-                new ColumnIdent("colum\"n")),
+                new ColumnIdent("colum\"n"),
                 RowGranularity.DOC, DataTypes.STRING);
         assertPrint(r, "doc.\"table\".\"colum\"\"n\"");
     }

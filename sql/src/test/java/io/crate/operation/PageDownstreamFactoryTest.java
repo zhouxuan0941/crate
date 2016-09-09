@@ -70,9 +70,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.crate.testing.TestingHelpers.getFunctions;
 import static io.crate.testing.TestingHelpers.isRow;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PageDownstreamFactoryTest extends CrateUnitTest {
@@ -91,7 +89,7 @@ public class PageDownstreamFactoryTest extends CrateUnitTest {
         threadPool = new ThreadPool("testing");
         functions = getFunctions();
         referenceResolver = new GlobalReferenceResolver(
-                Collections.<ReferenceIdent, ReferenceImplementation>emptyMap());
+                Collections.<Reference, ReferenceImplementation>emptyMap());
 
         FunctionIdent minAggIdent = new FunctionIdent(MinimumAggregation.NAME, Arrays.<DataType>asList(DataTypes.DOUBLE));
         FunctionInfo minAggInfo = new FunctionInfo(minAggIdent, DataTypes.DOUBLE);

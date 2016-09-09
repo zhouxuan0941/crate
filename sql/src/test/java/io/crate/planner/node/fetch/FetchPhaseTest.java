@@ -26,8 +26,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.planner.node.ExecutionPhases;
@@ -57,8 +57,7 @@ public class FetchPhaseTest {
         tableIndices.put(new TableIdent(null, "i2"), "i2_s1");
         tableIndices.put(new TableIdent(null, "i2"), "i2_s2");
 
-        ReferenceIdent nameIdent = new ReferenceIdent(t1, "name");
-        Reference name = new Reference(nameIdent, RowGranularity.DOC, DataTypes.STRING);
+        Reference name = new Reference(t1, new ColumnIdent("name"), RowGranularity.DOC, DataTypes.STRING);
 
         FetchPhase orig = new FetchPhase(
                 1,

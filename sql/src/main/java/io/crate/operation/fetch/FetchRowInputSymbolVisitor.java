@@ -131,7 +131,7 @@ public class FetchRowInputSymbolVisitor extends BaseImplementationSymbolVisitor<
             FetchSource fs = null;
             int fetchIdx = 0;
             for (Map.Entry<TableIdent, FetchSource> entry : fetchSources.entrySet()) {
-                if (entry.getKey().equals(fetchReference.ref().ident().tableIdent())){
+                if (entry.getKey().equals(fetchReference.ref().table())){
                     fs = entry.getValue();
                     for (InputColumn col : fs.docIdCols()) {
                         if (col.equals(fetchReference.docId())){

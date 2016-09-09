@@ -67,7 +67,7 @@ public class DocIndexMetaData {
     private final ImmutableSortedSet.Builder<Reference> columnsBuilder = ImmutableSortedSet.orderedBy(new Comparator<Reference>() {
         @Override
         public int compare(Reference o1, Reference o2) {
-            return o1.ident().columnIdent().fqn().compareTo(o2.ident().columnIdent().fqn());
+            return o1.column().fqn().compareTo(o2.column().fqn());
         }
     });
 
@@ -77,7 +77,7 @@ public class DocIndexMetaData {
     private final ImmutableList.Builder<GeneratedReference> generatedColumnReferencesBuilder = ImmutableList.builder();
 
     private final Functions functions;
-    private final TableIdent ident;
+    private final TableIdent table;
     private final int numberOfShards;
     private final BytesRef numberOfReplicas;
     private final ImmutableMap<String, Object> tableParameters;
@@ -102,7 +102,7 @@ public class DocIndexMetaData {
 
     public DocIndexMetaData(Functions functions, IndexMetaData metaData, TableIdent ident) throws IOException {
         this.functions = functions;
-        this.ident = ident;
+        this.table = ident;
         this.metaData = metaData;
         this.isAlias = !metaData.getIndex().equals(ident.indexName());
         this.numberOfShards = metaData.getNumberOfShards();
@@ -169,10 +169,10 @@ public class DocIndexMetaData {
 
         // don't add it if there is a partitioned equivalent of this column
         if (partitioned || !(partitionedBy != null && partitionedBy.contains(column))) {
-            if (info.ident().isColumn()) {
+            if (info.column().isColumn()) {
                 columnsBuilder.add(info);
             }
-            referencesBuilder.put(info.ident().columnIdent(), info);
+            referencesBuilder.put(info.column(), info);
             if (info instanceof GeneratedReference) {
                 generatedColumnReferencesBuilder.add((GeneratedReference) info);
             }
@@ -188,17 +188,14 @@ public class DocIndexMetaData {
                                  @Nullable Integer treeLevels,
                                  @Nullable Double distanceErrorPct) {
         GeoReference info = new GeoReference(
-                refIdent(column),
-                tree,
-                precision,
-                treeLevels,
-                distanceErrorPct);
+            table,
+            column,
+            tree,
+            precision,
+            treeLevels,
+            distanceErrorPct);
         columnsBuilder.add(info);
         referencesBuilder.put(column, info);
-    }
-
-    private ReferenceIdent refIdent(ColumnIdent column) {
-        return new ReferenceIdent(ident, column);
     }
 
     private GeneratedReference newGeneratedColumnInfo(ColumnIdent column,
@@ -208,7 +205,7 @@ public class DocIndexMetaData {
                                                       String generatedExpression,
                                                       boolean isNotNull) {
         return new GeneratedReference(
-                refIdent(column), granularity(column), type, columnPolicy, indexType, generatedExpression, isNotNull);
+            table, column, granularity(column), type, columnPolicy, indexType, generatedExpression, isNotNull);
     }
 
     private RowGranularity granularity(ColumnIdent column) {
@@ -223,7 +220,7 @@ public class DocIndexMetaData {
                               ColumnPolicy columnPolicy,
                               Reference.IndexType indexType,
                               boolean nullable) {
-        return new Reference(refIdent(column), granularity(column), type, columnPolicy, indexType, nullable);
+        return new Reference(table, column, granularity(column), type, columnPolicy, indexType, nullable);
     }
 
     /**
@@ -349,11 +346,11 @@ public class DocIndexMetaData {
         }
     }
 
-    private IndexReference.Builder getOrCreateIndexBuilder(ColumnIdent ident) {
-        IndexReference.Builder builder = indicesBuilder.get(ident);
+    private IndexReference.Builder getOrCreateIndexBuilder(ColumnIdent column) {
+        IndexReference.Builder builder = indicesBuilder.get(column);
         if (builder == null) {
-            builder = new IndexReference.Builder(refIdent(ident));
-            indicesBuilder.put(ident, builder);
+            builder = new IndexReference.Builder(this.table, column);
+            indicesBuilder.put(column, builder);
         }
         return builder;
     }
@@ -494,7 +491,7 @@ public class DocIndexMetaData {
         columns = ImmutableList.copyOf(columnsBuilder.build());
         partitionedByColumns = partitionedByColumnsBuilder.build();
 
-        for (Tuple<ColumnIdent, Reference> sysColumn : DocSysColumns.forTable(ident)) {
+        for (Tuple<ColumnIdent, Reference> sysColumn : DocSysColumns.forTable(table)) {
             referencesBuilder.put(sysColumn.v1(), sysColumn.v2());
         }
         references = referencesBuilder.build();
@@ -569,7 +566,7 @@ public class DocIndexMetaData {
                 return new DocIndexMetaData(
                         functions,
                         IndexMetaData.builder(other.metaData).settings(this.metaData.getSettings()).build(),
-                        other.ident).build();
+                        other.table).build();
             } else if (references().size() == other.references().size() &&
                        !references().keySet().equals(other.references().keySet())) {
                 XContentHelper.update(defaultMappingMap, other.defaultMappingMap, false);
@@ -580,14 +577,14 @@ public class DocIndexMetaData {
             // other is older, just return this
             return this;
         } else {
-            throw new TableAliasSchemaException(other.ident.name());
+            throw new TableAliasSchemaException(other.table.name());
         }
     }
 
     private void updateTemplate(DocIndexMetaData md,
                                 TransportPutIndexTemplateAction transportPutIndexTemplateAction,
                                 Settings updateSettings) {
-        String templateName = PartitionName.templateName(ident.schema(), ident.name());
+        String templateName = PartitionName.templateName(table.schema(), table.name());
         PutIndexTemplateRequest request = new PutIndexTemplateRequest(templateName)
                 .mapping(Constants.DEFAULT_MAPPING_TYPE, md.defaultMappingMap)
                 .create(false)
