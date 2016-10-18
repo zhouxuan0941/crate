@@ -86,7 +86,8 @@ class UnionConsumer implements Consumer {
 
                 QuerySpec querySpec = queriedRelation.querySpec();
 
-                if (handlerNodes.equals(plannedAnalyzedRelation.resultPhase().executionNodes())) {
+                if (plannedAnalyzedRelation.resultPhase().executionNodes().isEmpty() ||
+                    handlerNodes.equals(plannedAnalyzedRelation.resultPhase().executionNodes())) {
                     mergePhases.add(null);
                 } else {
                     mergePhases.add(MergePhase.mergePhase(

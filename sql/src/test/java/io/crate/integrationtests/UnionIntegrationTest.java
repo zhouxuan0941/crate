@@ -33,15 +33,15 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 @ESIntegTestCase.ClusterScope(minNumDataNodes = 2)
-@UseJdbc
+@UseJdbc(0)
 public class UnionIntegrationTest extends SQLTransportIntegrationTest {
 
     @Test
     public void testUnionAll2Tables() {
         createColorsAndSizes();
-        execute("select * from colors " +
+        execute("select color from colors " +
                 "union all " +
-                "select * from sizes");
+                "select size from sizes");
         assertThat(Arrays.asList(response.rows()), containsInAnyOrder(new Object[]{"red"},
                                                                       new Object[]{"blue"},
                                                                       new Object[]{"green"},
@@ -52,11 +52,11 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     @Test
     public void testUnionAll3Tables() {
         createColorsAndSizes();
-        execute("select * from sizes " +
+        execute("select size from sizes " +
                 "union all " +
-                "select * from colors " +
+                "select color from colors " +
                 "union all " +
-                "select * from sizes");
+                "select size from sizes");
         assertThat(Arrays.asList(response.rows()), containsInAnyOrder(new Object[]{"small"},
                                                                       new Object[]{"large"},
                                                                       new Object[]{"red"},
@@ -69,9 +69,9 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     @Test
     public void testUnionAllWithOrderBy() {
         createColorsAndSizes();
-        execute("select * from colors " +
+        execute("select color from colors " +
                 "union all " +
-                "select * from sizes " +
+                "select size from sizes " +
                 "order by 1");
         assertThat(TestingHelpers.printedTable(response.rows()), is("blue\n" +
                                                                     "green\n" +
@@ -81,11 +81,51 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     }
 
     @Test
+    public void testUnionAllWithPrimaryKeys() {
+        createColorsAndSizes();
+        execute("select color from colors where id = 1 " +
+                "union all " +
+                "select size from sizes where id = 1 " +
+                "order by 1");
+        assertThat(TestingHelpers.printedTable(response.rows()), is("red\nsmall\n"));
+    }
+
+    @Test
+    public void testUnionAllWithPartitionedTables() {
+        createColorsAndSizesPartitioned();
+        execute("select color from colors where id = 1 " +
+                "union all " +
+                "select size from sizes where size = 'small' " +
+                "order by 1");
+        assertThat(TestingHelpers.printedTable(response.rows()), is("red\nsmall\n"));
+    }
+
+    @Test
+    public void testUnionAllWithGlobalAggregation() {
+        createColorsAndSizes();
+        execute("select count(*) from colors " +
+                "union all " +
+                "select count(*) from sizes " +
+                "order by 1");
+        assertThat(TestingHelpers.printedTable(response.rows()), is("2\n3\n"));
+    }
+
+    @Test
+    public void testUnionAllWithGroupBy() {
+        createColorsAndSizes();
+        execute("select count(id), color from colors group by color " +
+                "union all " +
+                "select count(id), size from sizes group by size " +
+                "order by 2");
+        assertThat(TestingHelpers.printedTable(response.rows()), is("red\nsmall\n"));
+    }
+
+    @Test
     public void testUnionAllWithSubSelect() {
         createColorsAndSizes();
-        execute("select * from (select name from sizes order by name limit 2) a " +
+        execute("select * from (select color from colors order by id limit 2) a " +
                 "union all " +
-                "select * from (select name from sizes order by name limit 1) b " +
+                "select * from (select size from sizes order by size limit 1) b " +
                 "order by 1 " +
                 "limit 10 offset 2");
         assertThat(TestingHelpers.printedTable(response.rows()), is("small\n"));
@@ -94,9 +134,9 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     @Test
     public void testUnionAllWithJoin() throws Exception {
         createColorsAndSizes();
-        execute("select colors.name from sizes, colors " +
+        execute("select colors.color from sizes, colors " +
                 "union all " +
-                "select * from sizes");
+                "select size from sizes");
         assertThat(Arrays.asList(response.rows()), containsInAnyOrder(new Object[]{"small"},
                                                                       new Object[]{"large"},
                                                                       new Object[]{"red"},
@@ -108,18 +148,35 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     }
 
     private void createColorsAndSizes() {
-        execute("create table colors (name string) ");
-        execute("create table sizes (name string) ");
+        execute("create table colors (id integer primary key, color string)");
+        execute("create table sizes (id integer primary key, size string)");
         ensureYellow();
 
-        execute("insert into colors (name) values (?)", new Object[][]{
-            new Object[]{"red"},
-            new Object[]{"blue"},
-            new Object[]{"green"}
+        execute("insert into colors (id, color) values (?, ?)", new Object[][]{
+            new Object[]{1, "red"},
+            new Object[]{2, "blue"},
+            new Object[]{3, "green"}
         });
-        execute("insert into sizes (name) values (?)", new Object[][]{
-            new Object[]{"small"},
-            new Object[]{"large"},
+        execute("insert into sizes (id, size) values (?, ?)", new Object[][]{
+            new Object[]{1, "small"},
+            new Object[]{2, "large"},
+        });
+        execute("refresh table colors, sizes");
+    }
+
+    private void createColorsAndSizesPartitioned() {
+        execute("create table colors (id integer primary key, color string) partitioned by (id)");
+        execute("create table sizes (id integer primary key, size string primary key) partitioned by (size)");
+        ensureYellow();
+
+        execute("insert into colors (id, color) values (?, ?)", new Object[][]{
+            new Object[]{1, "red"},
+            new Object[]{2, "blue"},
+            new Object[]{3, "green"}
+        });
+        execute("insert into sizes (id, size) values (?, ?)", new Object[][]{
+            new Object[]{1, "small"},
+            new Object[]{2, "large"},
         });
         execute("refresh table colors, sizes");
     }

@@ -21,6 +21,7 @@
 
 package io.crate.planner.consumer;
 
+import com.google.common.collect.Sets;
 import io.crate.analyze.QuerySpec;
 import io.crate.analyze.relations.AnalyzedRelation;
 import io.crate.analyze.relations.PlannedAnalyzedRelation;
@@ -75,24 +76,26 @@ public class CountConsumer implements Consumer {
                 return new NoopPlannedAnalyzedRelation(table, context.plannerContext().jobId());
             }
 
-            TableInfo tableInfo = table.tableRelation().tableInfo();
-            Routing routing = context.plannerContext().allocateRouting(tableInfo, querySpec.where(), null);
             Planner.Context plannerContext = context.plannerContext();
-            CountPhase countNode = new CountPhase(
+            String localNodeId = plannerContext.clusterService().state().nodes().localNodeId();
+            TableInfo tableInfo = table.tableRelation().tableInfo();
+            Routing routing = plannerContext.allocateRouting(tableInfo, querySpec.where(), null);
+            CountPhase countPhase = new CountPhase(
                 plannerContext.nextExecutionPhaseId(),
                 routing,
                 querySpec.where(),
                 DistributionInfo.DEFAULT_BROADCAST);
-            MergePhase mergeNode = new MergePhase(
+            MergePhase mergePhase = new MergePhase(
                 plannerContext.jobId(),
                 plannerContext.nextExecutionPhaseId(),
                 "count-merge",
-                countNode.executionNodes().size(),
+                countPhase.executionNodes().size(),
                 Collections.singletonList(DataTypes.LONG),
                 Collections.<Projection>singletonList(MergeCountProjection.INSTANCE),
                 DistributionInfo.DEFAULT_SAME_NODE
             );
-            return new CountPlan(countNode, mergeNode, context.plannerContext().jobId());
+            mergePhase.executionNodes(Sets.newHashSet(localNodeId));
+            return new CountPlan(countPhase, mergePhase, context.plannerContext().jobId());
         }
 
         private boolean hasOnlyGlobalCount(List<Symbol> symbols) {

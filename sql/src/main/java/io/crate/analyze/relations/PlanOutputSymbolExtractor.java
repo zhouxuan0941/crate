@@ -27,6 +27,7 @@ import io.crate.analyze.symbol.Symbol;
 import io.crate.planner.Plan;
 import io.crate.planner.PlanVisitor;
 import io.crate.planner.node.dql.CollectAndMerge;
+import io.crate.planner.node.dql.CountPlan;
 import io.crate.planner.node.dql.join.NestedLoop;
 
 import java.util.List;
@@ -55,6 +56,11 @@ public class PlanOutputSymbolExtractor  {
         @Override
         public List<? extends Symbol> visitNestedLoop(NestedLoop plan, Void context) {
             return Iterables.getLast(plan.nestedLoopPhase().projections()).outputs();
+        }
+
+        @Override
+        public List<? extends Symbol> visitCountPlan(CountPlan countPlan, Void context) {
+            return Iterables.getLast(countPlan.mergeNode().projections()).outputs();
         }
     }
 }

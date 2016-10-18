@@ -23,10 +23,10 @@
 package io.crate.planner.projection;
 
 import com.google.common.collect.ImmutableList;
+import io.crate.analyze.symbol.Function;
 import io.crate.analyze.symbol.Symbol;
-import io.crate.analyze.symbol.Value;
 import io.crate.metadata.RowGranularity;
-import io.crate.types.DataTypes;
+import io.crate.operation.aggregation.impl.CountAggregation;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 
@@ -45,7 +45,7 @@ public class MergeCountProjection extends Projection {
     };
 
     protected final static List<Symbol> OUTPUTS = ImmutableList.<Symbol>of(
-        new Value(DataTypes.LONG)  // number of rows updated
+        new Function(CountAggregation.COUNT_STAR_FUNCTION, ImmutableList.<Symbol>of())
     );
 
     private MergeCountProjection() {
