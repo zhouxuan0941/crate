@@ -117,7 +117,11 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
                 "union all " +
                 "select count(id), size from sizes group by size " +
                 "order by 2");
-        assertThat(TestingHelpers.printedTable(response.rows()), is("red\nsmall\n"));
+        assertThat(TestingHelpers.printedTable(response.rows()), is("1| blue\n" +
+                                                                    "1| green\n" +
+                                                                    "1| large\n" +
+                                                                    "1| red\n" +
+                                                                    "1| small\n"));
     }
 
     @Test
@@ -128,7 +132,7 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
                 "select * from (select size from sizes order by size limit 1) b " +
                 "order by 1 " +
                 "limit 10 offset 2");
-        assertThat(TestingHelpers.printedTable(response.rows()), is("small\n"));
+        assertThat(TestingHelpers.printedTable(response.rows()), is("large\n"));
     }
 
     @Test

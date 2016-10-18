@@ -24,6 +24,7 @@ package io.crate.planner.consumer;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import io.crate.analyze.OrderBy;
 import io.crate.analyze.QueriedTable;
 import io.crate.analyze.QueriedTableRelation;
@@ -117,6 +118,7 @@ public class QueryAndFetchConsumer implements Consumer {
             MergePhase mergeNode = null;
             Optional<OrderBy> orderBy = querySpec.orderBy();
             Planner.Context plannerContext = context.plannerContext();
+            String localNodeId = plannerContext.clusterService().state().nodes().localNodeId();
 
             Limits limits = plannerContext.getLimits(context.isRoot(), querySpec);
             if (limits.hasLimit() || orderBy.isPresent()) {
@@ -165,7 +167,7 @@ public class QueryAndFetchConsumer implements Consumer {
                     }};
                     mergeNode = MergePhase.mergePhase(
                         context.plannerContext(),
-                        ImmutableSet.<String>of(),
+                        ImmutableSet.<String>of(localNodeId),
                         collectPhase.executionNodes().size(),
                         orderBy.orNull(),
                         orderBy.isPresent() ? InputColumn.fromSymbols(orderBy.get().orderBySymbols(), toCollect) : null,
@@ -188,6 +190,7 @@ public class QueryAndFetchConsumer implements Consumer {
                         collectPhase.executionNodes().size(),
                         collectPhase.outputTypes()
                     );
+                    mergeNode.executionNodes(Sets.newHashSet(localNodeId));
                 }
             }
 

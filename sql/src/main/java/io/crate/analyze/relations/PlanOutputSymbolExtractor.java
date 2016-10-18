@@ -28,7 +28,9 @@ import io.crate.planner.Plan;
 import io.crate.planner.PlanVisitor;
 import io.crate.planner.node.dql.CollectAndMerge;
 import io.crate.planner.node.dql.CountPlan;
+import io.crate.planner.node.dql.DistributedGroupBy;
 import io.crate.planner.node.dql.join.NestedLoop;
+import io.crate.planner.projection.Projection;
 
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +52,10 @@ public class PlanOutputSymbolExtractor  {
 
         @Override
         public List<? extends Symbol> visitCollectAndMerge(CollectAndMerge plan, Void context) {
+            List<Projection> projections = plan.localMerge().projections();
+            if (!projections.isEmpty()) {
+                return Iterables.getLast(projections).outputs();
+            }
             return plan.collectPhase().toCollect();
         }
 
@@ -60,7 +66,14 @@ public class PlanOutputSymbolExtractor  {
 
         @Override
         public List<? extends Symbol> visitCountPlan(CountPlan countPlan, Void context) {
+            assert countPlan.mergePhase() != null : "expecting mergePhase of CountPlan plan to be set";
             return Iterables.getLast(countPlan.mergePhase().projections()).outputs();
+        }
+
+        @Override
+        public List<? extends Symbol> visitDistributedGroupBy(DistributedGroupBy plan, Void context) {
+            assert plan.localMergePhase() != null : "expecting localMergePhase of DistributedGroupBy plan to be set";
+            return Iterables.getLast(plan.localMergePhase().projections()).outputs();
         }
     }
 }

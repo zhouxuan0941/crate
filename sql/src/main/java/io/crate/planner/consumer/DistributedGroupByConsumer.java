@@ -150,8 +150,7 @@ class DistributedGroupByConsumer implements Consumer {
             }
 
             Limits limits = plannerContext.getLimits(context.isRoot(), querySpec);
-            boolean isRootRelation = context.rootRelation() == table;
-            if (isRootRelation) {
+            if (context.isRoot()) {
                 reducerProjections.add(ProjectionBuilder.topNProjection(
                     collectOutputs,
                     querySpec.orderBy().orNull(),
@@ -174,7 +173,7 @@ class DistributedGroupByConsumer implements Consumer {
 
             MergePhase localMergeNode = null;
             String localNodeId = plannerContext.clusterService().state().nodes().localNodeId();
-            if (isRootRelation) {
+            if (context.isRoot()) {
                 TopNProjection topN = ProjectionBuilder.topNProjection(
                     querySpec.outputs(),
                     querySpec.orderBy().orNull(),

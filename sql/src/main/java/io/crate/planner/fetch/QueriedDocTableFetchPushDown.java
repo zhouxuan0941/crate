@@ -93,7 +93,7 @@ class QueriedDocTableFetchPushDown {
 
     @Nullable
     QueriedDocTable pushDown() {
-        if (!querySpec.groupBy().isPresent() && !querySpec.having().isPresent() && !querySpec.hasAggregates()) {
+        if (querySpec.groupBy().isPresent() || querySpec.having().isPresent() || querySpec.hasAggregates()) {
             return null;
         }
 

@@ -26,7 +26,6 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.crate.analyze.OrderBy;
-import io.crate.analyze.QuerySpec;
 import io.crate.analyze.UnionSelect;
 import io.crate.analyze.relations.AnalyzedRelation;
 import io.crate.analyze.relations.PlanOutputSymbolExtractor;
@@ -35,7 +34,9 @@ import io.crate.analyze.relations.QueriedRelation;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.planner.Limits;
 import io.crate.planner.Plan;
-import io.crate.planner.node.dql.*;
+import io.crate.planner.node.dql.MergePhase;
+import io.crate.planner.node.dql.UnionPhase;
+import io.crate.planner.node.dql.UnionPlan;
 import io.crate.planner.projection.Projection;
 import io.crate.planner.projection.TopNProjection;
 import io.crate.planner.projection.builder.ProjectionBuilder;
@@ -49,8 +50,8 @@ class UnionConsumer implements Consumer {
 
     private final Visitor visitor;
 
-    UnionConsumer(ClusterService clusterService) {
-        visitor = new Visitor(clusterService);
+    UnionConsumer(ConsumingPlanner consumingPlanner, ClusterService clusterService) {
+        visitor = new Visitor(consumingPlanner, clusterService);
     }
 
     @Override
@@ -61,9 +62,11 @@ class UnionConsumer implements Consumer {
     private static class Visitor extends RelationPlanningVisitor {
 
         private final ClusterService clusterService;
+        private final ConsumingPlanner consumingPlanner;
 
-        public Visitor(ClusterService clusterService) {
+        public Visitor(ConsumingPlanner consumingPlanner, ClusterService clusterService) {
             this.clusterService = clusterService;
+            this.consumingPlanner = consumingPlanner;
         }
 
         @Override
@@ -77,13 +80,15 @@ class UnionConsumer implements Consumer {
 
             for (QueriedRelation queriedRelation : unionSelect.relations()) {
                 PlannedAnalyzedRelation plannedAnalyzedRelation =
-                    context.plannerContext().planSubRelation(queriedRelation, context);
+                    consumingPlanner.plan(queriedRelation, context);
 
                 Plan plan = plannedAnalyzedRelation.plan();
                 subPlans.add(plan);
 
                 outputs = PlanOutputSymbolExtractor.extract(plan);
 
+                mergePhases.add(null);
+                /*
                 QuerySpec querySpec = queriedRelation.querySpec();
 
                 if (plannedAnalyzedRelation.resultPhase().executionNodes().isEmpty() ||
@@ -100,6 +105,7 @@ class UnionConsumer implements Consumer {
                         outputs,
                         null));
                 }
+                */
             }
 
             Optional<OrderBy> rootOrderBy = unionSelect.querySpec().orderBy();
