@@ -93,7 +93,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
         assertEquals(DataTypes.LONG, mergeNode.outputTypes().get(0));
         assertEquals(DataTypes.STRING, mergeNode.outputTypes().get(1));
 
-        MergePhase localMerge = distributedGroupBy.localMergeNode();
+        MergePhase localMerge = distributedGroupBy.localMergePhase();
 
         assertThat(localMerge.numUpstreams(), is(2));
         assertThat(localMerge.executionNodes().size(), is(1));
@@ -125,7 +125,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
         assertThat(topN.offset(), is(0));
 
         // local merge
-        MergePhase mergePhase = distributedGroupBy.localMergeNode();
+        MergePhase mergePhase = distributedGroupBy.localMergePhase();
         assertThat(mergePhase.projections().get(0), instanceOf(TopNProjection.class));
         topN = (TopNProjection) mergePhase.projections().get(0);
         assertThat(topN.limit(), is(1));
@@ -225,7 +225,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
 
         // sort is on handler because there is no limit/offset
         // handler
-        MergePhase mergeNode = distributedGroupBy.localMergeNode();
+        MergePhase mergeNode = distributedGroupBy.localMergePhase();
         assertThat(mergeNode.projections().size(), is(1));
 
         TopNProjection topNProjection = (TopNProjection) mergeNode.projections().get(0);
@@ -294,7 +294,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
 
 
         // handler
-        MergePhase localMergeNode = distributedGroupBy.localMergeNode();
+        MergePhase localMergeNode = distributedGroupBy.localMergePhase();
         assertThat(localMergeNode.projections().size(), is(1));
         Projection localTopN = localMergeNode.projections().get(0);
         assertThat(localTopN, instanceOf(TopNProjection.class));
@@ -343,7 +343,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
         assertThat(topN.outputs().get(1).valueType(), Is.<DataType>is(DataTypes.STRING));
 
 
-        MergePhase localMerge = planNode.localMergeNode();
+        MergePhase localMerge = planNode.localMergePhase();
         // topN projection
         //      outputs: count(*), name
         topN = (TopNProjection) localMerge.projections().get(0);
@@ -372,7 +372,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
         assertThat(mergeNode.outputTypes().get(0), equalTo((DataType) DataTypes.LONG));
         assertThat(mergeNode.outputTypes().get(1), equalTo((DataType) DataTypes.STRING));
 
-        mergeNode = planNode.localMergeNode();
+        mergeNode = planNode.localMergePhase();
 
         assertThat(mergeNode.outputTypes().get(0), equalTo((DataType) DataTypes.LONG));
         assertThat(mergeNode.outputTypes().get(1), equalTo((DataType) DataTypes.STRING));
@@ -402,7 +402,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
         assertThat(((InputColumn) filterProjection.outputs().get(0)).index(), is(0));
         assertThat(((InputColumn) filterProjection.outputs().get(1)).index(), is(1));
 
-        MergePhase localMerge = planNode.localMergeNode();
+        MergePhase localMerge = planNode.localMergePhase();
         // topN projection
         //      outputs: name, count(*)
         TopNProjection topN = (TopNProjection) localMerge.projections().get(0);
@@ -442,7 +442,7 @@ public class GroupByPlannerTest extends CrateUnitTest {
         assertThat(((InputColumn) topN.outputs().get(1)).index(), is(1));
 
 
-        MergePhase localMerge = planNode.localMergeNode();
+        MergePhase localMerge = planNode.localMergePhase();
 
         // topN projection
         //      outputs: name, count(*)

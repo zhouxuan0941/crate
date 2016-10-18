@@ -444,17 +444,18 @@ public class TransportExecutor implements Executor {
         }
 
         @Override
-        public Void visitInsertByQuery(InsertFromSubQuery node, NodeOperationTreeContext context) {
-            if (node.handlerMergeNode().isPresent()) {
-                context.addPhase(node.handlerMergeNode().get());
+        public Void visitInsertByQuery(InsertFromSubQuery plan, NodeOperationTreeContext context) {
+            com.google.common.base.Optional<MergePhase> mergePhase = plan.handlerMergePhase();
+            if (mergePhase.isPresent()) {
+                context.addPhase(mergePhase.get());
             }
-            process(node.innerPlan(), context);
+            process(plan.innerPlan(), context);
             return null;
         }
 
         @Override
         public Void visitDistributedGroupBy(DistributedGroupBy node, NodeOperationTreeContext context) {
-            context.addPhase(node.localMergeNode());
+            context.addPhase(node.localMergePhase());
             context.addPhase(node.reducerMergeNode());
             context.addCollectExecutionPhase(node.collectNode());
             return null;
@@ -462,7 +463,7 @@ public class TransportExecutor implements Executor {
 
         @Override
         public Void visitCountPlan(CountPlan plan, NodeOperationTreeContext context) {
-            context.addPhase(plan.mergeNode());
+            context.addPhase(plan.mergePhase());
             context.addCollectExecutionPhase(plan.countNode());
             return null;
         }
@@ -515,8 +516,9 @@ public class TransportExecutor implements Executor {
 
         @Override
         public Void visitCopyTo(CopyTo plan, NodeOperationTreeContext context) {
-            if (plan.handlerMergeNode().isPresent()) {
-                context.addPhase(plan.handlerMergeNode().get());
+            com.google.common.base.Optional<MergePhase> mergePhase = plan.handlerMergePhase();
+            if (mergePhase.isPresent()) {
+                context.addPhase(mergePhase.get());
             }
             process(plan.innerPlan(), context);
             return null;

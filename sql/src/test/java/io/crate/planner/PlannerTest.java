@@ -9,7 +9,6 @@ import io.crate.analyze.WhereClause;
 import io.crate.analyze.relations.PlannedAnalyzedRelation;
 import io.crate.analyze.symbol.*;
 import io.crate.exceptions.UnsupportedFeatureException;
-import io.crate.exceptions.ValidationException;
 import io.crate.exceptions.VersionInvalidException;
 import io.crate.metadata.*;
 import io.crate.metadata.doc.DocSysColumns;
@@ -382,7 +381,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(topNProjection.limit(), is(TopN.NO_LIMIT));
         assertThat(topNProjection.offset(), is(0));
 
-        MergePhase mergeNode = planNode.localMergeNode();
+        MergePhase mergeNode = planNode.localMergePhase();
         assertThat(mergeNode.projections().size(), is(1));
         assertThat(mergeNode.projections().get(0), instanceOf(TopNProjection.class));
     }
@@ -550,8 +549,8 @@ public class PlannerTest extends AbstractPlannerTest {
 
         assertThat(plan.countNode().whereClause(), equalTo(WhereClause.MATCH_ALL));
 
-        assertThat(plan.mergeNode().projections().size(), is(1));
-        assertThat(plan.mergeNode().projections().get(0), instanceOf(MergeCountProjection.class));
+        assertThat(plan.mergePhase().projections().size(), is(1));
+        assertThat(plan.mergePhase().projections().get(0), instanceOf(MergeCountProjection.class));
     }
 
     @Test
@@ -578,7 +577,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(mergeNode.projections().get(0), instanceOf(GroupProjection.class));
 
         assertThat(mergeNode.projections().get(1), instanceOf(ColumnIndexWriterProjection.class));
-        assertThat(planNode.handlerMergeNode().isPresent(), is(false));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(false));
     }
 
     @Test
@@ -597,7 +596,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(topN.limit(), is(TopN.NO_LIMIT));
 
         assertThat(mergeNode.projections().get(2), instanceOf(ColumnIndexWriterProjection.class));
-        assertThat(planNode.handlerMergeNode().isPresent(), is(false));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(false));
     }
 
     @Test
@@ -629,7 +628,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(projection.tableIdent().fqn(), is("doc.users"));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
 
-        MergePhase localMergeNode = planNode.handlerMergeNode().get();
+        MergePhase localMergeNode = planNode.handlerMergePhase().get();
         assertThat(localMergeNode.projections().size(), is(1));
         assertThat(localMergeNode.projections().get(0), instanceOf(MergeCountProjection.class));
         assertThat(localMergeNode.finalProjection().get().outputs().size(), is(1));
@@ -658,7 +657,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(projection.clusteredByIdent().fqn(), is("id"));
         assertThat(projection.tableIdent().fqn(), is("doc.parted"));
 
-        MergePhase localMergeNode = planNode.handlerMergeNode().get();
+        MergePhase localMergeNode = planNode.handlerMergePhase().get();
 
         assertThat(localMergeNode.projections().size(), is(1));
         assertThat(localMergeNode.projections().get(0), instanceOf(MergeCountProjection.class));
@@ -694,7 +693,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(projection.tableIdent().fqn(), is("doc.users"));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
 
-        assertThat(planNode.handlerMergeNode().isPresent(), is(false));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(false));
     }
 
     @Test
@@ -718,7 +717,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(((InputColumn) projection.clusteredBy()).index(), is(1));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
 
-        assertThat(planNode.handlerMergeNode().isPresent(), is(true));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(true));
     }
 
     @Test
@@ -743,7 +742,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(((InputColumn) projection.clusteredBy()).index(), is(0));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
 
-        assertThat(planNode.handlerMergeNode().isPresent(), is(false));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(false));
     }
 
     @Test
@@ -780,7 +779,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(collectPhase.projections().get(0), instanceOf(ColumnIndexWriterProjection.class));
         assertNull(queryAndFetch.localMerge());
 
-        MergePhase localMergeNode = planNode.handlerMergeNode().get();
+        MergePhase localMergeNode = planNode.handlerMergePhase().get();
 
         assertThat(localMergeNode.projections().size(), is(1));
         assertThat(localMergeNode.projections().get(0), instanceOf(MergeCountProjection.class));
@@ -809,7 +808,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(columnIndexWriterProjection.columnReferences(), contains(isReference("id"), isReference("name")));
 
 
-        assertThat(planNode.handlerMergeNode().isPresent(), is(false));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(false));
     }
 
     @Test
@@ -842,7 +841,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(columnIndexWriterProjection.columnReferences(), contains(isReference("id"), isReference("name")));
 
 
-        assertThat(planNode.handlerMergeNode().isPresent(), is(false));
+        assertThat(planNode.handlerMergePhase().isPresent(), is(false));
     }
 
     @Test
@@ -908,7 +907,7 @@ public class PlannerTest extends AbstractPlannerTest {
         assertThat(inputColumn.index(), is(0));
         inputColumn = (InputColumn) filterProjection.outputs().get(1);
         assertThat(inputColumn.index(), is(1));
-        MergePhase localMergeNode = planNode.handlerMergeNode().get();
+        MergePhase localMergeNode = planNode.handlerMergePhase().get();
 
         assertThat(localMergeNode.projections().size(), is(1));
         assertThat(localMergeNode.projections().get(0), instanceOf(MergeCountProjection.class));

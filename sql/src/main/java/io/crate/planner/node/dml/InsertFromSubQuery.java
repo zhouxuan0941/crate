@@ -62,7 +62,7 @@ public class InsertFromSubQuery extends PlanAndPlannedAnalyzedRelation {
         return innerPlan;
     }
 
-    public Optional<MergePhase> handlerMergeNode() {
+    public Optional<MergePhase> handlerMergePhase() {
         return handlerMergeNode;
     }
 

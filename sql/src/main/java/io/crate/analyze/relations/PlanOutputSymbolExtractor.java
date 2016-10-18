@@ -60,7 +60,7 @@ public class PlanOutputSymbolExtractor  {
 
         @Override
         public List<? extends Symbol> visitCountPlan(CountPlan countPlan, Void context) {
-            return Iterables.getLast(countPlan.mergeNode().projections()).outputs();
+            return Iterables.getLast(countPlan.mergePhase().projections()).outputs();
         }
     }
 }

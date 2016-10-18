@@ -230,8 +230,8 @@ public class PlanPrinter {
             ImmutableMap.Builder<String, Object> builder = visitPlan(node, context);
             builder.put("innerPlan", process(node.innerPlan(), context).build());
 
-            if (node.handlerMergeNode().isPresent()) {
-                builder.put("localMerge", phaseMap(node.handlerMergeNode().get()));
+            if (node.handlerMergePhase().isPresent()) {
+                builder.put("localMerge", phaseMap(node.handlerMergePhase().get()));
             }
             return builder;
         }

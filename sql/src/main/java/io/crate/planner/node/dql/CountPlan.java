@@ -44,7 +44,7 @@ public class CountPlan extends PlanAndPlannedAnalyzedRelation {
         return countNode;
     }
 
-    public MergePhase mergeNode() {
+    public MergePhase mergePhase() {
         return mergeNode;
     }
 

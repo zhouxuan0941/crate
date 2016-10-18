@@ -37,12 +37,12 @@ public class CopyTo extends PlanAndPlannedAnalyzedRelation {
 
     private final UUID id;
     private final Plan innerPlan;
-    private final Optional<MergePhase> handlerMergeNode;
+    private final Optional<MergePhase> handlerMergePhase;
 
-    public CopyTo(UUID id, Plan innerPlan, @Nullable MergePhase handlerMergeNode) {
+    public CopyTo(UUID id, Plan innerPlan, @Nullable MergePhase handlerMergePhase) {
         this.id = id;
         this.innerPlan = innerPlan;
-        this.handlerMergeNode = Optional.fromNullable(handlerMergeNode);
+        this.handlerMergePhase = Optional.fromNullable(handlerMergePhase);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class CopyTo extends PlanAndPlannedAnalyzedRelation {
         return innerPlan;
     }
 
-    public Optional<MergePhase> handlerMergeNode() {
-        return handlerMergeNode;
+    public Optional<MergePhase> handlerMergePhase() {
+        return handlerMergePhase;
     }
 
     @Override

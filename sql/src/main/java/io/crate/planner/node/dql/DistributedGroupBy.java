@@ -61,7 +61,7 @@ public class DistributedGroupBy extends PlanAndPlannedAnalyzedRelation {
         return reducerMergeNode;
     }
 
-    public MergePhase localMergeNode() {
+    public MergePhase localMergePhase() {
         return localMergeNode;
     }
 
