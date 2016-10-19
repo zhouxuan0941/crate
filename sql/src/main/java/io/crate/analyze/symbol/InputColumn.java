@@ -45,6 +45,8 @@ public class InputColumn extends Symbol implements Comparable<InputColumn> {
         }
     };
 
+    private static final IndexShifter INDEX_SHIFTER = new IndexShifter();
+
     private DataType dataType;
 
     private int index;
@@ -80,24 +82,14 @@ public class InputColumn extends Symbol implements Comparable<InputColumn> {
     /**
      * Shifts the index at all given input columns right by 1
      */
-    public static void shiftRight(@Nullable List<Symbol> symbols) {
+    public static void shiftRight(@Nullable Collection<Symbol> symbols) {
         if (symbols == null) {
             return;
         }
+        IndexShifterContext context = new IndexShifterContext();
         for (Symbol symbol : symbols) {
-            shiftRight(symbol);
+            INDEX_SHIFTER.process(symbol, context);
         }
-    }
-
-    /**
-     * Shifts the index right by 1
-     */
-    public static void shiftRight(Symbol symbol) {
-        if (symbol instanceof FetchReference) {
-            symbol = ((FetchReference) symbol).docId();
-        }
-        assert symbol instanceof InputColumn : "expecting symbol to be an InputColumn";
-        ((InputColumn) symbol).index += 1;
     }
 
     /**
@@ -180,5 +172,41 @@ public class InputColumn extends Symbol implements Comparable<InputColumn> {
     @Override
     public int hashCode() {
         return index;
+    }
+
+
+    private static class IndexShifterContext {
+        private List<InputColumn> alreadyShifted = new ArrayList<>();
+    }
+
+    /**
+     * Shift all (nested) InputColumn indices right by one.
+     * It will recognize already shifted ones.
+     */
+    private static class IndexShifter extends SymbolVisitor<IndexShifterContext, Void> {
+
+        @Override
+        public Void visitInputColumn(InputColumn inputColumn, IndexShifterContext context) {
+            if (!context.alreadyShifted.contains(inputColumn)) {
+                inputColumn.index += 1;
+                context.alreadyShifted.add(inputColumn);
+            }
+            return null;
+        }
+
+        @Override
+        public Void visitFetchReference(FetchReference fetchReference, IndexShifterContext context) {
+            process(fetchReference.docId(), context);
+            return null;
+        }
+
+        @Override
+        public Void visitFunction(Function function, IndexShifterContext context) {
+            for (Symbol symbol : function.arguments()) {
+                process(symbol, context);
+            }
+
+            return null;
+        }
     }
 }

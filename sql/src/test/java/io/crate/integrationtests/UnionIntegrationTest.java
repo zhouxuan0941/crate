@@ -39,14 +39,14 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     @Test
     public void testUnionAll2Tables() {
         createColorsAndSizes();
-        execute("select color from colors " +
+        execute("select id, color from colors " +
                 "union all " +
-                "select size from sizes");
-        assertThat(Arrays.asList(response.rows()), containsInAnyOrder(new Object[]{"red"},
-                                                                      new Object[]{"blue"},
-                                                                      new Object[]{"green"},
-                                                                      new Object[]{"small"},
-                                                                      new Object[]{"large"}));
+                "select id, size from sizes");
+        assertThat(Arrays.asList(response.rows()), containsInAnyOrder(new Object[]{1, "red"},
+                                                                      new Object[]{2, "blue"},
+                                                                      new Object[]{3, "green"},
+                                                                      new Object[]{1, "small"},
+                                                                      new Object[]{2, "large"}));
     }
 
     @Test
