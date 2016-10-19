@@ -116,7 +116,14 @@ public class TopNProjection extends Projection {
         InputColumn.shiftRight(outputs);
         outputs.add(0, symbol);
 
-        InputColumn.shiftRight(orderBy);
+        if (orderBy != null) {
+            for (Symbol orderBySymbol : orderBy) {
+                // if the orderBy symbol refers to the output symbols, its already shifted
+                if (!outputs.contains(orderBySymbol)) {
+                    InputColumn.shiftRight(orderBySymbol);
+                }
+            }
+        }
     }
 
     @Override

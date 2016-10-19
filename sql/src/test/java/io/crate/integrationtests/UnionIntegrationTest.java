@@ -127,12 +127,12 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     @Test
     public void testUnionAllWithSubSelect() {
         createColorsAndSizes();
-        execute("select * from (select color from colors order by id limit 2) a " +
+        execute("select color from (select * from colors order by id limit 2) a " +
                 "union all " +
-                "select * from (select size from sizes order by size limit 1) b " +
+                "select size from (select * from sizes order by size limit 1) b " +
                 "order by 1 " +
                 "limit 10 offset 2");
-        assertThat(TestingHelpers.printedTable(response.rows()), is("large\n"));
+        assertThat(TestingHelpers.printedTable(response.rows()), is("small\n"));
     }
 
     @Test

@@ -22,6 +22,7 @@ package io.crate.planner.consumer;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 import io.crate.analyze.HavingClause;
 import io.crate.analyze.QueriedTable;
 import io.crate.analyze.QueriedTableRelation;
@@ -37,6 +38,7 @@ import io.crate.metadata.RowGranularity;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.operation.projectors.TopN;
 import io.crate.planner.Limits;
+import io.crate.planner.Planner;
 import io.crate.planner.node.NoopPlannedAnalyzedRelation;
 import io.crate.planner.node.dql.CollectAndMerge;
 import io.crate.planner.node.dql.GroupByConsumer;
@@ -116,6 +118,7 @@ class NonDistributedGroupByConsumer implements Consumer {
 
             ProjectionBuilder projectionBuilder = new ProjectionBuilder(functions, table.querySpec());
             SplitPoints splitPoints = projectionBuilder.getSplitPoints();
+            Planner.Context plannerContext = context.plannerContext();
 
             // mapper / collect
             GroupProjection groupProjection = projectionBuilder.groupProjection(
@@ -127,7 +130,7 @@ class NonDistributedGroupByConsumer implements Consumer {
             groupProjection.setRequiredGranularity(groupProjectionGranularity);
 
             RoutedCollectPhase collectPhase = RoutedCollectPhase.forQueriedTable(
-                context.plannerContext(),
+                plannerContext,
                 table,
                 splitPoints.leaves(),
                 ImmutableList.<Projection>of(groupProjection)
@@ -155,7 +158,7 @@ class NonDistributedGroupByConsumer implements Consumer {
             Optional<HavingClause> havingClause = table.querySpec().having();
             if (havingClause.isPresent()) {
                 if (havingClause.get().noMatch()) {
-                    return new NoopPlannedAnalyzedRelation(table, context.plannerContext().jobId());
+                    return new NoopPlannedAnalyzedRelation(table, plannerContext.jobId());
                 } else if (havingClause.get().hasQuery()) {
                     projections.add(ProjectionBuilder.filterProjection(
                         collectOutputs,
@@ -172,11 +175,11 @@ class NonDistributedGroupByConsumer implements Consumer {
              * aggregations or scalar functions which can only be resolved by a TopNProjection,
              * so a TopNProjection must be added.
              */
-            boolean isRootRelation = context.rootRelation() == table;
+            boolean isRootRelation = context.isRoot();
             boolean outputsMatch = table.querySpec().outputs().size() == collectOutputs.size() &&
                                    collectOutputs.containsAll(table.querySpec().outputs());
             if (isRootRelation || !outputsMatch) {
-                Limits limits = context.plannerContext().getLimits(context.isRoot(), table.querySpec());
+                Limits limits = plannerContext.getLimits(context.isRoot(), table.querySpec());
                 Integer offset = (isRootRelation ? limits.offset() : TopN.NO_OFFSET);
                 projections.add(ProjectionBuilder.topNProjection(
                     collectOutputs,
@@ -186,13 +189,15 @@ class NonDistributedGroupByConsumer implements Consumer {
                     table.querySpec().outputs()
                 ));
             }
-            MergePhase localMergeNode = MergePhase.localMerge(
-                context.plannerContext().jobId(),
-                context.plannerContext().nextExecutionPhaseId(),
+            String localNodeId = plannerContext.clusterService().localNode().id();
+            MergePhase localMergePhase = MergePhase.localMerge(
+                plannerContext.jobId(),
+                plannerContext.nextExecutionPhaseId(),
                 projections,
                 collectPhase.executionNodes().size(),
                 collectPhase.outputTypes());
-            return new CollectAndMerge(collectPhase, localMergeNode);
+            localMergePhase.executionNodes(Sets.newHashSet(localNodeId));
+            return new CollectAndMerge(collectPhase, localMergePhase);
         }
     }
 
