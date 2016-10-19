@@ -165,6 +165,7 @@ public class InputColumn extends Symbol implements Comparable<InputColumn> {
         InputColumn that = (InputColumn) o;
 
         if (index != that.index) return false;
+        if (!dataType.equals(that.dataType)) return false;
 
         return true;
     }

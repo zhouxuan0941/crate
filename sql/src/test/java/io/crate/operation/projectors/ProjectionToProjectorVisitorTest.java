@@ -185,8 +185,8 @@ public class ProjectionToProjectorVisitorTest extends CrateUnitTest {
         GroupProjection projection = new GroupProjection();
         projection.keys(Arrays.<Symbol>asList(new InputColumn(0, DataTypes.STRING), new InputColumn(2, DataTypes.STRING)));
         projection.values(Arrays.asList(
-            Aggregation.finalAggregation(avgInfo, Arrays.<Symbol>asList(new InputColumn(1)), Aggregation.Step.ITER),
-            Aggregation.finalAggregation(countInfo, Arrays.<Symbol>asList(new InputColumn(0)), Aggregation.Step.ITER)
+            Aggregation.finalAggregation(avgInfo, Arrays.<Symbol>asList(new InputColumn(1, DataTypes.DOUBLE)), Aggregation.Step.ITER),
+            Aggregation.finalAggregation(countInfo, Arrays.<Symbol>asList(new InputColumn(0, DataTypes.STRING)), Aggregation.Step.ITER)
         ));
 
         Projector projector = visitor.create(projection, RAM_ACCOUNTING_CONTEXT, UUID.randomUUID());
