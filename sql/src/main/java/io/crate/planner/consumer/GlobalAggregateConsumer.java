@@ -23,6 +23,7 @@ package io.crate.planner.consumer;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 import io.crate.analyze.HavingClause;
 import io.crate.analyze.QueriedTable;
 import io.crate.analyze.QueriedTableRelation;
@@ -110,6 +111,7 @@ class GlobalAggregateConsumer implements Consumer {
         validateAggregationOutputs(table.tableRelation(), table.querySpec().outputs());
         // global aggregate: collect and partial aggregate on C and final agg on H
 
+        String localNodeId = plannerContext.clusterService().localNode().id();
         ProjectionBuilder projectionBuilder = new ProjectionBuilder(functions, table.querySpec());
         SplitPoints splitPoints = projectionBuilder.getSplitPoints();
 
@@ -158,13 +160,14 @@ class GlobalAggregateConsumer implements Consumer {
             table.querySpec().outputs()
         );
         projections.add(topNProjection);
-        MergePhase localMergeNode = MergePhase.localMerge(
+        MergePhase localMergePhase = MergePhase.localMerge(
             plannerContext.jobId(),
             plannerContext.nextExecutionPhaseId(),
             projections,
             collectPhase.executionNodes().size(),
             collectPhase.outputTypes());
-        return new CollectAndMerge(collectPhase, localMergeNode);
+        localMergePhase.executionNodes(Sets.newHashSet(localNodeId));
+        return new CollectAndMerge(collectPhase, localMergePhase);
     }
 
     private static void validateAggregationOutputs(AbstractTableRelation tableRelation, Collection<? extends Symbol> outputSymbols) {

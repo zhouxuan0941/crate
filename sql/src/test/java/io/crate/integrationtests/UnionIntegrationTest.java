@@ -101,13 +101,25 @@ public class UnionIntegrationTest extends SQLTransportIntegrationTest {
     }
 
     @Test
-    public void testUnionAllWithGlobalAggregation() {
+    public void testUnionAllWithCount() {
         createColorsAndSizes();
         execute("select count(*) from colors " +
                 "union all " +
                 "select count(*) from sizes " +
                 "order by 1");
-        assertThat(TestingHelpers.printedTable(response.rows()), is("2\n3\n"));
+        assertThat(TestingHelpers.printedTable(response.rows()), is("2\n" +
+                                                                    "3\n"));
+    }
+
+    @Test
+    public void testUnionAllWithGlobalAggregation() {
+        createColorsAndSizes();
+        execute("select sum(id) from colors " +
+                "union all " +
+                "select sum(id) from sizes " +
+                "order by 1");
+        assertThat(TestingHelpers.printedTable(response.rows()), is("3.0\n" +
+                                                                    "6.0\n"));
     }
 
     @Test
