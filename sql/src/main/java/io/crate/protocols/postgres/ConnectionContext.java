@@ -292,6 +292,10 @@ class ConnectionContext {
                         case 'S':
                             handleSync(channel);
                             return;
+                        case 'H':
+                            //handleFlush(buffer, channel);
+                            handleSync(channel);
+                            return;
                         case 'C':
                             handleClose(buffer, channel);
                             return;
@@ -338,6 +342,14 @@ class ConnectionContext {
             closeSession();
             super.channelDisconnected(ctx, e);
         }
+    }
+
+    /**
+     * Flush Message
+     * Header:
+     * | 'H' | int32 len
+     */
+    private void handleFlush(ChannelBuffer buffer, Channel channel) {
     }
 
     /**
