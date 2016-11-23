@@ -176,7 +176,8 @@ public class UpdateConsumer implements Consumer {
             Collections.singletonList(idReference),
             Collections.singletonList(updateProjection),
             whereClause,
-            DistributionInfo.DEFAULT_BROADCAST
+            DistributionInfo.DEFAULT_BROADCAST,
+            (byte) 0
         );
         Collect collect = new Collect(collectPhase, TopN.NO_LIMIT, 0, 1, 1, null);
         return Merge.ensureOnHandler(collect, plannerContext, Collections.singletonList(MergeCountProjection.INSTANCE));
