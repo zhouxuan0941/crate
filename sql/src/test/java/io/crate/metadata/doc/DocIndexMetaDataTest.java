@@ -8,7 +8,6 @@ import io.crate.Constants;
 import io.crate.action.sql.SessionContext;
 import io.crate.analyze.*;
 import io.crate.metadata.*;
-import io.crate.metadata.blob.BlobTableInfoFactory;
 import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.SchemaInfo;
 import io.crate.sql.parser.SqlParser;
@@ -893,6 +892,7 @@ public class DocIndexMetaDataTest extends CrateUnitTest {
             }
         };
         DocTableInfoFactory docTableInfoFactory = new InternalDocTableInfoFactory(
+            clusterService,
             functions,
             new IndexNameExpressionResolver(Settings.EMPTY),
             indexTemplateActionProvider,

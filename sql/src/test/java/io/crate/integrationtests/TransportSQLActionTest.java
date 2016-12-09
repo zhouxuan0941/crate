@@ -55,7 +55,7 @@ import static com.carrotsearch.randomizedtesting.RandomizedTest.$;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 
-@ESIntegTestCase.ClusterScope(minNumDataNodes = 2)
+@ESIntegTestCase.ClusterScope(numDataNodes = 1)
 @UseJdbc
 public class TransportSQLActionTest extends SQLTransportIntegrationTest {
 
@@ -312,7 +312,6 @@ public class TransportSQLActionTest extends SQLTransportIntegrationTest {
         execute("select name from test where name is not null and name!=''");
         assertEquals(1, response.rowCount());
         assertEquals("Ruben Lenten", response.rows()[0][0]);
-
     }
 
     @Test

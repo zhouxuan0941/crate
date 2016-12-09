@@ -113,6 +113,7 @@ public class DocIndexMetaData {
         if (defaultMappingMetaData == null) {
             this.defaultMappingMap = ImmutableMap.of();
         } else {
+            MappingParser.parse(defaultMappingMetaData);
             this.defaultMappingMap = this.defaultMappingMetaData.sourceAsMap();
         }
         this.tableParameters = TableParameterInfo.tableParametersFromIndexMetaData(metaData);

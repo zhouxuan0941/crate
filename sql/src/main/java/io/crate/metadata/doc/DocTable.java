@@ -23,30 +23,21 @@
 package io.crate.metadata.doc;
 
 import io.crate.Constants;
-import io.crate.analyze.NumberOfReplicas;
-import io.crate.analyze.TableParameterInfo;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
-import io.crate.metadata.table.Operation;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.settings.Settings;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 public class DocTable {
 
     public static DocTable fromIndexMetaData(TableIdent ident, IndexMetaData indexMetaData) throws IOException {
         Settings settings = indexMetaData.getSettings();
         MappingMetaData mapping = indexMetaData.mappingOrDefault(Constants.DEFAULT_MAPPING_TYPE);
-        Map<String, Object> typeMapping;
-        if (mapping == null) {
-            typeMapping = Collections.emptyMap();
-        } else {
-            typeMapping = mapping.sourceAsMap();
-        }
+
+
+        /*
         return new DocTable(
             ident,
             columns,
@@ -61,8 +52,9 @@ public class DocTable {
             indexMetaData.getNumberOfShards(),
             NumberOfReplicas.fromSettings(settings),
             TableParameterInfo.tableParametersFromIndexMetaData(indexMetaData),
-            ColumnPolicy.fromTypeMapping(typeMapping),
             Operation.buildFromIndexSettings(settings)
         );
+        */
+        return null;
     }
 }

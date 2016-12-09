@@ -236,6 +236,7 @@ public class DataTypes {
         .put(INTEGER.getName(), INTEGER)
         .put(LONG.getName(), LONG)
         .put(TIMESTAMP.getName(), TIMESTAMP)
+        .put("date", TIMESTAMP)
         .put(OBJECT.getName(), OBJECT)
         .put(GEO_POINT.getName(), GEO_POINT)
         .put(GEO_SHAPE.getName(), GEO_SHAPE)
