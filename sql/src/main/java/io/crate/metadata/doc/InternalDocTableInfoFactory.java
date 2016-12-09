@@ -23,11 +23,16 @@
 package io.crate.metadata.doc;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.crate.exceptions.TableUnknownException;
 import io.crate.metadata.Functions;
+import io.crate.metadata.PartitionName;
 import io.crate.metadata.TableIdent;
 import org.elasticsearch.action.admin.indices.template.put.TransportPutIndexTemplateAction;
 import org.elasticsearch.cluster.ClusterService;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
+import org.elasticsearch.cluster.metadata.IndexTemplateMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.Provider;
 import org.elasticsearch.common.inject.Singleton;
@@ -78,5 +83,30 @@ public class InternalDocTableInfoFactory implements DocTableInfoFactory {
             checkAliasSchema
         );
         return builder.build();
+    }
+
+
+    public static DocTableInfo fromMetaData(TableIdent tableIdent,
+                                            ImmutableOpenMap<String, IndexTemplateMetaData> templates,
+                                            ImmutableOpenMap<String, IndexMetaData> indices) {
+        String templateName = PartitionName.templateName(tableIdent.schema(), tableIdent.name());
+        IndexTemplateMetaData templateMetaData = templates.get(templateName);
+        if (templateMetaData == null) {
+            IndexMetaData indexMetaData = indices.get(tableIdent.indexName());
+            if (indexMetaData == null) {
+                throw new TableUnknownException(tableIdent);
+            }
+            return fromIndexMetaData(tableIdent, indexMetaData);
+        }
+        return fromTemplate(tableIdent, templateMetaData);
+    }
+
+    private static DocTableInfo fromIndexMetaData(TableIdent tableIdent, IndexMetaData indexMetaData) {
+        DocTable docTable = DocTable.fromIndexMetaData(tableIdent, indexMetaData);
+        return null;
+    }
+
+    private static DocTableInfo fromTemplate(TableIdent tableIdent, IndexTemplateMetaData templateMetaData) {
+        return null;
     }
 }
