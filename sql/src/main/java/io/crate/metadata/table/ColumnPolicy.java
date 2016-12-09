@@ -25,7 +25,6 @@ import org.elasticsearch.common.Booleans;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
-import java.util.Map;
 
 public enum ColumnPolicy {
     DYNAMIC(true),
@@ -77,10 +76,5 @@ public enum ColumnPolicy {
      */
     public Object mappingValue() {
         return mappingValue;
-    }
-
-    public static ColumnPolicy fromTypeMapping(Map<String, Object> typeMapping) {
-        String policy = String.valueOf(typeMapping.get("dynamic"));
-        return of(policy);
     }
 }
