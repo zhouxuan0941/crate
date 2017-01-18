@@ -35,9 +35,9 @@ dependencies {
     compile project(':udc')
     compile project(':azure-discovery')
     compile project(':dns-discovery')
-    compile project(':es:es-discovery-multicast')
-    compile project(':es:es-discovery-ec2')
-    compile project(':es:es-repository-s3')
+//    compile project(':es:es-discovery-multicast')
+//    compile project(':es:es-discovery-ec2')
+//    compile project(':es:es-repository-s3')
     compile project(':es:es-transport')
     compile('org.apache.xbean:xbean-finder:4.5') {
         exclude group: 'org.apache.xbean', module: 'xbean-asm-util'
@@ -53,10 +53,10 @@ dependencies {
     compileNotTransitive project(':blob')
     compileNotTransitive project(':udc')
     compileNotTransitive project(':dns-discovery')
-    compileNotTransitive project(':es:es-discovery-multicast')
-    compileNotTransitive project(':es:es-discovery-ec2')
-    compileNotTransitive project(':es:es-repository-s3')
-    compileNotTransitive project(':es:es-transport')
+//    compileNotTransitive project(':es:es-discovery-multicast')
+//    compileNotTransitive project(':es:es-discovery-ec2')
+//    compileNotTransitive project(':es:es-repository-s3')
+//    compileNotTransitive project(':es:es-transport')
 }
 
 task release(dependsOn: 'distTar') << {
@@ -304,6 +304,11 @@ distributions {
                     includeEmptyDirs = true
                 }
             }
+            into('plugins_shared_lib') {
+                from('plugins_shared_lib') {
+                    includeEmptyDirs = true
+                }
+            }
             into('bin') {
                 from("${downloadDir}/crash_standalone") {
                     fileMode = 0755
@@ -311,6 +316,28 @@ distributions {
             }
         }
     }
+}
+installDist {
+    doLast {
+        symLinks.execute()
+    }
+}
+
+distZip {
+    doFirst {
+        symLinks2.execute()
+    }
+}
+
+
+task symLinks << {
+    ant.symlink(resource: buildDir.path + '/install/crate/plugins_shared_lib/aws-java-sdk-ec2-1.10.69.jar',
+            link: buildDir.path + '/install/crate/plugins/es-discovery-ec2/aws-java-sdk-ec2-1.10.69.jar')
+}
+
+task symLinks2 << {
+    ant.symlink(resource: projectDir.path + '/plugins_shared_lib/aws-java-sdk-ec2-1.10.69.jar',
+            link: projectDir.path + '/plugins/es-discovery-ec2/aws-java-sdk-ec2-1.10.69.jar')
 }
 
 jar {
@@ -340,7 +367,12 @@ jar {
 }
 
 task downloadPlugins(
-        dependsOn: [':sigar:jar', ':azure-discovery:jar']) << {
+        dependsOn: [
+                    ':sigar:jar',
+                    ':azure-discovery:jar',
+                    ':es:es-discovery-ec2:jar',
+                    ':es:es-repository-s3:jar']) << {
+//                    'writePropertiesFileEc2Discovery'
 
     // FIXME: re-enable HDFS plugin + AdminUI plugin
     //    dependsOn: [':admin-ui:downloadPlugin', ':sigar:jar', ':es-repository-hdfs:distZip', ':azure-discovery:jar']) << {
@@ -372,9 +404,31 @@ task downloadPlugins(
         from(project(':sigar').projectDir.path + "/lib")
         into 'plugins/sigar/lib'
     }
+
+    // copy discovery-ec2 jar
+    copy {
+        from(project(':es:es-discovery-ec2').tasks.jar.archivePath)
+        into 'plugins/es-discovery-ec2'
+    }
+    copy {
+        from(project(':es:es-discovery-ec2').projectDir.path + '/build/lib')
+        into 'plugins_shared_lib/'
+    }
+    copy {
+        from(project(':es:es-discovery-ec2').projectDir.path + '/build/plugin-descriptor.properties')
+        into 'plugins/es-discovery-ec2'
+    }
+
+
+
+    // copy repository-s3 jar
+    copy {
+        from(project(':es:es-repository-s3').tasks.jar.archivePath)
+        into 'plugins/es-repository-s3'
+    }
 }
 
-downloadPlugins.outputs.file files('plugins')
+downloadPlugins.outputs.file files(['plugins_shared_lib','plugins'])
 
 
 

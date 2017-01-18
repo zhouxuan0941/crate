@@ -1,6 +1,14 @@
+description='The EC2 discovery plugin allows to use AWS API for the unicast discovery mechanism.'
+def classname='org.elasticsearch.plugin.discovery.ec2.Ec2DiscoveryPlugin'
+
+configurations {
+    extraLibs.transitive = false
+}
+
 dependencies {
     compile project(':es:es-core')
     compile "com.amazonaws:aws-java-sdk-ec2:${versions.aws}"
+    extraLibs "com.amazonaws:aws-java-sdk-ec2:${versions.aws}"
 }
 
 def pluginDir = file('../upstream/plugins/discovery-ec2')
@@ -24,3 +32,40 @@ idea {
         excludeDirs += files('build', 'src/test')
     }
 }
+//
+//configurations {
+//    // configuration that holds jars to copy into lib
+//    extraLibs
+//}
+//dependencies {
+//    extraLibs 'org.something:something-dep1:version'
+//    extraLibs 'org.something:something-dep2:version'
+//}
+
+//jar {
+//    into('lib') {
+//        from configurations.runtime
+//    }
+//}
+
+jar {dependsOn(['writePropertiesFileEc2Discovery', 'copyToLib'])}
+
+task writePropertiesFileEc2Discovery << {
+    def file = new File(buildDir.path + '/plugin-descriptor.properties')
+    def parentDir = new File(file.parent)
+    parentDir.mkdirs()
+    file.createNewFile()
+
+    ant.propertyfile(file: file.path, comment: 'Plugin Descriptor') {
+        ant.entry(key: 'name', value: project(':es:es-discovery-ec2').name)
+        ant.entry(key: 'description', value: 'discovery-ec2')
+        ant.entry(key: 'version', value: '1.0')
+        ant.entry(key: 'site', value: true)
+    }
+}
+
+task copyToLib(type: Copy) {
+    into buildDir.path + '/lib'
+    from configurations.extraLibs
+}
+
