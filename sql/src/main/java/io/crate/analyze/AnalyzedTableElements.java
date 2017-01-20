@@ -24,7 +24,7 @@ package io.crate.analyze;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.crate.action.sql.SessionContext;
+import io.crate.action.sql.Option;
 import io.crate.analyze.expressions.ExpressionAnalysisContext;
 import io.crate.analyze.expressions.ExpressionAnalyzer;
 import io.crate.analyze.expressions.TableReferenceResolver;
@@ -33,12 +33,14 @@ import io.crate.analyze.symbol.format.SymbolPrinter;
 import io.crate.exceptions.ColumnUnknownException;
 import io.crate.metadata.*;
 import io.crate.operation.scalar.cast.CastFunctionResolver;
+import io.crate.sql.tree.ParameterExpression;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.settings.Settings;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 
 public class AnalyzedTableElements {
 
@@ -205,10 +207,10 @@ public class AnalyzedTableElements {
     void finalizeAndValidate(TableIdent tableIdent,
                              Collection<? extends Reference> existingColumns,
                              Functions functions,
-                             ParameterContext parameterContext,
-                             SessionContext sessionContext) {
+                             Function<ParameterExpression, ? extends Symbol> paramToSymbol,
+                             Set<Option> sessionOptions) {
         expandColumnIdents();
-        validateGeneratedColumns(tableIdent, existingColumns, functions, parameterContext, sessionContext);
+        validateGeneratedColumns(tableIdent, existingColumns, functions, paramToSymbol, sessionOptions);
         for (AnalyzedColumnDefinition column : columns) {
             column.validate();
             addCopyToInfo(column);
@@ -220,8 +222,8 @@ public class AnalyzedTableElements {
     private void validateGeneratedColumns(TableIdent tableIdent,
                                           Collection<? extends Reference> existingColumns,
                                           Functions functions,
-                                          ParameterContext parameterContext,
-                                          SessionContext sessionContext) {
+                                          Function<ParameterExpression, ? extends Symbol> paramToSymbol,
+                                          Set<Option> sessionOptions) {
         List<Reference> tableReferences = new ArrayList<>();
         for (AnalyzedColumnDefinition columnDefinition : columns) {
             buildReference(tableIdent, columnDefinition, tableReferences);
@@ -230,7 +232,7 @@ public class AnalyzedTableElements {
 
         TableReferenceResolver tableReferenceResolver = new TableReferenceResolver(tableReferences);
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
-            functions, sessionContext, parameterContext, tableReferenceResolver, null);
+            functions, sessionOptions, paramToSymbol, tableReferenceResolver, null);
         SymbolPrinter printer = new SymbolPrinter(functions);
         ExpressionAnalysisContext expressionAnalysisContext = new ExpressionAnalysisContext();
         for (AnalyzedColumnDefinition columnDefinition : columns) {

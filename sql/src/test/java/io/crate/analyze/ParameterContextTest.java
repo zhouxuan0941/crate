@@ -22,9 +22,11 @@
 
 package io.crate.analyze;
 
+import io.crate.analyze.symbol.Literal;
 import io.crate.core.collections.Row;
 import io.crate.core.collections.RowN;
 import io.crate.core.collections.Rows;
+import io.crate.sql.tree.ParameterExpression;
 import io.crate.test.integration.CrateUnitTest;
 import io.crate.types.ArrayType;
 import io.crate.types.DataTypes;
@@ -40,6 +42,10 @@ import static org.hamcrest.Matchers.is;
 
 
 public class ParameterContextTest extends CrateUnitTest {
+
+    private static Literal convert(ParameterContext ctx, int i) {
+        return ctx.apply(new ParameterExpression(i + 1));
+    }
 
     @Test
     public void testEmpty() throws Exception {
@@ -65,18 +71,19 @@ public class ParameterContextTest extends CrateUnitTest {
         ParameterContext ctx = new ParameterContext(Row.EMPTY, Rows.of(bulkArgs));
         assertTrue(ctx.hasBulkParams());
         ctx.setBulkIdx(0);
-        assertThat(ctx.getAsSymbol(0), isLiteral(true));
-        assertThat(ctx.getAsSymbol(1), isLiteral(1));
-        assertThat(ctx.getAsSymbol(2), isLiteral("foo"));
-        assertThat(ctx.getAsSymbol(3), isLiteral(null, DataTypes.UNDEFINED));
-        assertThat(ctx.getAsSymbol(4), isLiteral(new BytesRef[]{null}, new ArrayType(DataTypes.UNDEFINED)));
+        assertThat(convert(ctx, 0), isLiteral(true));
+        assertThat(convert(ctx, 1), isLiteral(1));
+        assertThat(convert(ctx, 2), isLiteral("foo"));
+        assertThat(convert(ctx, 3), isLiteral(null, DataTypes.UNDEFINED));
+        assertThat(convert(ctx, 4), isLiteral(new BytesRef[]{null}, new ArrayType(DataTypes.UNDEFINED)));
         ctx.setBulkIdx(1);
-        assertThat(ctx.getAsSymbol(0), isLiteral(false));
-        assertThat(ctx.getAsSymbol(1), isLiteral(2));
-        assertThat(ctx.getAsSymbol(2), isLiteral("bar"));
-        assertThat(ctx.getAsSymbol(3), isLiteral(new Object[0], new ArrayType(DataTypes.UNDEFINED)));
-        assertThat(ctx.getAsSymbol(4), isLiteral(new BytesRef[]{new BytesRef("foo"), new BytesRef("bar")}, new ArrayType(DataTypes.STRING)));
+        assertThat(convert(ctx, 0), isLiteral(false));
+        assertThat(convert(ctx, 1), isLiteral(2));
+        assertThat(convert(ctx, 2), isLiteral("bar"));
+        assertThat(convert(ctx, 3), isLiteral(new Object[0], new ArrayType(DataTypes.UNDEFINED)));
+        assertThat(convert(ctx, 4), isLiteral(new BytesRef[]{new BytesRef("foo"), new BytesRef("bar")}, new ArrayType(DataTypes.STRING)));
     }
+
 
     @Test
     public void testBulkArgsMixedNumberOfArguments() throws Exception {
@@ -105,9 +112,9 @@ public class ParameterContextTest extends CrateUnitTest {
         };
         ParameterContext ctx = new ParameterContext(Row.EMPTY, Rows.of(bulkArgs));
         ctx.setBulkIdx(0);
-        assertThat(ctx.getAsSymbol(0), isLiteral(obj1, DataTypes.OBJECT));
+        assertThat(convert(ctx, 0), isLiteral(obj1, DataTypes.OBJECT));
         ctx.setBulkIdx(1);
-        assertThat(ctx.getAsSymbol(0), isLiteral(obj2, DataTypes.OBJECT));
+        assertThat(convert(ctx, 0), isLiteral(obj2, DataTypes.OBJECT));
     }
 
     @Test
@@ -117,7 +124,7 @@ public class ParameterContextTest extends CrateUnitTest {
             new Object[]{new String[][]{new String[]{"foo"}}},
         };
         ParameterContext ctx = new ParameterContext(Row.EMPTY, Rows.of(bulkArgs));
-        assertThat(ctx.getAsSymbol(0), isLiteral(bulkArgs[0][0], new ArrayType(new ArrayType(DataTypes.UNDEFINED))));
+        assertThat(convert(ctx, 0), isLiteral(bulkArgs[0][0], new ArrayType(new ArrayType(DataTypes.UNDEFINED))));
     }
 
     @Test
@@ -127,6 +134,6 @@ public class ParameterContextTest extends CrateUnitTest {
             new Object[]{new String[][]{new String[0]}},
         };
         ParameterContext ctx = new ParameterContext(Row.EMPTY, Rows.of(bulkArgs));
-        assertThat(ctx.getAsSymbol(0), isLiteral(bulkArgs[0][0], new ArrayType(new ArrayType(DataTypes.UNDEFINED))));
+        assertThat(convert(ctx, 0), isLiteral(bulkArgs[0][0], new ArrayType(new ArrayType(DataTypes.UNDEFINED))));
     }
 }

@@ -82,7 +82,7 @@ public class ExpressionAnalyzerTest extends CrateUnitTest {
         expectedException.expect(UnsupportedOperationException.class);
         expectedException.expectMessage("Unsupported expression current_time");
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
-            functions, SessionContext.SYSTEM_SESSION, paramTypeHints, new FullQualifedNameFieldProvider(dummySources), null);
+            functions, SessionContext.SYSTEM_SESSION.options(), paramTypeHints, new FullQualifedNameFieldProvider(dummySources), null);
         ExpressionAnalysisContext expressionAnalysisContext = new ExpressionAnalysisContext();
 
         expressionAnalyzer.convert(SqlParser.createExpression("current_time"), expressionAnalysisContext);
@@ -92,7 +92,7 @@ public class ExpressionAnalyzerTest extends CrateUnitTest {
     public void testQuotedSubscriptExpression() throws Exception {
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            new SessionContext(0, EnumSet.of(Option.ALLOW_QUOTED_SUBSCRIPT), null),
+            EnumSet.of(Option.ALLOW_QUOTED_SUBSCRIPT),
             paramTypeHints,
             new FullQualifedNameFieldProvider(dummySources),
             null);
@@ -130,7 +130,7 @@ public class ExpressionAnalyzerTest extends CrateUnitTest {
         // the same way it's handled when the subscript operator `[]` is used
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            new SessionContext(0, EnumSet.of(Option.ALLOW_QUOTED_SUBSCRIPT), null),
+            EnumSet.of(Option.ALLOW_QUOTED_SUBSCRIPT),
             paramTypeHints,
             new FullQualifedNameFieldProvider(dummySources),
             null);
@@ -159,7 +159,7 @@ public class ExpressionAnalyzerTest extends CrateUnitTest {
             new QualifiedName("t2"), tr2
         );
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
-            functions, SessionContext.SYSTEM_SESSION, paramTypeHints, new FullQualifedNameFieldProvider(sources), null);
+            functions, SessionContext.SYSTEM_SESSION.options(), paramTypeHints, new FullQualifedNameFieldProvider(sources), null);
         Function andFunction = (Function) expressionAnalyzer.convert(
             SqlParser.createExpression("not t1.id = 1 and not t2.id = 1"), context);
 

@@ -21,7 +21,6 @@
 
 package io.crate.analyze.where;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -34,6 +33,7 @@ import org.apache.lucene.util.BytesRef;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 public class DocKeys implements Iterable<DocKeys.DocKey> {
 
@@ -73,7 +73,7 @@ public class DocKeys implements Iterable<DocKeys.DocKey> {
             if (partitionIdx == null || partitionIdx.isEmpty()) {
                 return Optional.absent();
             }
-            List<BytesRef> values = Lists.transform(partitionIdx, new Function<Integer, BytesRef>() {
+            List<BytesRef> values = Lists.transform(partitionIdx, new com.google.common.base.Function<Integer, BytesRef>() {
                 @Nullable
                 @Override
                 public BytesRef apply(Integer input) {

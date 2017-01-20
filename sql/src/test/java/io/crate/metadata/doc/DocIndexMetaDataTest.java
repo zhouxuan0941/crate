@@ -6,7 +6,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.crate.Constants;
 import io.crate.action.sql.SessionContext;
-import io.crate.analyze.*;
+import io.crate.analyze.CreateTableAnalyzedStatement;
+import io.crate.analyze.CreateTableStatementAnalyzer;
+import io.crate.analyze.NumberOfShards;
+import io.crate.core.collections.Row;
 import io.crate.metadata.*;
 import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.SchemaInfo;
@@ -910,9 +913,8 @@ public class DocIndexMetaDataTest extends CrateUnitTest {
             new NumberOfShards(clusterService)
         );
 
-        Analysis analysis = new Analysis(SessionContext.SYSTEM_SESSION, ParameterContext.EMPTY, ParamTypeHints.EMPTY);
         CreateTableAnalyzedStatement analyzedStatement = analyzer.analyze(
-            (CreateTable) statement, analysis.parameterContext(), analysis.sessionContext());
+            (CreateTable) statement, Row.EMPTY, SessionContext.SYSTEM_SESSION);
 
         Settings.Builder settingsBuilder = Settings.builder()
             .put("index.number_of_shards", 1)

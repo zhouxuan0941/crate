@@ -21,8 +21,7 @@
 
 package io.crate.analyze;
 
-import com.google.common.base.Function;
-import io.crate.action.sql.SessionContext;
+import io.crate.action.sql.Option;
 import io.crate.analyze.expressions.ExpressionAnalysisContext;
 import io.crate.analyze.expressions.ExpressionAnalyzer;
 import io.crate.analyze.relations.FieldProvider;
@@ -36,6 +35,8 @@ import io.crate.sql.tree.ParameterExpression;
 import io.crate.types.DataTypes;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * ExpressionAnalyzer that supports the VALUES ( columnRef ) expression
@@ -73,11 +74,11 @@ public class ValuesAwareExpressionAnalyzer extends ExpressionAnalyzer {
     }
 
     ValuesAwareExpressionAnalyzer(Functions functions,
-                                  SessionContext sessionContext,
-                                  Function<ParameterExpression, Symbol> convertParamFunction,
+                                  Set<Option> sessionOptions,
+                                  Function<ParameterExpression, ? extends Symbol> convertParamFunction,
                                   FieldProvider fieldProvider,
                                   ValuesResolver valuesResolver) {
-        super(functions, sessionContext, convertParamFunction, fieldProvider, null);
+        super(functions, sessionOptions, convertParamFunction, fieldProvider, null);
         this.valuesResolver = valuesResolver;
     }
 

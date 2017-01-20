@@ -94,7 +94,7 @@ public class UpdateAnalyzer {
         FieldProvider columnFieldProvider = new NameFieldProvider(analyzedRelation);
         ExpressionAnalyzer columnExpressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            analysis.sessionContext(),
+            analysis.sessionContext().options(),
             analysis.parameterContext(),
             columnFieldProvider,
             null);
@@ -104,7 +104,7 @@ public class UpdateAnalyzer {
             "currentRelationContext.sources().values() must have one element and equal to analyzedRelation";
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            analysis.sessionContext(),
+            analysis.sessionContext().options(),
             analysis.parameterContext(),
             new FullQualifedNameFieldProvider(currentRelationContext.sources()),
             null);

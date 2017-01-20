@@ -128,7 +128,7 @@ class CopyAnalyzer {
     private ExpressionAnalyzer createExpressionAnalyzer(Analysis analysis, DocTableRelation tableRelation) {
         return new ExpressionAnalyzer(
             functions,
-            analysis.sessionContext(),
+            analysis.sessionContext().options(),
             analysis.parameterContext(),
             new NameFieldProvider(tableRelation),
             null);

@@ -67,7 +67,7 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
     private final ClusterService clusterService;
     private final Functions functions;
     private final Schemas schemas;
-    private static final List<Relation> SYS_CLUSTER_SOURCE = ImmutableList.<Relation>of(
+    private static final List<Relation> SYS_CLUSTER_SOURCE = ImmutableList.of(
         new Table(new QualifiedName(
             ImmutableList.of(SysClusterTableInfo.IDENT.schema(), SysClusterTableInfo.IDENT.name()))
         )
@@ -132,7 +132,7 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
             if (joinCriteria instanceof JoinOn) {
                 ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
                     functions,
-                    statementContext.sessionContext(),
+                    statementContext.sessionContext().options(),
                     statementContext.convertParamFunction(),
                     new FullQualifedNameFieldProvider(relationContext.sources()),
                     new SubqueryAnalyzer(this, statementContext));
@@ -166,7 +166,7 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
         RelationAnalysisContext context = statementContext.currentRelationContext();
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            statementContext.sessionContext(),
+            statementContext.sessionContext().options(),
             statementContext.convertParamFunction(),
             new FullQualifedNameFieldProvider(context.sources()),
             new SubqueryAnalyzer(this, statementContext));
@@ -449,7 +449,7 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
         RelationAnalysisContext context = statementContext.currentRelationContext();
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            statementContext.sessionContext(),
+            statementContext.sessionContext().options(),
             statementContext.convertParamFunction(),
             new FieldProvider() {
                 @Override

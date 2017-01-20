@@ -25,15 +25,13 @@ package io.crate.testing;
 import io.crate.action.sql.SessionContext;
 import io.crate.analyze.EvaluatingNormalizer;
 import io.crate.analyze.ParamTypeHints;
-import io.crate.analyze.ParameterContext;
 import io.crate.analyze.expressions.ExpressionAnalysisContext;
 import io.crate.analyze.expressions.ExpressionAnalyzer;
 import io.crate.analyze.relations.AnalyzedRelation;
 import io.crate.analyze.relations.FieldResolver;
 import io.crate.analyze.relations.FullQualifedNameFieldProvider;
+import io.crate.analyze.symbol.Literal;
 import io.crate.analyze.symbol.Symbol;
-import io.crate.core.collections.Row;
-import io.crate.core.collections.RowN;
 import io.crate.metadata.Functions;
 import io.crate.metadata.ReplaceMode;
 import io.crate.metadata.RowGranularity;
@@ -49,8 +47,9 @@ import org.elasticsearch.common.inject.Injector;
 import org.elasticsearch.common.inject.ModulesBuilder;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Map;
+
+import static io.crate.types.DataTypes.guessType;
 
 public class SqlExpressions {
 
@@ -92,10 +91,13 @@ public class SqlExpressions {
         functions = injector.getInstance(Functions.class);
         expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            sessionContext,
+            sessionContext.options(),
             parameters == null
                 ? ParamTypeHints.EMPTY
-                : new ParameterContext(new RowN(parameters), Collections.<Row>emptyList()),
+                : e -> {
+                    Object value = parameters[e.index()];
+                    return Literal.of(guessType(value), value);
+                },
             new FullQualifedNameFieldProvider(sources),
             null
         );

@@ -42,7 +42,7 @@ import java.util.List;
 @NotThreadSafe
 public class RowShardResolver {
 
-    private final com.google.common.base.Function<List<BytesRef>, String> idFunction;
+    private final java.util.function.Function<List<BytesRef>, String> idFunction;
     private final List<Input<?>> primaryKeyInputs;
     private final Input<?> routingInput;
     private final Iterable<CollectExpression<Row, ?>> expressions;

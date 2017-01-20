@@ -26,7 +26,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.*;
 import io.crate.action.sql.Option;
-import io.crate.action.sql.SessionContext;
 import io.crate.analyze.DataTypeAnalyzer;
 import io.crate.analyze.NegativeLiteralVisitor;
 import io.crate.analyze.SubscriptContext;
@@ -90,8 +89,8 @@ public class ExpressionAnalyzer {
 
     private final static DataTypeAnalyzer DATA_TYPE_ANALYZER = new DataTypeAnalyzer();
     private final static NegativeLiteralVisitor NEGATIVE_LITERAL_VISITOR = new NegativeLiteralVisitor();
-    private final SessionContext sessionContext;
-    private final com.google.common.base.Function<ParameterExpression, Symbol> convertParamFunction;
+    private final Set<Option> sessionOptions;
+    private final java.util.function.Function<ParameterExpression, ? extends Symbol> convertParamFunction;
     private final FieldProvider<?> fieldProvider;
 
     @Nullable
@@ -103,12 +102,12 @@ public class ExpressionAnalyzer {
     private static final Pattern SUBSCRIPT_SPLIT_PATTERN = Pattern.compile("^([^\\.\\[]+)(\\.*)([^\\[]*)(\\['.*'\\])");
 
     public ExpressionAnalyzer(Functions functions,
-                              SessionContext sessionContext,
-                              com.google.common.base.Function<ParameterExpression, Symbol> convertParamFunction,
+                              Set<Option> sessionOptions,
+                              java.util.function.Function<ParameterExpression, ? extends Symbol> convertParamFunction,
                               FieldProvider fieldProvider,
                               @Nullable SubqueryAnalyzer subQueryAnalyzer) {
         this.functions = functions;
-        this.sessionContext = sessionContext;
+        this.sessionOptions = sessionOptions;
         this.convertParamFunction = convertParamFunction;
         this.fieldProvider = fieldProvider;
         this.subQueryAnalyzer = subQueryAnalyzer;
@@ -603,7 +602,7 @@ public class ExpressionAnalyzer {
             try {
                 return fieldProvider.resolveField(node.getName(), null, operation);
             } catch (ColumnUnknownException exception) {
-                if (sessionContext.options().contains(Option.ALLOW_QUOTED_SUBSCRIPT)) {
+                if (sessionOptions.contains(Option.ALLOW_QUOTED_SUBSCRIPT)) {
                     String quotedSubscriptLiteral = getQuotedSubscriptLiteral(node.getName().toString());
                     if (quotedSubscriptLiteral != null) {
                         return process(SqlParser.createExpression(quotedSubscriptLiteral), context);

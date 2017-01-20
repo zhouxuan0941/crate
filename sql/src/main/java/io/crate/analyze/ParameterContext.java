@@ -21,22 +21,20 @@
 
 package io.crate.analyze;
 
-import com.google.common.base.Function;
 import io.crate.analyze.symbol.Literal;
-import io.crate.analyze.symbol.Symbol;
 import io.crate.core.collections.Row;
 import io.crate.sql.tree.ParameterExpression;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 
-public class ParameterContext implements Function<ParameterExpression, Symbol> {
+public class ParameterContext implements Function<ParameterExpression, Literal> {
 
     public static final ParameterContext EMPTY = new ParameterContext(Row.EMPTY, Collections.<Row>emptyList());
 
@@ -64,7 +62,7 @@ public class ParameterContext implements Function<ParameterExpression, Symbol> {
         }
     }
 
-    private static DataType guessTypeSafe(Object value) throws IllegalArgumentException {
+    static DataType guessTypeSafe(Object value) throws IllegalArgumentException {
         DataType guessedType = DataTypes.guessType(value);
         if (guessedType == null) {
             throw new IllegalArgumentException(String.format(Locale.ENGLISH,
@@ -92,18 +90,6 @@ public class ParameterContext implements Function<ParameterExpression, Symbol> {
         return parameters;
     }
 
-    public io.crate.analyze.symbol.Literal getAsSymbol(int index) {
-        try {
-            Object value = parameters().get(index);
-            DataType type = guessTypeSafe(value);
-            // use type.value because some types need conversion (String to BytesRef, List to Array)
-            return Literal.of(type, type.value(value));
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(String.format(Locale.ENGLISH,
-                "Tried to resolve a parameter but the arguments provided with the " +
-                "SQLRequest don't contain a parameter at position %d", index), e);
-        }
-    }
 
     public ParamTypeHints typeHints() {
         if (typeHints == null) {
@@ -116,12 +102,8 @@ public class ParameterContext implements Function<ParameterExpression, Symbol> {
         return typeHints;
     }
 
-    @Nullable
     @Override
-    public Symbol apply(@Nullable ParameterExpression input) {
-        if (input == null) {
-            return null;
-        }
-        return getAsSymbol(input.index());
+    public Literal apply(ParameterExpression expression) {
+        return Parameters.convert(parameters(), expression);
     }
 }

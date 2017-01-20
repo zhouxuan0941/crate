@@ -24,7 +24,7 @@ package io.crate.analyze;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
-import io.crate.action.sql.SessionContext;
+import io.crate.action.sql.Option;
 import io.crate.analyze.expressions.ExpressionAnalysisContext;
 import io.crate.analyze.expressions.ExpressionAnalyzer;
 import io.crate.analyze.expressions.ValueNormalizer;
@@ -41,8 +41,10 @@ import io.crate.metadata.doc.DocTableInfo;
 import io.crate.metadata.table.Operation;
 import io.crate.sql.tree.Assignment;
 import io.crate.sql.tree.InsertFromSubquery;
+import io.crate.sql.tree.ParameterExpression;
 
 import java.util.*;
+import java.util.function.Function;
 
 class InsertFromSubQueryAnalyzer {
 
@@ -100,7 +102,7 @@ class InsertFromSubQueryAnalyzer {
             onDuplicateKeyAssignments = processUpdateAssignments(
                 tableRelation,
                 targetColumns,
-                analysis.sessionContext(),
+                analysis.sessionContext().options(),
                 analysis.parameterContext(),
                 analysis.transactionContext(),
                 fieldProvider,
@@ -185,13 +187,13 @@ class InsertFromSubQueryAnalyzer {
 
     private Map<Reference, Symbol> processUpdateAssignments(DocTableRelation tableRelation,
                                                             List<Reference> targetColumns,
-                                                            SessionContext sessionContext,
-                                                            ParameterContext parameterContext,
+                                                            Set<Option> sessionOptions,
+                                                            Function<ParameterExpression, ? extends Symbol> paramToSymbol,
                                                             TransactionContext transactionContext,
                                                             FieldProvider fieldProvider,
                                                             List<Assignment> assignments) {
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
-            functions, sessionContext, parameterContext, fieldProvider, null);
+            functions, sessionOptions, paramToSymbol, fieldProvider, null);
         ExpressionAnalysisContext expressionAnalysisContext = new ExpressionAnalysisContext();
 
         EvaluatingNormalizer normalizer = new EvaluatingNormalizer(
@@ -204,7 +206,7 @@ class InsertFromSubQueryAnalyzer {
 
         ValuesResolver valuesResolver = new ValuesResolver(tableRelation, targetColumns);
         ValuesAwareExpressionAnalyzer valuesAwareExpressionAnalyzer = new ValuesAwareExpressionAnalyzer(
-            functions, sessionContext, parameterContext, fieldProvider, valuesResolver);
+            functions, sessionOptions, paramToSymbol, fieldProvider, valuesResolver);
 
         Map<Reference, Symbol> updateAssignments = new HashMap<>(assignments.size());
         for (Assignment assignment : assignments) {

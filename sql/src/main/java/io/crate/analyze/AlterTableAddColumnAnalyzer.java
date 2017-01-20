@@ -82,7 +82,7 @@ class AlterTableAddColumnAnalyzer extends DefaultTraversalVisitor<AddColumnAnaly
             statement.table().columns(),
             functions,
             analysis.parameterContext(),
-            analysis.sessionContext());
+            analysis.sessionContext().options());
 
         int numCurrentPks = statement.table().primaryKey().size();
         if (statement.table().primaryKey().contains(DocSysColumns.ID)) {

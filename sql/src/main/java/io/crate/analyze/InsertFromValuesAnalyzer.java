@@ -21,7 +21,6 @@
 
 package io.crate.analyze;
 
-import com.google.common.base.Function;
 import io.crate.analyze.expressions.ExpressionAnalysisContext;
 import io.crate.analyze.expressions.ExpressionAnalyzer;
 import io.crate.analyze.expressions.ValueNormalizer;
@@ -49,6 +48,7 @@ import org.elasticsearch.common.lucene.BytesRefs;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 class InsertFromValuesAnalyzer extends AbstractInsertAnalyzer {
 
@@ -92,10 +92,10 @@ class InsertFromValuesAnalyzer extends AbstractInsertAnalyzer {
 
         DocTableRelation tableRelation = new DocTableRelation(tableInfo);
         FieldProvider fieldProvider = new NameFieldProvider(tableRelation);
-        Function<ParameterExpression, Symbol> convertParamFunction = analysis.parameterContext();
+        Function<ParameterExpression, ? extends Symbol> convertParamFunction = analysis.parameterContext();
         ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(
             functions,
-            analysis.sessionContext(),
+            analysis.sessionContext().options(),
             convertParamFunction,
             fieldProvider,
             null
@@ -106,7 +106,7 @@ class InsertFromValuesAnalyzer extends AbstractInsertAnalyzer {
         ValuesResolver valuesResolver = new ValuesResolver(tableRelation);
         ExpressionAnalyzer valuesAwareExpressionAnalyzer = new ValuesAwareExpressionAnalyzer(
             functions,
-            analysis.sessionContext(),
+            analysis.sessionContext().options(),
             convertParamFunction,
             fieldProvider,
             valuesResolver);

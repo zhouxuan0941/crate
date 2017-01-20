@@ -21,8 +21,6 @@
 
 package io.crate.analyze;
 
-import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.doc.DocSysColumns;
 import org.apache.lucene.util.BytesRef;
@@ -34,39 +32,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 
 public class Id {
 
-    private final static Function<List<BytesRef>, String> RANDOM_ID = new Function<List<BytesRef>, String>() {
-        @Nullable
-        @Override
-        public String apply(@Nullable List<BytesRef> input) {
-            return Strings.base64UUID();
-        }
-    };
+    private final static Function<List<BytesRef>, String> RANDOM_ID = i -> Strings.base64UUID();
 
-    private final static Function<List<BytesRef>, String> ONLY_ITEM_NULL_VALIDATION = new Function<List<BytesRef>, String>() {
-        @Nullable
-        @Override
-        public String apply(@Nullable List<BytesRef> input) {
-            assert input != null : "input must not be null";
-            return ensureNonNull(getOnlyElement(input)).utf8ToString();
-        }
-    };
+    private final static Function<List<BytesRef>, String> ONLY_ITEM_NULL_VALIDATION = input ->
+        ensureNonNull(getOnlyElement(input)).utf8ToString();
 
-    private final static Function<List<BytesRef>, String> ONLY_ITEM = new Function<List<BytesRef>, String>() {
-        @Nullable
-        @Override
-        public String apply(@Nullable List<BytesRef> input) {
-            assert input != null : "input must not be null";
-            BytesRef element = getOnlyElement(input);
-            if (element == null) {
-                return null;
-            }
-            return element.utf8ToString();
+    private final static Function<List<BytesRef>, String> ONLY_ITEM = input -> {
+        BytesRef element = getOnlyElement(input);
+        if (element == null) {
+            return null;
         }
+        return element.utf8ToString();
     };
 
     /**
@@ -82,16 +64,11 @@ public class Id {
             case 1:
                 return ONLY_ITEM_NULL_VALIDATION;
             default:
-                return new Function<List<BytesRef>, String>() {
-                    @Nullable
-                    @Override
-                    public String apply(@Nullable List<BytesRef> input) {
-                        assert input != null : "input must not be null";
-                        if (input.size() != numPks) {
-                            throw new IllegalArgumentException("Missing primary key values");
-                        }
-                        return encode(input, clusteredByPosition);
+                return input -> {
+                    if (input.size() != numPks) {
+                        throw new IllegalArgumentException("Missing primary key values");
                     }
+                    return encode(input, clusteredByPosition);
                 };
         }
     }
@@ -152,7 +129,7 @@ public class Id {
             }
             return Base64.encodeBytes(out.bytes().toBytes());
         } catch (IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

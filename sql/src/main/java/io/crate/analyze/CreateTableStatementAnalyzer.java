@@ -54,11 +54,11 @@ public class CreateTableStatementAnalyzer extends DefaultTraversalVisitor<Create
     static class Context {
 
         private final CreateTableAnalyzedStatement statement;
-        private final ParameterContext parameterContext;
+        private final Row parameters;
 
-        public Context(CreateTableAnalyzedStatement statement, ParameterContext parameterContext) {
+        public Context(CreateTableAnalyzedStatement statement, Row parameters) {
             this.statement = statement;
-            this.parameterContext = parameterContext;
+            this.parameters = parameters;
         }
     }
 
@@ -80,10 +80,9 @@ public class CreateTableStatementAnalyzer extends DefaultTraversalVisitor<Create
     }
 
     public CreateTableAnalyzedStatement analyze(CreateTable createTable,
-                                                ParameterContext parameterContext,
+                                                Row parameters,
                                                 SessionContext sessionContext) {
         CreateTableAnalyzedStatement statement = new CreateTableAnalyzedStatement();
-        Row parameters = parameterContext.parameters();
 
         TableIdent tableIdent = getTableIdent(createTable, sessionContext);
         statement.table(tableIdent, createTable.ifNotExists(), schemas);
@@ -105,15 +104,15 @@ public class CreateTableStatementAnalyzer extends DefaultTraversalVisitor<Create
             tableIdent,
             Collections.emptyList(),
             functions,
-            parameterContext,
-            sessionContext);
+            e -> Parameters.convert(parameters, e),
+            sessionContext.options());
 
         // update table settings
         statement.tableParameter().settingsBuilder().put(tableElements.settings());
         statement.tableParameter().settingsBuilder().put(
             IndexMetaData.SETTING_NUMBER_OF_SHARDS, numberOfShards.defaultNumberOfShards());
 
-        Context context = new Context(statement, parameterContext);
+        Context context = new Context(statement, parameters);
         statement.analyzedTableElements(tableElements);
         for (CrateTableOption option : createTable.crateTableOptions()) {
             process(option, context);
@@ -135,7 +134,7 @@ public class CreateTableStatementAnalyzer extends DefaultTraversalVisitor<Create
     public CreateTableAnalyzedStatement visitClusteredBy(ClusteredBy clusteredBy, Context context) {
         if (clusteredBy.column().isPresent()) {
             ColumnIdent routingColumn = ColumnIdent.fromPath(
-                ExpressionToStringVisitor.convert(clusteredBy.column().get(), context.parameterContext.parameters()));
+                ExpressionToStringVisitor.convert(clusteredBy.column().get(), context.parameters));
 
             for (AnalyzedColumnDefinition column : context.statement.analyzedTableElements().partitionedByColumns) {
                 if (column.ident().equals(routingColumn)) {
@@ -156,7 +155,7 @@ public class CreateTableStatementAnalyzer extends DefaultTraversalVisitor<Create
         }
         context.statement.tableParameter().settingsBuilder().put(
             IndexMetaData.SETTING_NUMBER_OF_SHARDS,
-            numberOfShards.fromClusteredByClause(clusteredBy, context.parameterContext.parameters())
+            numberOfShards.fromClusteredByClause(clusteredBy, context.parameters)
         );
         return context.statement;
     }
@@ -165,7 +164,7 @@ public class CreateTableStatementAnalyzer extends DefaultTraversalVisitor<Create
     public CreateTableAnalyzedStatement visitPartitionedBy(PartitionedBy node, Context context) {
         for (Expression partitionByColumn : node.columns()) {
             ColumnIdent partitionedByIdent = ColumnIdent.fromPath(
-                ExpressionToStringVisitor.convert(partitionByColumn, context.parameterContext.parameters()));
+                ExpressionToStringVisitor.convert(partitionByColumn, context.parameters));
             context.statement.analyzedTableElements().changeToPartitionedByColumn(partitionedByIdent, false);
             ColumnIdent routing = context.statement.routing();
             if (routing != null && routing.equals(partitionedByIdent)) {
