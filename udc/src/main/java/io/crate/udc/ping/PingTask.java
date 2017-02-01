@@ -40,7 +40,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimerTask;
@@ -50,7 +49,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class PingTask extends TimerTask {
 
-    public static final TimeValue HTTP_TIMEOUT = new TimeValue(5, TimeUnit.SECONDS);
+    private static final TimeValue HTTP_TIMEOUT = new TimeValue(5, TimeUnit.SECONDS);
 
     private static final ESLogger logger = Loggers.getLogger(PingTask.class);
 
@@ -72,7 +71,6 @@ public class PingTask extends TimerTask {
         this.pingUrl = pingUrl;
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, Object> getKernelData() {
         return extendedNodeInfo.osInfo().kernelData();
     }
@@ -94,24 +92,26 @@ public class PingTask extends TimerTask {
         return clusterService.localNode().isMasterNode();
     }
 
-    private Map<String, Object> getCounters() {
-        return new HashMap<String, Object>() {{
-            put("success", successCounter.get());
-            put("failure", failCounter.get());
-        }};
-    }
-
     @Nullable
     String getHardwareAddress() {
         String macAddress = extendedNodeInfo.networkInfo().primaryInterface().macAddress();
         return (macAddress == null || macAddress.equals("")) ? null : macAddress.toLowerCase(Locale.ENGLISH);
     }
 
-    private String getCrateVersion() {
+    private String getCounters() throws IOException {
+        return XContentFactory.jsonBuilder()
+            .startObject()
+            .field("success", successCounter.get())
+            .field("failure", failCounter.get())
+            .endObject()
+            .string();
+    }
+
+    private static String getCrateVersion() {
         return Version.CURRENT.number();
     }
 
-    private String getJavaVersion() {
+    private static String getJavaVersion() {
         return System.getProperty("java.version");
     }
 
@@ -132,7 +132,7 @@ public class PingTask extends TimerTask {
         sb.append("&");
 
         sb.append("ping_count=");
-        sb.append(XContentFactory.jsonBuilder().map(getCounters()).string());
+        sb.append(getCounters());
         sb.append("&");
 
         sb.append("hardware_address=");
