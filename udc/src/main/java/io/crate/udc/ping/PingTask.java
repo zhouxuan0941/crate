@@ -21,7 +21,6 @@
 
 package io.crate.udc.ping;
 
-import com.google.common.base.Joiner;
 import io.crate.ClusterIdService;
 import io.crate.Version;
 import io.crate.monitor.ExtendedNodeInfo;
@@ -41,7 +40,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -71,13 +73,12 @@ public class PingTask extends TimerTask {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, Object> getKernelData() {
+    private Map<String, Object> getKernelData() {
         return extendedNodeInfo.osInfo().kernelData();
     }
 
-    public
     @Nullable
-    String getClusterId() {
+    private String getClusterId() {
         // wait until clusterId is available (master has been elected)
         try {
             return clusterIdService.clusterId().get().value().toString();
@@ -89,11 +90,11 @@ public class PingTask extends TimerTask {
         }
     }
 
-    public Boolean isMasterNode() {
+    private Boolean isMasterNode() {
         return clusterService.localNode().isMasterNode();
     }
 
-    public Map<String, Object> getCounters() {
+    private Map<String, Object> getCounters() {
         return new HashMap<String, Object>() {{
             put("success", successCounter.get());
             put("failure", failCounter.get());
@@ -101,48 +102,57 @@ public class PingTask extends TimerTask {
     }
 
     @Nullable
-    public String getHardwareAddress() {
+    String getHardwareAddress() {
         String macAddress = extendedNodeInfo.networkInfo().primaryInterface().macAddress();
         return (macAddress == null || macAddress.equals("")) ? null : macAddress.toLowerCase(Locale.ENGLISH);
     }
 
-    public String getCrateVersion() {
+    private String getCrateVersion() {
         return Version.CURRENT.number();
     }
 
-    public String getJavaVersion() {
+    private String getJavaVersion() {
         return System.getProperty("java.version");
     }
 
     private URL buildPingUrl() throws URISyntaxException, IOException, NoSuchAlgorithmException {
-
         URI uri = new URI(this.pingUrl);
 
-        Map<String, String> queryMap = new HashMap<>();
-        queryMap.put("cluster_id", getClusterId()); // block until clusterId is available
-        queryMap.put("kernel", XContentFactory.jsonBuilder().map(getKernelData()).string());
-        queryMap.put("master", isMasterNode().toString());
-        queryMap.put("ping_count", XContentFactory.jsonBuilder().map(getCounters()).string());
-        queryMap.put("hardware_address", getHardwareAddress());
-        queryMap.put("crate_version", getCrateVersion());
-        queryMap.put("java_version", getJavaVersion());
+        StringBuilder sb = new StringBuilder();
+        sb.append("cluster_id=");
+        sb.append(getClusterId()); // block until clusterId is available
+        sb.append("&");
+
+        sb.append("kernel=");
+        sb.append(XContentFactory.jsonBuilder().map(getKernelData()).string());
+        sb.append("&");
+
+        sb.append("master=");
+        sb.append(isMasterNode().toString());
+        sb.append("&");
+
+        sb.append("ping_count=");
+        sb.append(XContentFactory.jsonBuilder().map(getCounters()).string());
+        sb.append("&");
+
+        sb.append("hardware_address=");
+        sb.append(getHardwareAddress());
+        sb.append("&");
+
+        sb.append("crate_version=");
+        sb.append(getCrateVersion());
+        sb.append("&");
+
+        sb.append("java_version=");
+        sb.append(getJavaVersion());
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Sending data: {}", queryMap);
+            logger.debug("Sending data: {}", sb.toString());
         }
-
-        final Joiner joiner = Joiner.on('=');
-        List<String> params = new ArrayList<>(queryMap.size());
-        for (Map.Entry<String, String> entry : queryMap.entrySet()) {
-            if (entry.getValue() != null) {
-                params.add(joiner.join(entry.getKey(), entry.getValue()));
-            }
-        }
-        String query = Joiner.on('&').join(params);
 
         return new URI(
             uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(),
-            uri.getPath(), query, uri.getFragment()
+            uri.getPath(), sb.toString(), uri.getFragment()
         ).toURL();
     }
 
