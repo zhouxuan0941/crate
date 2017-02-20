@@ -7,7 +7,7 @@
  *
  * Unauthorized copying of this file, via any medium is strictly prohibited.
  *
- * To use this module, Crate must have given you permission to enable and use
+ * To use this file, Crate must have given you permission to enable and use
  * such Enterprise Features and you must have a valid Enterprise or
  * Subscription Agreement with Crate.  If you enable or use the Enterprise
  * Features, you represent and warrant that you have a valid Enterprise or
