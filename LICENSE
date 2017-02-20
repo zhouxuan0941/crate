@@ -17,13 +17,13 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
 
-However, to use any modules in this file marked as "Enterprise Features",
-Crate must have given you permission to enable and use such Enterprise
-Features and you must have a valid Enterprise or Subscription Agreement with
-Crate.  If you enable or use the Enterprise Features, you represent and
-warrant that you have a valid Enterprise or Subscription Agreement with
-Crate.  Your use of the Enterprise Features if governed by the terms and
-conditions of your Enterprise or Subscription Agreement with Crate.
+However, to use any modules marked as "Enterprise Features", Crate must have
+given you permission to enable and use such Enterprise Features and you must
+have a valid Enterprise or Subscription Agreement with Crate.  If you enable
+or use the Enterprise Features, you represent and warrant that you have a
+valid Enterprise or Subscription Agreement with Crate.  Your use of the
+Enterprise Features if governed by the terms and conditions of your
+Enterprise or Subscription Agreement with Crate.
 
 
 =============================================================================
