@@ -23,39 +23,58 @@
  * and conditions of your Enterprise or Subscription Agreement with Crate.
  */
 
-package io.crate.plugin;
+package io.crate.udc.plugin;
 
-
-import io.crate.module.AdminUIModule;
-import io.crate.rest.action.admin.AdminUIFrontpageAction;
-import org.elasticsearch.common.inject.Module;
+import io.crate.udc.service.UDCService;
+import org.elasticsearch.common.component.LifecycleComponent;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.plugins.Plugin;
-import org.elasticsearch.rest.RestModule;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Crate Admin-UI Plugin
- */
-public class AdminUIPlugin extends Plugin {
+
+public class UDCPlugin extends Plugin {
+
+    public static final String ENABLED_SETTING_NAME = "udc.enabled";
+    public static final boolean ENABLED_DEFAULT_SETTING = true;
+
+    public static final String INITIAL_DELAY_SETTING_NAME = "udc.initial_delay";
+    public static final TimeValue INITIAL_DELAY_DEFAULT_SETTING = new TimeValue(10, TimeUnit.MINUTES);
+
+    public static final String INTERVAL_SETTING_NAME = "udc.interval";
+    public static final TimeValue INTERVAL_DEFAULT_SETTING = new TimeValue(24, TimeUnit.HOURS);
+
+    public static final String URL_SETTING_NAME = "udc.url";
+    public static final String URL_DEFAULT_SETTING = "https://udc.crate.io/";
+
+    private final Settings settings;
+
+
+    public UDCPlugin(Settings settings) {
+        this.settings = settings;
+    }
 
     @Override
     public String name() {
-        return "admin-ui";
+        return "udc";
     }
 
     @Override
     public String description() {
-        return "Crate Admin-UI Plugin";
-    }
-
-    public void onModule(RestModule restModule) {
-        restModule.addRestAction(AdminUIFrontpageAction.class);
+        return "Crate plugin for Usage Data Collection (UDC)";
     }
 
     @Override
-    public Collection<Module> nodeModules() {
-        return Collections.<Module>singletonList(new AdminUIModule());
+    public Collection<Class<? extends LifecycleComponent>> nodeServices() {
+        if (!settings.getAsBoolean("node.client", false)
+            && settings.getAsBoolean(ENABLED_SETTING_NAME, ENABLED_DEFAULT_SETTING)) {
+
+            return Collections.<Class<? extends LifecycleComponent>>singletonList(UDCService.class);
+        }
+        return super.nodeServices();
     }
+
 }
