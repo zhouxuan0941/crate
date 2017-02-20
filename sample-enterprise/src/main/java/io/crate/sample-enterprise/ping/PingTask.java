@@ -1,5 +1,5 @@
 /*
- * This file contains proprietary Enterprise Features.
+ * This file is part of a module with proprietary Enterprise Features.
  *
  * Licensed to Crate.io Inc. (Crate) under one or more contributor license
  * agreements.  See the NOTICE file distributed with this work for additional
