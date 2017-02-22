@@ -3,9 +3,9 @@
     :alt: Crate
     :target: https://crate.io
 
-==================================
-CRATEDB: Put data to work. Simply.
-==================================
+=================================
+CrateDB: Put machine data to work
+=================================
 
     CrateDB allows to query and compute data with SQL in real time by providing a
     distributed aggregation engine, native search and super simple scalability.
