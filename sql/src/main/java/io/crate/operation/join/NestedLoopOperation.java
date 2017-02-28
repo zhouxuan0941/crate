@@ -200,7 +200,7 @@ public class NestedLoopOperation implements CompletionListenable {
 
         private boolean finishDownstreamIfBothSidesFinished() {
             if (traceEnabled) {
-                LOGGER.trace("phase={} method=tryFinish side={} leftFinished={} rightFinished={}",
+                LOGGER.debug("phase={} method=tryFinish side={} leftFinished={} rightFinished={}",
                     phaseId, getClass().getSimpleName(), left.upstreamFinished, right.upstreamFinished);
             }
             if (!left.upstreamFinished || !right.upstreamFinished) {
@@ -230,7 +230,7 @@ public class NestedLoopOperation implements CompletionListenable {
                 firstCall = false;
                 if (leadAcquired.compareAndSet(false, true)) {
                     if (traceEnabled) {
-                        LOGGER.trace("phase={} side={} method=exitIfFirstCallAndLead leadAcquired",
+                        LOGGER.debug("phase={} side={} method=exitIfFirstCallAndLead leadAcquired",
                             phaseId, getClass().getSimpleName());
                     }
                     return true;
@@ -281,7 +281,7 @@ public class NestedLoopOperation implements CompletionListenable {
                 Throwables.propagate(downstreamFailure);
             }
             if (stop) {
-                LOGGER.trace("phase={} side=left method=setNextRow stop=true", phaseId);
+                LOGGER.debug("phase={} side=left method=setNextRow stop=true", phaseId);
                 return Result.STOP;
             }
             // no need to materialize as it will be used before upstream is resumed
@@ -290,11 +290,11 @@ public class NestedLoopOperation implements CompletionListenable {
             if (firstCall) {
                 firstCall = false;
                 if (leadAcquired.compareAndSet(false, true)) {
-                    LOGGER.trace("phase={} side=left method=setNextRow action=leadAcquired->pause", phaseId);
+                    LOGGER.debug("phase={} side=left method=setNextRow action=leadAcquired->pause", phaseId);
                     return Result.PAUSE;
                 }
             }
-            LOGGER.trace("phase={} side=left method=setNextRow switchOnPause=true", phaseId);
+            LOGGER.debug("phase={} side=left method=setNextRow switchOnPause=true", phaseId);
             isPaused = false;
             switchTo(right.resumeable);
             if (right.upstreamFinished) {
@@ -309,18 +309,18 @@ public class NestedLoopOperation implements CompletionListenable {
             if (!this.resumeable.compareAndSet(ResumeHandle.INVALID, resumeable)) {
                 throw new AssertionError("resumeable was already set");
             }
-            LOGGER.trace("phase={} side=left method=pauseProcessed", phaseId);
+            LOGGER.debug("phase={} side=left method=pauseProcessed", phaseId);
         }
 
         @Override
         public void finish(RepeatHandle repeatHandle) {
-            LOGGER.trace("phase={} side=left method=finish", phaseId);
+            LOGGER.debug("phase={} side=left method=finish", phaseId);
             doFinish();
         }
 
         @Override
         public void fail(Throwable throwable) {
-            LOGGER.trace("phase={} side=left method=fail error={}", phaseId, throwable);
+            LOGGER.debug("phase={} side=left method=fail error={}", phaseId, throwable);
             upstreamFailure = throwable;
             doFinish();
         }
@@ -339,7 +339,7 @@ public class NestedLoopOperation implements CompletionListenable {
 
     private void switchTo(AtomicReference<ResumeHandle> atomicResumeable) {
         ResumeHandle resumeHandle = busyGet(atomicResumeable);
-        LOGGER.trace("phase={} method=switchTo resumeable={}", phaseId, resumeHandle);
+        LOGGER.debug("phase={} method=switchTo resumeable={}", phaseId, resumeHandle);
         resumeHandle.resume(false);
     }
 
@@ -394,7 +394,7 @@ public class NestedLoopOperation implements CompletionListenable {
 
         @Override
         public void pauseProcessed(final ResumeHandle resumeHandle) {
-            LOGGER.trace("phase={} side=right method=pauseProcessed suspendThread={}", phaseId, suspendThread);
+            LOGGER.debug("phase={} side=right method=pauseProcessed suspendThread={}", phaseId, suspendThread);
 
             if (suspendThread) {
                 suspendThread = false;
@@ -420,7 +420,7 @@ public class NestedLoopOperation implements CompletionListenable {
                 firstCall = false;
                 if (leadAcquired.compareAndSet(false, true)) {
                     lastRow = new RowN(rightRow.materialize());
-                    LOGGER.trace("phase={} side=right method=setNextRow action=leadAcquired->pause", phaseId);
+                    LOGGER.debug("phase={} side=right method=setNextRow action=leadAcquired->pause", phaseId);
                     suspendThread = true;
                     return Result.PAUSE;
                 } else if (left.lastRow == null) {
@@ -446,7 +446,7 @@ public class NestedLoopOperation implements CompletionListenable {
         RowReceiver.Result emitRowAndTrace(Row row) {
             RowReceiver.Result result = downstream.setNextRow(row);
             if (traceEnabled && result != Result.CONTINUE) {
-                LOGGER.trace("phase={} side=right method=emitRow result={}", phaseId, result);
+                LOGGER.debug("phase={} side=right method=emitRow result={}", phaseId, result);
             }
             if (result == Result.STOP) {
                 stop = true;
@@ -456,7 +456,7 @@ public class NestedLoopOperation implements CompletionListenable {
 
         @Override
         public void finish(final RepeatHandle repeatHandle) {
-            LOGGER.trace("phase={} side=right method=finish firstCall={}", phaseId, firstCall);
+            LOGGER.debug("phase={} side=right method=finish firstCall={}", phaseId, firstCall);
 
             this.resumeable.set(new ResumeHandle() {
                 @Override
@@ -482,7 +482,7 @@ public class NestedLoopOperation implements CompletionListenable {
                     combinedRow.innerRow = rightNullRow;
                     try {
                         Result result = emitRowAndTrace(combinedRow);
-                        LOGGER.trace("phase={} side=right method=finish firstCall={} emitNullRow result={}", phaseId, firstCall, result);
+                        LOGGER.debug("phase={} side=right method=finish firstCall={} emitNullRow result={}", phaseId, firstCall, result);
                         switch (result) {
                             case CONTINUE:
                                 break;
@@ -535,7 +535,7 @@ public class NestedLoopOperation implements CompletionListenable {
 
         @Override
         public void fail(Throwable throwable) {
-            LOGGER.trace("phase={} side=right method=fail error={}", phaseId, throwable);
+            LOGGER.debug("phase={} side=right method=fail error={}", phaseId, throwable);
             stop = true;
             upstreamFailure = throwable;
             if (tryFinish()) {
