@@ -263,7 +263,13 @@ idea {
                     it.option.find { it.@name == "myName" }?.@value == "CrateASL2"
                 }
                 if (aslCopyright == null) {
-                    copyrightManager.append(new XmlParser().parse(file("idea/copyright.xml")))
+                    copyrightManager.append(new XmlParser().parse(file("idea/copyrightCrateASL2.xml")))
+                }
+                def enterpriseCopyright = copyrightManager.copyright.find {
+                    it.option.find { it.@name == "myName" }?.@value == "CrateEnterprise"
+                }
+                if (enterpriseCopyright == null) {
+                    copyrightManager.append(new XmlParser().parse(file("idea/copyrightCrateEnterprise.xml")))
                 }
             }
         }
