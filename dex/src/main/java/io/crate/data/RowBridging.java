@@ -70,6 +70,16 @@ public class RowBridging {
             public Object[] materialize() {
                 return Buckets.materialize(this);
             }
+
+            @Override
+            public double getDouble(int index) {
+                return inputs.get(index).getDouble();
+            }
+
+            @Override
+            public boolean hasValue(int index) {
+                return inputs.get(index).hasValue();
+            }
         };
     }
 }

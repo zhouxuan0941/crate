@@ -32,7 +32,6 @@ import java.io.IOException;
 public class FloatColumnReference extends FieldCacheExpression<IndexNumericFieldData, Float> {
 
     private SortedNumericDoubleValues values;
-    private Float value;
 
     public FloatColumnReference(String columnName, MappedFieldType fieldType) {
         super(columnName, fieldType);
@@ -40,23 +39,41 @@ public class FloatColumnReference extends FieldCacheExpression<IndexNumericField
 
     @Override
     public Float value() {
-        return value;
+        switch (values.count()) {
+            case 0:
+                return null;
+
+            case 1:
+                return (float) values.valueAt(0);
+
+            default:
+                throw new GroupByOnArrayUnsupportedException(columnName);
+        }
+    }
+
+    @Override
+    public double getDouble() {
+        return values.valueAt(0);
+    }
+
+    @Override
+    public boolean hasValue() {
+        switch (values.count()) {
+            case 0:
+                return false;
+
+            case 1:
+                return true;
+
+            default:
+                throw new GroupByOnArrayUnsupportedException(columnName);
+        }
     }
 
     @Override
     public void setNextDocId(int docId) {
         super.setNextDocId(docId);
         values.setDocument(docId);
-        switch (values.count()) {
-            case 0:
-                value = null;
-                break;
-            case 1:
-                value = (float) values.valueAt(0);
-                break;
-            default:
-                throw new GroupByOnArrayUnsupportedException(columnName);
-        }
     }
 
     @Override

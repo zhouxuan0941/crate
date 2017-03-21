@@ -24,9 +24,9 @@ package io.crate.operation.aggregation.impl;
 import com.google.common.collect.ImmutableList;
 import io.crate.Streamer;
 import io.crate.breaker.RamAccountingContext;
+import io.crate.data.Input;
 import io.crate.metadata.FunctionIdent;
 import io.crate.metadata.FunctionInfo;
-import io.crate.data.Input;
 import io.crate.operation.aggregation.AggregationFunction;
 import io.crate.types.DataType;
 import io.crate.types.DataTypeFactory;
@@ -160,10 +160,10 @@ public class AverageAggregation extends AggregationFunction<AverageAggregation.A
     @Override
     public AverageState iterate(RamAccountingContext ramAccountingContext, AverageState state, Input... args) {
         if (state != null) {
-            Number value = (Number) args[0].value();
-            if (value != null) {
+            Input arg = args[0];
+            if (arg.hasValue()) {
                 state.count++;
-                state.sum += value.doubleValue();
+                state.sum += arg.getDouble();
             }
         }
         return state;
