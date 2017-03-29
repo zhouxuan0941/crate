@@ -23,7 +23,13 @@
 package io.crate.operation.collect.collectors;
 
 import io.crate.breaker.RamAccountingContext;
+import io.crate.data.BatchIterator;
+import io.crate.data.BatchRowVisitor;
 import io.crate.data.Input;
+import io.crate.operation.collect.InputCollectExpression;
+import io.crate.operation.projectors.SortingProjector;
+import io.crate.operation.projectors.SortingTopNProjector;
+import io.crate.operation.projectors.sorting.OrderingByPosition;
 import io.crate.operation.reference.doc.lucene.CollectorContext;
 import io.crate.operation.reference.doc.lucene.IntegerColumnReference;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -43,6 +49,7 @@ import org.openjdk.jmh.infra.Blackhole;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.mock;
 
@@ -94,5 +101,47 @@ public class LuceneBatchIteratorBenchmark {
         while (it.moveNext()) {
             blackhole.consume(input.value());
         }
+    }
+
+    @Benchmark
+    public Long measureConsumeLuceneBatchIteratorWithSorting() throws Exception {
+        LuceneBatchIterator it = new LuceneBatchIterator(
+            indexSearcher,
+            new MatchAllDocsQuery(),
+            null,
+            false,
+            collectorContext,
+            RAM_ACCOUNTING_CONTEXT,
+            columnRefs,
+            columnRefs
+        );
+        OrderingByPosition<Object[]> comparator = OrderingByPosition.arrayOrdering(0, false, null);
+        List<InputCollectExpression> expressions = Collections.singletonList(new InputCollectExpression(0));
+
+        SortingProjector sortingProjector =
+            new SortingProjector(expressions, expressions, expressions.size(), comparator, 0);
+
+        BatchIterator batchIterator = sortingProjector.apply(it);
+        return BatchRowVisitor.visitRows(batchIterator, Collectors.counting()).get(30, TimeUnit.SECONDS);
+    }
+
+    @Benchmark
+    public Long measureConsumeLuceneBatchIteratorWithSortingLimit100() throws Exception {
+        LuceneBatchIterator it = new LuceneBatchIterator(
+            indexSearcher,
+            new MatchAllDocsQuery(),
+            null,
+            false,
+            collectorContext,
+            RAM_ACCOUNTING_CONTEXT,
+            columnRefs,
+            columnRefs
+        );
+        OrderingByPosition<Object[]> comparator = OrderingByPosition.arrayOrdering(0, false, null);
+        List<InputCollectExpression> expressions = Collections.singletonList(new InputCollectExpression(0));
+
+        SortingTopNProjector projector = new SortingTopNProjector(expressions, expressions, 1, comparator, 100, 0);
+        BatchIterator batchIterator = projector.apply(it);
+        return BatchRowVisitor.visitRows(batchIterator, Collectors.counting()).get(30, TimeUnit.SECONDS);
     }
 }

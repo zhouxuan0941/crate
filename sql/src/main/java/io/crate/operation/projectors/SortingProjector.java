@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * Compared to {@link SortingTopNProjector} this projector does not support limiting,
  * while the {@link SortingTopNProjector} does not work WITHOUT a limit.
  */
-class SortingProjector implements Projector {
+public class SortingProjector implements Projector {
 
     private final Collection<? extends Input<?>> inputs;
     private final Iterable<? extends CollectExpression<Row, ?>> collectExpressions;
@@ -53,7 +53,7 @@ class SortingProjector implements Projector {
      * @param comparator         ordering that is used to compare the rows
      * @param offset             the initial offset, this number of rows are skipped
      */
-    SortingProjector(Collection<? extends Input<?>> inputs,
+    public SortingProjector(Collection<? extends Input<?>> inputs,
                      Iterable<? extends CollectExpression<Row, ?>> collectExpressions,
                      int numOutputs,
                      Comparator<Object[]> comparator,

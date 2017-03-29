@@ -25,7 +25,9 @@ package io.crate.operation.collect.collectors;
 import com.google.common.util.concurrent.MoreExecutors;
 import io.crate.analyze.OrderBy;
 import io.crate.data.BatchIterator;
+import io.crate.data.BatchRowVisitor;
 import io.crate.data.Input;
+import io.crate.data.LimitingBatchIterator;
 import io.crate.lucene.FieldTypeLookup;
 import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceIdent;
@@ -54,6 +56,7 @@ import org.openjdk.jmh.infra.Blackhole;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.mock;
 
@@ -108,7 +111,7 @@ public class OrderedLuceneBatchIteratorBenchmark {
     @Benchmark
     public void measureLoadAndConsumeOrderedLuceneBatchIterator(Blackhole blackhole) {
         BatchIterator it = OrderedLuceneBatchIteratorFactory.newInstance(
-            Collections.singletonList(createOrderedCollector(indexSearcher, columnName)),
+            Collections.singletonList(createOrderedCollector(indexSearcher, columnName, 10_000_000)),
             1,
             OrderingByPosition.rowOrdering(new int[]{0}, reverseFlags, nullsFirst),
             MoreExecutors.directExecutor(),
@@ -123,8 +126,34 @@ public class OrderedLuceneBatchIteratorBenchmark {
         }
     }
 
+    @Benchmark
+    public Long measureLoadAndConsumeOrderedLuceneBatchIteratorCounting() throws Exception {
+        BatchIterator it = OrderedLuceneBatchIteratorFactory.newInstance(
+            Collections.singletonList(createOrderedCollector(indexSearcher, columnName, 10_000_000)),
+            1,
+            OrderingByPosition.rowOrdering(new int[]{0}, reverseFlags, nullsFirst),
+            MoreExecutors.directExecutor(),
+            false
+        );
+        return BatchRowVisitor.visitRows(it, Collectors.counting()).get(30, TimeUnit.SECONDS);
+    }
+
+    @Benchmark
+    public Long measureLoadAndConsumeOrderedLuceneBatchIteratorCountingLimit100() throws Exception {
+        BatchIterator it = OrderedLuceneBatchIteratorFactory.newInstance(
+            Collections.singletonList(createOrderedCollector(indexSearcher, columnName, 100)),
+            1,
+            OrderingByPosition.rowOrdering(new int[]{0}, reverseFlags, nullsFirst),
+            MoreExecutors.directExecutor(),
+            false
+        );
+        it = LimitingBatchIterator.newInstance(it, 100);
+        return BatchRowVisitor.visitRows(it, Collectors.counting()).get(30, TimeUnit.SECONDS);
+    }
+
     private LuceneOrderedDocCollector createOrderedCollector(IndexSearcher searcher,
-                                                             String sortByColumnName) {
+                                                             String sortByColumnName,
+                                                             int batchSize) {
         List<LuceneCollectorExpression<?>> expressions = Collections.singletonList(
             new OrderByCollectorExpression(reference, orderBy));
         return new LuceneOrderedDocCollector(
@@ -133,7 +162,7 @@ public class OrderedLuceneBatchIteratorBenchmark {
             new MatchAllDocsQuery(),
             null,
             false,
-            10_000_000,
+            batchSize,
             fieldTypeLookup,
             collectorContext,
             orderBy,
