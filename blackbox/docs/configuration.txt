@@ -1945,9 +1945,16 @@ Enterprise License
 
 **license.enterprise**
   | *Default:*  ``false``
-  | *Runtime:*  ``no``
+  | *Runtime:*  ``yes``
 
   Setting this to ``true`` enables the `Enterprise Edition`_ of CrateDB.
+
+**license.ident**
+  | *Default:*  ``null``
+  | *Runtime:*  ``yes``
+
+  Setting this to the licence key delivered to you by Crate.io activates
+  the `Enterprise Edition`_ of CrateDB.
 
 .. NOTE::
 
