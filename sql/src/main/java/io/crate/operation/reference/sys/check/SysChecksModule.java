@@ -21,10 +21,7 @@
 
 package io.crate.operation.reference.sys.check;
 
-import io.crate.operation.reference.sys.check.cluster.MinMasterNodesSysCheck;
-import io.crate.operation.reference.sys.check.cluster.NumberOfPartitionsSysCheck;
-import io.crate.operation.reference.sys.check.cluster.TablesNeedRecreationSysCheck;
-import io.crate.operation.reference.sys.check.cluster.TablesNeedUpgradeSysCheck;
+import io.crate.operation.reference.sys.check.cluster.*;
 import org.elasticsearch.common.inject.AbstractModule;
 import org.elasticsearch.common.inject.multibindings.Multibinder;
 
@@ -37,5 +34,6 @@ public class SysChecksModule extends AbstractModule {
         checksBinder.addBinding().to(NumberOfPartitionsSysCheck.class);
         checksBinder.addBinding().to(TablesNeedRecreationSysCheck.class);
         checksBinder.addBinding().to(TablesNeedUpgradeSysCheck.class);
+        checksBinder.addBinding().to(LicenseEnterpriseChecks.class);
     }
 }

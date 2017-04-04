@@ -79,6 +79,12 @@ public class SysCheckerIntegrationTest extends SQLTransportIntegrationTest {
         assertThat(TestingHelpers.printedTable(response.rows()), is("2| true\n"));
     }
 
+    @Test
+    public void testUnlicencedEnterpriseCheck() {
+        SQLResponse response = execute("select severity, passed from sys.checks where id=?", new Object[]{5});
+        assertThat(TestingHelpers.printedTable(response.rows()), is("3| true\n"));
+    }
+
     @After
     public void tearDown() throws Exception {
         execute("RESET GLOBAL discovery.zen.minimum_master_nodes");
