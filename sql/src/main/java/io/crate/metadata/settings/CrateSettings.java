@@ -1525,12 +1525,6 @@ public class CrateSettings {
         }
     };
 
-    public static final List<Setting<?, ?>> CRATE_SETTINGS = ImmutableList.of(
-        STATS,
-        BULK,
-        GRACEFUL_STOP
-    );
-
     public static final NestedSetting LICENSE = new NestedSetting() {
         @Override
         public String name() {
@@ -1539,7 +1533,7 @@ public class CrateSettings {
 
         @Override
         public List<Setting> children() {
-            return ImmutableList.of(LICENSE_ENTERPRISE, LICENSE_IDENT);
+            return ImmutableList.<Setting>of(LICENSE_ENTERPRISE, LICENSE_IDENT);
         }
 
         @Override
@@ -1547,6 +1541,13 @@ public class CrateSettings {
             return true;
         }
     };
+
+    public static final List<Setting<?, ?>> CRATE_SETTINGS = ImmutableList.of(
+        STATS,
+        BULK,
+        LICENSE,
+        GRACEFUL_STOP
+    );
 
     public static final BoolSetting LICENSE_ENTERPRISE = new BoolSetting("enterprise", true, true) {
         @Override
@@ -1556,7 +1557,7 @@ public class CrateSettings {
     };
 
     public static final StringSetting LICENSE_IDENT =
-        new StringSetting("ident", null, true, "", LICENSE);
+        new StringSetting("ident", null, true, "not present", LICENSE);
 
     public static final List<Setting> SETTINGS = ImmutableList.of(
         STATS, CLUSTER, DISCOVERY, INDICES, BULK, GATEWAY, UDC, PSQL, LICENSE);

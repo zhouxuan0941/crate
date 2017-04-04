@@ -215,6 +215,6 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
         assertEquals(1L, response.rowCount());
         Map<String, Object> settings = (Map<String, Object>) response.rows()[0][0];
         Map<String, Object> licence = (Map<String, Object>) settings.get(CrateSettings.LICENSE.name());
-        assertThat(licence.get(CrateSettings.LICENSE_IDENT.name()), is(""));
+        assertThat(licence.get(CrateSettings.LICENSE_IDENT.name()), is("not present"));
     }
 }

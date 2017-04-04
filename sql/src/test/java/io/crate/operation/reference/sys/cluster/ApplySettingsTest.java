@@ -41,6 +41,7 @@ public class ApplySettingsTest extends CrateUnitTest {
         Settings.Builder builder = Settings.builder()
             .put(CrateSettings.STATS_JOBS_LOG_SIZE.settingName(), 1)
             .put(CrateSettings.STATS_ENABLED.settingName(), false)
+            .put(CrateSettings.LICENSE_IDENT.settingName(), "my-awesome-key")
             .put(CrateSettings.GRACEFUL_STOP_MIN_AVAILABILITY.settingName(), "full")
             .put(CrateSettings.GRACEFUL_STOP_TIMEOUT.settingName(), "1m")
             .put(CrateSettings.DISCOVERY_ZEN_MIN_MASTER_NODES.settingName(), 2);
@@ -59,6 +60,9 @@ public class ApplySettingsTest extends CrateUnitTest {
         name = CrateSettings.GRACEFUL_STOP_TIMEOUT.settingName();
         assertEquals(values.get(name), settings.get(name, "1h"));
 
+        name = CrateSettings.LICENSE_IDENT.settingName();
+        assertEquals(values.get(name), settings.get(name, "my-awesome-key"));
+
         name = CrateSettings.DISCOVERY_ZEN_MIN_MASTER_NODES.settingName();
         assertEquals(values.get(name), settings.getAsInt(name, 2));
 
@@ -71,12 +75,16 @@ public class ApplySettingsTest extends CrateUnitTest {
         values.put(CrateSettings.BULK_REQUEST_TIMEOUT.settingName(), CrateSettings.BULK_REQUEST_TIMEOUT.defaultValue());
         Settings initialSettings = Settings.builder()
             .put(CrateSettings.BULK_REQUEST_TIMEOUT.settingName(), 10L, TimeUnit.SECONDS)
+            .put(CrateSettings.LICENSE_ENTERPRISE.settingName(), false)
+            .put(CrateSettings.LICENSE_IDENT.settingName(), "")
             .build();
         ClusterSettingsExpression.ApplySettings applySettings = new ClusterSettingsExpression.ApplySettings(initialSettings, values);
 
         Settings.Builder builder = Settings.builder()
             .put(CrateSettings.BULK_REQUEST_TIMEOUT.settingName(), 1L, TimeUnit.SECONDS)
             .put(CrateSettings.STATS_ENABLED.settingName(), false)
+            .put(CrateSettings.LICENSE_ENTERPRISE.settingName(), true)
+            .put(CrateSettings.LICENSE_IDENT.settingName(), "licence1")
             .put(CrateSettings.GRACEFUL_STOP_MIN_AVAILABILITY.settingName(), "full")
             .put(CrateSettings.GRACEFUL_STOP_TIMEOUT.settingName(), "1m")
             .put(CrateSettings.DISCOVERY_ZEN_MIN_MASTER_NODES.settingName(), 2);
@@ -94,6 +102,12 @@ public class ApplySettingsTest extends CrateUnitTest {
 
         name = CrateSettings.GRACEFUL_STOP_TIMEOUT.settingName();
         assertEquals(values.get(name), settings.get(name, "1h"));
+
+        name = CrateSettings.LICENSE_ENTERPRISE.settingName();
+        assertEquals(values.get(name), settings.getAsBoolean(name, true));
+
+        name = CrateSettings.LICENSE_IDENT.settingName();
+        assertEquals(values.get(name), settings.get(name, "licence1"));
 
         name = CrateSettings.DISCOVERY_ZEN_MIN_MASTER_NODES.settingName();
         assertEquals(values.get(name), settings.getAsInt(name, 2));
