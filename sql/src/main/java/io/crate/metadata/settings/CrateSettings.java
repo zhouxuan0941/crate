@@ -1544,11 +1544,11 @@ public class CrateSettings {
 
         @Override
         public boolean isRuntime() {
-            return false;
+            return true;
         }
     };
 
-    public static final BoolSetting LICENSE_ENTERPRISE = new BoolSetting("enterprise", false, false) {
+    public static final BoolSetting LICENSE_ENTERPRISE = new BoolSetting("enterprise", true, true) {
         @Override
         public Setting parent() {
             return LICENSE;
