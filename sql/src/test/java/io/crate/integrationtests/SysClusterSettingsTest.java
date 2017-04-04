@@ -23,6 +23,7 @@ package io.crate.integrationtests;
 
 import io.crate.metadata.settings.CrateSettings;
 import io.crate.testing.UseJdbc;
+import org.apache.commons.lang3.ObjectUtils;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.MemorySizeValue;
 import org.elasticsearch.test.ESIntegTestCase;
@@ -206,5 +207,14 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
         Map<String, Object> settings = (Map<String, Object>) response.rows()[0][0];
         Map<String, Object> licence = (Map<String, Object>) settings.get(CrateSettings.LICENSE.name());
         assertThat(licence.get(CrateSettings.LICENSE_ENTERPRISE.name()), is(true));
+    }
+
+    @Test
+    public void testDefaultLicenseIdentSetting() {
+        execute("select settings from sys.cluster");
+        assertEquals(1L, response.rowCount());
+        Map<String, Object> settings = (Map<String, Object>) response.rows()[0][0];
+        Map<String, Object> licence = (Map<String, Object>) settings.get(CrateSettings.LICENSE.name());
+        assertThat(licence.get(CrateSettings.LICENSE_IDENT.name()), is(""));
     }
 }

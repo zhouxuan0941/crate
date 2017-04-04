@@ -1539,7 +1539,7 @@ public class CrateSettings {
 
         @Override
         public List<Setting> children() {
-            return ImmutableList.of(LICENSE_ENTERPRISE);
+            return ImmutableList.of(LICENSE_ENTERPRISE, LICENSE_IDENT);
         }
 
         @Override
@@ -1554,6 +1554,9 @@ public class CrateSettings {
             return LICENSE;
         }
     };
+
+    public static final StringSetting LICENSE_IDENT =
+        new StringSetting("ident", null, true, "", LICENSE);
 
     public static final List<Setting> SETTINGS = ImmutableList.of(
         STATS, CLUSTER, DISCOVERY, INDICES, BULK, GATEWAY, UDC, PSQL, LICENSE);
@@ -1753,6 +1756,8 @@ public class CrateSettings {
             new SettingsAppliers.ObjectSettingsApplier(CrateSettings.LICENSE))
         .put(CrateSettings.LICENSE_ENTERPRISE.settingName(),
             new SettingsAppliers.BooleanSettingsApplier(CrateSettings.LICENSE_ENTERPRISE))
+        .put(CrateSettings.LICENSE_IDENT.settingName(),
+            new SettingsAppliers.StringSettingsApplier(CrateSettings.LICENSE_IDENT))
         .build();
 
     /**

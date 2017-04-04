@@ -123,5 +123,7 @@ public class TestGlobalSysExpressions extends CrateUnitTest {
         Map licence = (Map) settings.get(CrateSettings.LICENSE.name());
         assertThat(licence.get(CrateSettings.LICENSE_ENTERPRISE.name()),
             is(CrateSettings.LICENSE_ENTERPRISE.defaultValue()));
+        assertThat(licence.get(CrateSettings.LICENSE_IDENT.name()),
+            is(CrateSettings.LICENSE_IDENT.defaultValue()));
     }
 }
