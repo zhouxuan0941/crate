@@ -82,7 +82,7 @@ public class SysCheckerIntegrationTest extends SQLTransportIntegrationTest {
     @Test
     public void testUnlicencedEnterpriseCheck() {
         SQLResponse response = execute("select severity, passed from sys.checks where id=?", new Object[]{5});
-        assertThat(TestingHelpers.printedTable(response.rows()), is("3| true\n"));
+        assertThat(TestingHelpers.printedTable(response.rows()), is("3| false\n"));
     }
 
     @After

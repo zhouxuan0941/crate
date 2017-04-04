@@ -81,7 +81,7 @@ public class LicenseEnterpriseChecks extends AbstractSysCheck {
     }
 
     protected boolean validate(boolean licenceEnterprise, String licenceIdent) {
-        return licenceEnterprise && licenceIdent != "not present";
+        return licenceEnterprise && licenceIdent.equals("not present");
     }
 
 }

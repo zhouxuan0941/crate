@@ -1135,8 +1135,9 @@ Example query::
   |  2 | The total number of partitions of one or more partitioned tab... |
   |  3 | The following tables need to be upgraded for compatibility wi... |
   |  4 | The following tables need to be recreated for compatibility w... |
+  |  5 | You are currently using the Enterprise Edition, but have not ... |
   +----+--------------------------------------------------------------...-+
-  SELECT 4 rows in set (... sec)
+  SELECT 5 rows in set (... sec)
 
 
 Current Checks
