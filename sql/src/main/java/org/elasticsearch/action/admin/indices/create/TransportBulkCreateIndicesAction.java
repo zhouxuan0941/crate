@@ -53,6 +53,7 @@ import org.elasticsearch.common.inject.Singleton;
 import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.common.regex.Regex;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentHelper;
 import org.elasticsearch.common.xcontent.XContentParser;
@@ -100,6 +101,7 @@ public class TransportBulkCreateIndicesAction
     private final AllocationService allocationService;
     private final Environment environment;
     private final BulkActiveShardsObserver activeShardsObserver;
+    private final NamedXContentRegistry xContentRegistry;
     private final ClusterStateTaskExecutor<BulkCreateIndicesRequest> executor = (currentState, tasks) -> {
         ClusterStateTaskExecutor.BatchResult.Builder<BulkCreateIndicesRequest> builder = ClusterStateTaskExecutor.BatchResult.builder();
         for (BulkCreateIndicesRequest request : tasks) {
@@ -124,7 +126,8 @@ public class TransportBulkCreateIndicesAction
                                             NodeServicesProvider nodeServicesProvider,
                                             AllocationService allocationService,
                                             IndexNameExpressionResolver indexNameExpressionResolver,
-                                            ActionFilters actionFilters) {
+                                            ActionFilters actionFilters,
+                                            NamedXContentRegistry xContentRegistry) {
         super(settings, NAME, transportService, clusterService, threadPool, actionFilters, indexNameExpressionResolver, BulkCreateIndicesRequest::new);
         this.environment = environment;
         this.aliasValidator = aliasValidator;
@@ -132,6 +135,7 @@ public class TransportBulkCreateIndicesAction
         this.nodeServicesProvider = nodeServicesProvider;
         this.allocationService = allocationService;
         this.activeShardsObserver = new BulkActiveShardsObserver(settings, clusterService, threadPool);
+        this.xContentRegistry = xContentRegistry;
     }
 
     @Override
@@ -451,7 +455,9 @@ public class TransportBulkCreateIndicesAction
     }
 
     private Map<String, Object> parseMapping(String mappingSource) throws Exception {
-        try (XContentParser parser = XContentFactory.xContent(mappingSource).createParser(mappingSource)) {
+        // It is safe to use NamedXContentRegistry.EMPTY here because this never uses namedObject
+        try (XContentParser parser = XContentFactory.xContent(mappingSource).createParser(NamedXContentRegistry.EMPTY,
+            mappingSource)) {
             return parser.map();
         } catch (IOException e) {
             throw new ElasticsearchException("failed to parse mapping", e);

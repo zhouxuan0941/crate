@@ -22,7 +22,7 @@
 
 package org.elasticsearch.index.mapper;
 
-import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexableField;
 import org.elasticsearch.common.io.stream.BytesStreamOutput;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static org.elasticsearch.common.xcontent.NamedXContentRegistry.EMPTY;
 
 /**
  * fieldmapper for encoding and handling of primitive arrays (non-object) explicitly
@@ -73,7 +75,7 @@ public class ArrayMapper extends FieldMapper implements ArrayValueMapperParser {
     private Mapper innerMapper;
 
     ArrayMapper(String simpleName, MappedFieldType fieldType, MappedFieldType defaultFieldType,
-                          Settings indexSettings, MultiFields multiFields, Mapper innerMapper) {
+                Settings indexSettings, MultiFields multiFields, Mapper innerMapper) {
         super(simpleName, fieldType, defaultFieldType, indexSettings, multiFields, null);
         this.innerMapper = innerMapper;
     }
@@ -142,7 +144,8 @@ public class ArrayMapper extends FieldMapper implements ArrayValueMapperParser {
         innerBuilder = innerMapper.toXContent(innerBuilder, params);
         innerBuilder.endObject();
         innerBuilder.close();
-        XContentParser parser = builder.contentType().xContent().createParser(innerBuilder.bytes());
+        // It is safe to use NamedXContentRegistry.EMPTY here because this never uses namedObject
+        XContentParser parser = builder.contentType().xContent().createParser(EMPTY, innerBuilder.bytes());
 
         //noinspection StatementWithEmptyBody
         while ((parser.nextToken() != XContentParser.Token.START_OBJECT)) {
@@ -152,7 +155,7 @@ public class ArrayMapper extends FieldMapper implements ArrayValueMapperParser {
         //noinspection unchecked
         Map<String, Object> innerMap = (Map<String, Object>) parser.mapOrdered().get(innerMapper.simpleName());
 
-        assert innerMap != null: "innerMap was null";
+        assert innerMap != null : "innerMap was null";
 
         builder.startObject(name);
         builder.field("type", contentType);
@@ -216,7 +219,7 @@ public class ArrayMapper extends FieldMapper implements ArrayValueMapperParser {
     }
 
     @Override
-    protected void parseCreateField(ParseContext context, List<Field> fields) throws IOException {
+    protected void parseCreateField(ParseContext context, List<IndexableField> fields) throws IOException {
         // parseCreateField is called in the original FieldMapper parse method.
         // Since parse is overwritten parseCreateField is never called
         throw new UnsupportedOperationException("parseCreateField not supported for " +

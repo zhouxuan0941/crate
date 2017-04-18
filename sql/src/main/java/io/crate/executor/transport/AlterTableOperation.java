@@ -56,6 +56,7 @@ import org.elasticsearch.common.compress.CompressedXContent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.Singleton;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentHelper;
 import org.elasticsearch.common.xcontent.XContentParser;
@@ -67,6 +68,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
+
+import static org.elasticsearch.common.xcontent.NamedXContentRegistry.EMPTY;
 
 @Singleton
 public class AlterTableOperation {
@@ -259,7 +262,7 @@ public class AlterTableOperation {
     }
 
     private Map<String, Object> parseMapping(String mappingSource) throws IOException {
-        try (XContentParser parser = XContentFactory.xContent(mappingSource).createParser(mappingSource)) {
+        try (XContentParser parser = XContentFactory.xContent(mappingSource).createParser(EMPTY, mappingSource)) {
             return parser.map();
         } catch (IOException e) {
             throw new ElasticsearchException("failed to parse mapping");
