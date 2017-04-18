@@ -29,6 +29,7 @@ import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.network.NetworkService;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.http.HttpTransportSettings;
+import org.elasticsearch.node.CrateSettingsPreparer;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.transport.Netty3Plugin;
 import org.elasticsearch.transport.TransportSettings;
