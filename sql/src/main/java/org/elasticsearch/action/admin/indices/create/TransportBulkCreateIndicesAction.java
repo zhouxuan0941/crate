@@ -61,7 +61,6 @@ import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.IndexService;
-import org.elasticsearch.index.NodeServicesProvider;
 import org.elasticsearch.index.mapper.DocumentMapper;
 import org.elasticsearch.index.mapper.MapperParsingException;
 import org.elasticsearch.index.mapper.MapperService;
@@ -77,6 +76,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+
+import static org.elasticsearch.indices.cluster.IndicesClusterStateService.AllocatedIndices.IndexRemovalReason.FAILURE;
 
 
 /**
@@ -97,13 +98,13 @@ public class TransportBulkCreateIndicesAction
 
     private final AliasValidator aliasValidator;
     private final IndicesService indicesService;
-    private final NodeServicesProvider nodeServicesProvider;
     private final AllocationService allocationService;
     private final Environment environment;
     private final BulkActiveShardsObserver activeShardsObserver;
     private final NamedXContentRegistry xContentRegistry;
     private final ClusterStateTaskExecutor<BulkCreateIndicesRequest> executor = (currentState, tasks) -> {
-        ClusterStateTaskExecutor.BatchResult.Builder<BulkCreateIndicesRequest> builder = ClusterStateTaskExecutor.BatchResult.builder();
+        ClusterStateTaskExecutor.ClusterTasksResult.Builder<BulkCreateIndicesRequest> builder =
+            ClusterStateTaskExecutor.ClusterTasksResult.builder();
         for (BulkCreateIndicesRequest request : tasks) {
             try {
                 currentState = executeCreateIndices(currentState, request);
@@ -123,7 +124,6 @@ public class TransportBulkCreateIndicesAction
                                             ThreadPool threadPool,
                                             AliasValidator aliasValidator,
                                             IndicesService indicesService,
-                                            NodeServicesProvider nodeServicesProvider,
                                             AllocationService allocationService,
                                             IndexNameExpressionResolver indexNameExpressionResolver,
                                             ActionFilters actionFilters,
@@ -132,7 +132,6 @@ public class TransportBulkCreateIndicesAction
         this.environment = environment;
         this.aliasValidator = aliasValidator;
         this.indicesService = indicesService;
-        this.nodeServicesProvider = nodeServicesProvider;
         this.allocationService = allocationService;
         this.activeShardsObserver = new BulkActiveShardsObserver(settings, clusterService, threadPool);
         this.xContentRegistry = xContentRegistry;
@@ -218,13 +217,13 @@ public class TransportBulkCreateIndicesAction
                                                        (tmpImd.getNumberOfReplicas() + 1) + "]");
                 }
                 // create the index here (on the master) to validate it can be created, as well as adding the mapping
-                IndexService indexService = indicesService.createIndex(nodeServicesProvider, tmpImd, Collections.emptyList());
+                IndexService indexService = indicesService.createIndex(tmpImd, Collections.emptyList());
                 createdIndices.add(indexService.index());
 
                 // now add the mappings
                 MapperService mapperService = indexService.mapperService();
                 try {
-                    mapperService.merge(mappings, true);
+                    mapperService.merge(mappings, MapperService.MergeReason.MAPPING_UPDATE, true);
                 } catch (MapperParsingException mpe) {
                     removalReasons.add("failed on parsing mappings on index creation");
                     throw mpe;
@@ -288,7 +287,7 @@ public class TransportBulkCreateIndicesAction
             for (int i = 0; i < createdIndices.size(); i++) {
                 // Index was already partially created - need to clean up
                 String removalReason = removalReasons.size() > i ? removalReasons.get(i) : "failed to create index";
-                indicesService.removeIndex(createdIndices.get(i), removalReason);
+                indicesService.removeIndex(createdIndices.get(i), FAILURE, removalReason);
             }
         }
     }
