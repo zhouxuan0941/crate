@@ -42,6 +42,7 @@ import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.common.inject.ModulesBuilder;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.hamcrest.BaseMatcher;
@@ -416,7 +417,7 @@ public class TestingHelpers {
 
     public static Map<String, Object> jsonMap(String json) {
         try {
-            return JsonXContent.jsonXContent.createParser(json).map();
+            return JsonXContent.jsonXContent.createParser(NamedXContentRegistry.EMPTY, json).map();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -444,7 +445,8 @@ public class TestingHelpers {
     /**
      * Converts file path separators of a string into canonical form
      * e.g. Windows: "/test/" --> "\test\"
-     *      UNIX: "/test/"   --> "/test/"
+     * UNIX: "/test/"   --> "/test/"
+     *
      * @param str The string that contains file path separator
      * @return the resolved string
      */
