@@ -41,7 +41,8 @@ public class Version {
 
 
     public static final boolean SNAPSHOT = true;
-    public static final Version CURRENT = new Version(1020099, SNAPSHOT, org.elasticsearch.Version.V_5_0_2);
+    // FIXME whys is ES version v5.3.0 still UNRELEASED ?
+    public static final Version CURRENT = new Version(1020099, SNAPSHOT, org.elasticsearch.Version.V_5_3_0_UNRELEASED);
 
     static {
         // safe-guard that we don't release a version with DEBUG_MODE set to true
