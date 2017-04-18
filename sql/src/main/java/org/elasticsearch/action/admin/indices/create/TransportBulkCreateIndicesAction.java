@@ -228,11 +228,16 @@ public class TransportBulkCreateIndicesAction
                     removalReasons.add("failed on parsing mappings on index creation");
                     throw mpe;
                 }
-
-                QueryShardContext queryShardContext = indexService.newQueryShardContext();
+                // the context is only used for validation so it's fine to pass fake values for the shard id and the current
+                // timestamp
+                QueryShardContext queryShardContext = indexService.newQueryShardContext(0, null,
+                    () -> 0L);
                 for (AliasMetaData aliasMetaData : templatesAliases.values()) {
                     if (aliasMetaData.filter() != null) {
-                        aliasValidator.validateAliasFilter(aliasMetaData.alias(), aliasMetaData.filter().uncompressed(), queryShardContext);
+                        aliasValidator.validateAliasFilter(aliasMetaData.alias(),
+                            aliasMetaData.filter().uncompressed(),
+                            queryShardContext,
+                            xContentRegistry);
                     }
                 }
 
