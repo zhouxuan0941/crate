@@ -30,6 +30,7 @@ import io.crate.Constants;
 import io.crate.analyze.AnalyzedColumnDefinition;
 import io.crate.analyze.ConstraintsValidator;
 import io.crate.analyze.symbol.InputColumn;
+import io.crate.exceptions.Exceptions;
 import io.crate.executor.transport.task.elasticsearch.FieldExtractorFactory;
 import io.crate.executor.transport.task.elasticsearch.SymbolToFieldExtractor;
 import io.crate.jobs.JobContextService;
@@ -63,6 +64,7 @@ import org.elasticsearch.index.VersionType;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.engine.DocumentSourceMissingException;
 import org.elasticsearch.index.engine.Engine;
+import org.elasticsearch.index.engine.Engine.IndexResult;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.get.GetResult;
 import org.elasticsearch.index.mapper.*;
@@ -79,8 +81,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.elasticsearch.action.support.replication.ReplicationOperation.ignoreReplicaException;
 
 @Singleton
 public class TransportShardUpsertAction extends TransportShardAction<ShardUpsertRequest, ShardUpsertRequest.Item> {
@@ -117,9 +117,9 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
     }
 
     @Override
-    protected WriteResult<ShardResponse> processRequestItems(ShardId shardId,
-                                                             ShardUpsertRequest request,
-                                                             AtomicBoolean killed) throws InterruptedException {
+    protected Tuple<ShardResponse, Translog.Location> processRequestItems(ShardId shardId,
+                                                                          ShardUpsertRequest request,
+                                                                          AtomicBoolean killed) throws InterruptedException {
         ShardResponse shardResponse = new ShardResponse();
         DocTableInfo tableInfo = schemas.getWritableTable(TableIdent.fromIndexName(request.index()));
         IndexService indexService = indicesService.indexServiceSafe(shardId.getIndex());
@@ -173,14 +173,16 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                         (e instanceof VersionConflictEngineException)));
             }
         }
-        return new WriteResult<>(shardResponse, translogLocation);
+        return new Tuple<>(shardResponse, translogLocation);
     }
 
     @Override
-    protected Translog.Location processRequestItemsOnReplica(ShardId shardId, ShardUpsertRequest request) {
+    protected WriteReplicaResult<ShardUpsertRequest> processRequestItemsOnReplica(ShardId shardId,
+                                                                                  ShardUpsertRequest request) {
         IndexService indexService = indicesService.indexServiceSafe(shardId.getIndex());
         IndexShard indexShard = indexService.getShard(shardId.id());
         Translog.Location location = null;
+        Exception failure = null;
         for (ShardUpsertRequest.Item item : request.items()) {
             if (item.source() == null) {
                 if (logger.isTraceEnabled()) {
@@ -192,12 +194,10 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
             try {
                 location = shardIndexOperationOnReplica(request, item, indexShard);
             } catch (Exception e) {
-                if (!ignoreReplicaException(e)) {
-                    throw e;
-                }
+                Exceptions.rethrowUnchecked(e);
             }
         }
-        return location;
+        return new WriteReplicaResult<>(request, location, failure, indexShard, logger);
     }
 
     protected Translog.Location indexItem(DocTableInfo tableInfo,
@@ -397,7 +397,9 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
             indexShard.shardId().getIndexName(),
             request.type(),
             item.id(),
-            item.source()
+            item.source(),
+            // FIXME should we get the content type from the request somehow?
+            XContentType.JSON
         );
 
         if (logger.isTraceEnabled()) {
@@ -414,7 +416,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                                                   IndexShard indexShard) throws Exception {
         Engine.Index operation = prepareIndexOnPrimary(indexShard, version, request, item);
         operation = updateMappingIfRequired(request, item, version, indexShard, operation);
-        indexShard.index(operation);
+        IndexResult indexResult = indexShard.index(operation);
 
         // update the version on request so it will happen on the replicas
         item.versionType(item.versionType().versionTypeForReplicationAndRecovery());
@@ -422,7 +424,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
         assert item.versionType().validateVersionForWrites(item.version()) : "item.version() must be valid";
 
-        return operation.getTranslogLocation();
+        return indexResult.getTranslogLocation();
     }
 
     private Engine.Index updateMappingIfRequired(ShardUpsertRequest request,
@@ -457,9 +459,10 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
     private Translog.Location shardIndexOperationOnReplica(ShardUpsertRequest request,
                                                            ShardUpsertRequest.Item item,
-                                                           IndexShard indexShard) {
-        SourceToParse sourceToParse = SourceToParse.source(SourceToParse.Origin.REPLICA, request.index(), request.type(), item.id(), item.source())
-            .routing(request.routing());
+                                                           IndexShard indexShard) throws IOException {
+        // FIXME should we get the content type from the request somehow?
+        SourceToParse sourceToParse = SourceToParse.source(SourceToParse.Origin.REPLICA, request.index(),
+            request.type(), item.id(), item.source(), XContentType.JSON).routing(request.routing());
 
         if (logger.isTraceEnabled()) {
             logger.trace("[{} (R)] Index document id={} source={} opType={} version={} versionType={}",
@@ -479,9 +482,9 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                 indexShard.shardId(),
                 "Mappings are not available on the replica yet, triggered update: " + update);
         }
-        indexShard.index(index);
+        IndexResult indexResult = indexShard.index(index);
 
-        return index.getTranslogLocation();
+        return indexResult.getTranslogLocation();
     }
 
     private Map<String, Object> processGeneratedColumnsOnInsert(DocTableInfo tableInfo,

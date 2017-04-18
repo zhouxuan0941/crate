@@ -26,17 +26,18 @@ import io.crate.metadata.TableIdent;
 import io.crate.test.integration.CrateDummyClusterServiceUnitTest;
 import org.elasticsearch.Version;
 import org.elasticsearch.action.support.ActionFilters;
-import org.elasticsearch.action.support.replication.TransportWriteAction;
 import org.elasticsearch.cluster.action.shard.ShardStateAction;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.UUIDs;
+import org.elasticsearch.common.collect.Tuple;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.IndexService;
 import org.elasticsearch.index.engine.Engine;
 import org.elasticsearch.index.shard.IndexShard;
 import org.elasticsearch.index.shard.ShardId;
+import org.elasticsearch.index.translog.Translog;
 import org.elasticsearch.indices.IndicesService;
 import org.elasticsearch.test.transport.MockTransportService;
 import org.elasticsearch.threadpool.ThreadPool;
@@ -70,7 +71,7 @@ public class TransportShardDeleteActionTest extends CrateDummyClusterServiceUnit
 
         transportShardDeleteAction = new TransportShardDeleteAction(
             Settings.EMPTY,
-            MockTransportService.local(Settings.EMPTY, Version.V_5_0_1, THREAD_POOL),
+            MockTransportService.local(Settings.EMPTY, Version.V_5_0_1, THREAD_POOL, null),
             mock(IndexNameExpressionResolver.class),
             mock(ClusterService.class),
             indicesService,
@@ -86,10 +87,10 @@ public class TransportShardDeleteActionTest extends CrateDummyClusterServiceUnit
         final ShardDeleteRequest request = new ShardDeleteRequest(shardId, null, UUID.randomUUID());
         request.add(1, new ShardDeleteRequest.Item("1"));
 
-        TransportWriteAction.WriteResult<ShardResponse> result = transportShardDeleteAction.processRequestItems(
+        Tuple<ShardResponse, Translog.Location> shardResponseLocationTuple = transportShardDeleteAction.processRequestItems(
             shardId, request, new AtomicBoolean(true));
 
-        assertThat(result.getResponse().failure(), instanceOf(InterruptedException.class));
+        assertThat(shardResponseLocationTuple.v1().failure(), instanceOf(InterruptedException.class));
         assertThat(request.skipFromLocation(), is(1));
     }
 

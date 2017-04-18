@@ -33,7 +33,6 @@ import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.Version;
 import org.elasticsearch.action.support.ActionFilters;
-import org.elasticsearch.action.support.replication.TransportWriteAction;
 import org.elasticsearch.cluster.action.index.MappingUpdatedAction;
 import org.elasticsearch.cluster.action.shard.ShardStateAction;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
@@ -41,6 +40,7 @@ import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.UUIDs;
 import org.elasticsearch.common.collect.MapBuilder;
+import org.elasticsearch.common.collect.Tuple;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.Index;
@@ -147,7 +147,7 @@ public class TransportShardUpsertActionTest extends CrateDummyClusterServiceUnit
             Settings.EMPTY,
             mock(ThreadPool.class),
             clusterService,
-            MockTransportService.local(Settings.EMPTY, Version.V_5_0_1, THREAD_POOL),
+            MockTransportService.local(Settings.EMPTY, Version.V_5_0_1, THREAD_POOL, null),
             mock(MappingUpdatedAction.class),
             mock(ActionFilters.class),
             mock(JobContextService.class),
@@ -185,10 +185,10 @@ public class TransportShardUpsertActionTest extends CrateDummyClusterServiceUnit
         ).newRequest(shardId, null);
         request.add(1, new ShardUpsertRequest.Item("1", null, new Object[]{1}, null));
 
-        TransportWriteAction.WriteResult<ShardResponse> result = transportShardUpsertAction.processRequestItems(
+        Tuple<ShardResponse, Translog.Location> shardResponseLocationTuple = transportShardUpsertAction.processRequestItems(
             shardId, request, new AtomicBoolean(false));
 
-        assertThat(result.getResponse().failure(), instanceOf(VersionConflictEngineException.class));
+        assertThat(shardResponseLocationTuple.v1().failure(), instanceOf(VersionConflictEngineException.class));
     }
 
     @Test
@@ -204,14 +204,14 @@ public class TransportShardUpsertActionTest extends CrateDummyClusterServiceUnit
         ).newRequest(shardId, null);
         request.add(1, new ShardUpsertRequest.Item("1", null, new Object[]{1}, null));
 
-        TransportWriteAction.WriteResult<ShardResponse> result = transportShardUpsertAction.processRequestItems(
+        Tuple<ShardResponse, Translog.Location> shardResponseLocationTuple = transportShardUpsertAction.processRequestItems(
             shardId, request, new AtomicBoolean(false));
 
-        ShardResponse response = result.getResponse();
+        ShardResponse response = shardResponseLocationTuple.v1();
         assertThat(response.failures().size(), is(1));
         assertThat(response.failures().get(0).message(),
-                   is("VersionConflictEngineException[[default][1]: version conflict, " +
-                      "document with id: 1 already exists in 'characters']"));
+            is("VersionConflictEngineException[[default][1]: version conflict, " +
+               "document with id: 1 already exists in 'characters']"));
     }
 
     @Test
@@ -437,10 +437,10 @@ public class TransportShardUpsertActionTest extends CrateDummyClusterServiceUnit
         ).newRequest(shardId, null);
         request.add(1, new ShardUpsertRequest.Item("1", null, new Object[]{1}, null));
 
-        TransportWriteAction.WriteResult<ShardResponse> result = transportShardUpsertAction.processRequestItems(
+        Tuple<ShardResponse, Translog.Location> shardResponseLocationTuple = transportShardUpsertAction.processRequestItems(
             shardId, request, new AtomicBoolean(true));
 
-        assertThat(result.getResponse().failure(), instanceOf(InterruptedException.class));
+        assertThat(shardResponseLocationTuple.v1().failure(), instanceOf(InterruptedException.class));
     }
 
     @Test
