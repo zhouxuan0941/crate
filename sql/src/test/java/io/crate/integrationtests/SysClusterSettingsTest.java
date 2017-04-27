@@ -25,6 +25,7 @@ import com.google.common.base.Splitter;
 import io.crate.breaker.CrateCircuitBreakerService;
 import io.crate.operation.collect.stats.JobsLogService;
 import io.crate.operation.udf.UserDefinedFunctionService;
+import io.crate.protocols.postgres.AuthenticationService;
 import io.crate.settings.CrateSetting;
 import io.crate.settings.SharedSettings;
 import io.crate.testing.UseJdbc;
@@ -52,7 +53,8 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     @Override
     protected Settings nodeSettings(int nodeOrdinal) {
         Settings.Builder builder = Settings.builder().put(super.nodeSettings(nodeOrdinal));
-        builder.put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s");
+        builder.put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s")
+        .put(AuthenticationService.SETTING_AUTH_HBA.getKey(), "{\"user\": \"meriam\",\"method\": \"trust\"}, {\"user\": \"crate\",\"method\": \"trust\"}");
         return builder.build();
     }
 
@@ -182,6 +184,13 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     public void testDefaultEnterpriseSetting() {
         execute("select settings from sys.cluster");
         assertSettingsDefault(SharedSettings.ENTERPRISE_LICENSE_SETTING);
+    }
+
+
+    @Test
+    public void testDefaultHBA() {
+        execute("select settings from sys.cluster");
+        assertSettingsDefault(AuthenticationService.SETTING_AUTH_HBA);
     }
 
     @Test

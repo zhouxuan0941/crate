@@ -24,6 +24,7 @@ package io.crate.settings;
 
 import com.google.common.base.Splitter;
 import io.crate.types.DataType;
+import io.crate.types.DataTypes;
 import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Settings;
 
@@ -33,6 +34,10 @@ public class CrateSetting<T> {
 
     public static <T> CrateSetting<T> of(Setting<T> setting, DataType dataType) {
         return new CrateSetting<>(setting, dataType);
+    }
+
+    public static <T> CrateSetting<List<T>> of(Setting<List<T>> setting) {
+        return new CrateSetting<>(setting, DataTypes.OBJECT_ARRAY);
     }
 
     private static final Splitter DOT_SPLITTER = Splitter.on(".");
