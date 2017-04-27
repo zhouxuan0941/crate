@@ -107,7 +107,7 @@ public class CrateSettings implements ClusterStateListener {
             SharedSettings.ENTERPRISE_LICENSE_SETTING,
             SharedSettings.LICENSE_IDENT_SETTING,
 
-            //Auth
+            // AUTHENTICATION
             AuthenticationService.SETTING_AUTH_HBA
 
         ));

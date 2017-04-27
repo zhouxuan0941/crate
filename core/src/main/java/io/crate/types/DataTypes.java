@@ -68,7 +68,6 @@ public final class DataTypes {
 
     public final static DataType DOUBLE_ARRAY = new ArrayType(DOUBLE);
     public final static DataType OBJECT_ARRAY = new ArrayType(OBJECT);
-    public final static DataType STRING_ARRAY = new ArrayType(STRING);
 
 
     public final static ImmutableList<DataType> PRIMITIVE_TYPES = ImmutableList.of(

@@ -22,6 +22,7 @@
 package io.crate.integrationtests;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import io.crate.breaker.CrateCircuitBreakerService;
 import io.crate.operation.collect.stats.JobsLogService;
 import io.crate.operation.udf.UserDefinedFunctionService;
@@ -41,6 +42,7 @@ import org.elasticsearch.test.ESIntegTestCase;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,8 +54,10 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
 
     @Override
     protected Settings nodeSettings(int nodeOrdinal) {
-        Settings.Builder builder = Settings.builder().put(super.nodeSettings(nodeOrdinal));
-        builder.put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s");
+        Settings.Builder builder = Settings.builder()
+            .put(super.nodeSettings(nodeOrdinal))
+            .put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s");
+//            .put(AuthenticationService.SETTING_AUTH_HBA.getKey(), "[{user: crate, method: trust}, {foo: bar, address: 127.0.0.1/32}]");
         return builder.build();
     }
 
@@ -189,7 +193,7 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     @Test
     public void testDefaultHBA() {
         execute("select settings from sys.cluster");
-        assertSettingsValue(AuthenticationService.SETTING_AUTH_HBA.getKey(), AuthenticationService.SETTING_AUTH_HBA.getDefault());
+        assertSettingsDefault(AuthenticationService.SETTING_AUTH_HBA);
     }
 
     @Test
