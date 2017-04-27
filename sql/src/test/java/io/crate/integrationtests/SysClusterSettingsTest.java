@@ -42,6 +42,7 @@ import org.elasticsearch.test.ESIntegTestCase;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +57,12 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     protected Settings nodeSettings(int nodeOrdinal) {
         Settings.Builder builder = Settings.builder()
             .put(super.nodeSettings(nodeOrdinal))
-            .put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s");
-//            .put(AuthenticationService.SETTING_AUTH_HBA.getKey(), "[{user: crate, method: trust}, {foo: bar, address: 127.0.0.1/32}]");
+            .put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s")
+            .put(AuthenticationService.SETTING_AUTH_HBA.getKey(),  Arrays.asList(
+                Settings.builder().put("user", 1).build(),
+                Settings.builder().put("method", 2).build(),
+                Settings.builder().put("address", 3).build()
+            ));
         return builder.build();
     }
 
@@ -193,6 +198,8 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     @Test
     public void testDefaultHBA() {
         execute("select settings from sys.cluster");
+        assertTrue(AuthenticationService.SETTING_AUTH_HBA.hasComplexMatcher());
+
         assertSettingsDefault(AuthenticationService.SETTING_AUTH_HBA);
     }
 

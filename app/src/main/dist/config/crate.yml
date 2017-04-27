@@ -864,3 +864,9 @@
 
 #psql.enabled: true
 #psql.port: 5432
+
+
+auth:
+  host_based:
+    - {user: mike, address: 32.0.0.0/8, method: trust}
+    - {user: barb, address: 172.16.0.0}

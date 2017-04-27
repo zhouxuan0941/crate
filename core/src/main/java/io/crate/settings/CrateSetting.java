@@ -28,6 +28,7 @@ import io.crate.types.DataTypes;
 import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Settings;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public class CrateSetting<T> {
@@ -63,6 +64,8 @@ public class CrateSetting<T> {
     public String getKey() {
         return setting.getKey();
     }
+
+    public Boolean hasComplexMatcher() {return setting.hasComplexMatcher();}
 
     public T getDefault() {
         return setting.getDefault(Settings.EMPTY);

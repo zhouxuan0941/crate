@@ -25,6 +25,7 @@ package io.crate.protocols.postgres;
 import io.crate.settings.CrateSetting;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.settings.Setting;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
@@ -36,20 +37,25 @@ import java.util.stream.Collectors;
 
 public class AuthenticationService {
 
-    private static final Function<String, List<Map<String, Object>>> MAP_PARSER =
-        (String t) -> {
-            try {
-                return XContentType.YAML.xContent().createParser(t).list()
-                    .stream()
-                    .map(x -> (Map<String, Object>) x)
-                    .collect(Collectors.toList());
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Could not parse HBA entry.", e);
-            }
-        };
+//    private static final Function<String, List<Map<String, Object>>> MAP_PARSER =
+//        (String t) -> {
+//            try {
+//                return XContentType.YAML.xContent().createParser(t).list()
+//                    .stream()
+//                    .map(x -> (Map<String, Object>) x)
+//                    .collect(Collectors.toList());
+//            } catch (IOException e) {
+//                throw new IllegalArgumentException("Could not parse HBA entry.", e);
+//            }
+//        };
+//
+//    public static final CrateSetting SETTING_AUTH_HBA = CrateSetting.of(
+//        new Setting<>("auth.host_based", s -> "[]", MAP_PARSER, Setting.Property.NodeScope),
+//        DataTypes.OBJECT_ARRAY
+//    );
 
-    public static final CrateSetting SETTING_AUTH_HBA = CrateSetting.of(
-        new Setting<>("auth.host_based", s -> "[]", MAP_PARSER, Setting.Property.NodeScope),
+    public static final CrateSetting<List<Settings>> SETTING_AUTH_HBA = CrateSetting.of(
+        Setting.MapListSetting("auth.host_based",(l) -> {}, Setting.Property.NodeScope),
         DataTypes.OBJECT_ARRAY
     );
 
