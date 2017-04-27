@@ -12,7 +12,11 @@ import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.Provider;
 import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,52 +29,23 @@ public class AuthenticationService extends AbstractLifecycleComponent {
     private final ClusterService clusterService;
     private final Provider<ClusterIdService> clusterIdServiceProvider;
 
-    static Function<String, Object> parseSettings = t -> Splitter.on(",").withKeyValueSeparator(":").split(t);
+    static Function<String, XContentBuilder> parseSettings =
+        t -> {
+            try {
+                return XContentFactory.jsonBuilder().value(t);
+            }
+            catch(IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        };
 
-    public static final Setting<List<Object>> DEFAULT =
-        listSetting("", emptyList(), parseSettings, Setting.Property.NodeScope);
+    public static final Setting<List<XContentBuilder>> DEFAULT =
+        listSetting("", emptyList(), parseSettings);
 
-    public static final CrateSetting<List<Object>> SETTING_AUTH_HBA = CrateSetting.of(
+    public static final CrateSetting<List<XContentBuilder>> SETTING_AUTH_HBA = CrateSetting.of(
         listSetting("auth.host_based", DEFAULT, parseSettings, Setting.Property.NodeScope));
 
 
-
-    public class HBAEntry {
-        private String username;
-        private String method;
-        private String address;
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getMethod() {
-            return method;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public void setMethod(String method) {
-            this.method = method;
-        }
-
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
-        @Override
-        public String toString() {
-            return "HBAEntry [user=" + username + ", method=" + method + ", " +
-                "address=" + address + "]";
-        }
-
-    }
     @Inject
     public AuthenticationService(Settings settings,
                       ClusterService clusterService,

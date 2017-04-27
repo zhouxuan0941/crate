@@ -37,7 +37,7 @@ public class CrateSetting<T> {
     }
 
     public static <T> CrateSetting<List<T>> of(Setting<List<T>> setting) {
-        return new CrateSetting<>(setting, DataTypes.OBJECT_ARRAY);
+        return new CrateSetting<>(setting, DataTypes.STRING_ARRAY);
     }
 
     private static final Splitter DOT_SPLITTER = Splitter.on(".");

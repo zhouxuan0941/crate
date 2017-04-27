@@ -53,8 +53,7 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     @Override
     protected Settings nodeSettings(int nodeOrdinal) {
         Settings.Builder builder = Settings.builder().put(super.nodeSettings(nodeOrdinal));
-        builder.put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s")
-        .put(AuthenticationService.SETTING_AUTH_HBA.getKey(), "{\"user\": \"meriam\",\"method\": \"trust\"}, {\"user\": \"crate\",\"method\": \"trust\"}");
+        builder.put(BulkShardProcessor.BULK_REQUEST_TIMEOUT_SETTING.getKey(), "42s");
         return builder.build();
     }
 
@@ -190,7 +189,7 @@ public class SysClusterSettingsTest extends SQLTransportIntegrationTest {
     @Test
     public void testDefaultHBA() {
         execute("select settings from sys.cluster");
-        assertSettingsDefault(AuthenticationService.SETTING_AUTH_HBA);
+        assertSettingsValue(AuthenticationService.SETTING_AUTH_HBA.getKey(), AuthenticationService.SETTING_AUTH_HBA.getDefault());
     }
 
     @Test
