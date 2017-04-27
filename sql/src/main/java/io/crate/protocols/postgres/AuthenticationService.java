@@ -54,9 +54,8 @@ public class AuthenticationService {
 //        DataTypes.OBJECT_ARRAY
 //    );
 
-    public static final CrateSetting<List<Settings>> SETTING_AUTH_HBA = CrateSetting.of(
-        Setting.MapListSetting("auth.host_based",(l) -> {}, Setting.Property.NodeScope),
-        DataTypes.OBJECT_ARRAY
+    public static final CrateSetting<List<Map<String,Object>>> SETTING_AUTH_HBA = CrateSetting.of(
+        Setting.mapListSetting("auth.host_based", Setting.Property.NodeScope)
     );
 
 }

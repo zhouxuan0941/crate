@@ -30,11 +30,16 @@ import org.elasticsearch.common.settings.Settings;
 
 import javax.xml.crypto.Data;
 import java.util.List;
+import java.util.Map;
 
 public class CrateSetting<T> {
 
     public static <T> CrateSetting<T> of(Setting<T> setting, DataType dataType) {
         return new CrateSetting<>(setting, dataType);
+    }
+
+    public static <T> CrateSetting<List<Map<String,Object>>> of(Setting<List<Map<String,Object>>> setting) {
+        return new CrateSetting<>(setting, DataTypes.OBJECT_ARRAY);
     }
 
     private static final Splitter DOT_SPLITTER = Splitter.on(".");
