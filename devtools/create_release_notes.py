@@ -6,6 +6,7 @@ import os.path
 import re
 
 release_note_header = 'Breaking Changes\n'
+release_note_headers = ['Breaking Changes', 'Changes', 'Fixes']
 path_to_release_notes = 'blackbox/docs/release_notes/'
 
 def create_release_notes(version, minimum, release_date, file):
@@ -17,6 +18,7 @@ def create_release_notes(version, minimum, release_date, file):
     lines = write_release_notes_header([], version, release_date)
     lines = append_upgrade_warning(lines, version, minimum)
     change_lines = copy_changes(lines, file)
+    print("".join(get_change_section(change_lines,1)))
     release_notes_file.write("\n".join(lines))
     release_notes_file.writelines(change_lines)
     release_notes_file.close()
@@ -30,6 +32,15 @@ def copy_changes(lines, file):
 
     return change_lines[change_lines.index(release_note_header):]
 
+def get_change_section(lines, header):
+    header_tag = release_note_headers[header]
+    header_index = lines.index(header_tag + "\n")
+    if lines.index("="*len(header_tag)+"\n") == header_index + 1:
+        section = lines[header_index+3:]
+        next_header_tag = release_note_headers[header+1]
+        next_header_index = lines.index(next_header_tag + "\n")
+        if section.index("="*len(next_header_tag)+"\n") == next_header_index + 1:
+            
 
 
 def get_path(file):
