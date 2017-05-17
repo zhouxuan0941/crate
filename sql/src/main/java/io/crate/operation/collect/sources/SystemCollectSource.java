@@ -78,7 +78,7 @@ public class SystemCollectSource implements CollectSource {
 
     private final Functions functions;
     private final NodeSysExpression nodeSysExpression;
-    private final Map<String, Supplier<CompletableFuture<? extends Iterable<?>>>> iterableGetters;
+    private final Map<String, Supplier<? extends CompletableFuture<? extends Iterable<?>>>> iterableGetters;
     private final ImmutableMap<TableIdent, SysRowUpdater<?>> rowUpdaters;
     private final ClusterService clusterService;
     private final InputFactory inputFactory;
@@ -183,7 +183,7 @@ public class SystemCollectSource implements CollectSource {
 
         Map<String, Map<String, List<Integer>>> locations = collectPhase.routing().locations();
         String table = Iterables.getOnlyElement(locations.get(clusterService.localNode().getId()).keySet());
-        Supplier<CompletableFuture<? extends Iterable<?>>> iterableGetter = iterableGetters.get(table);
+        Supplier<? extends CompletableFuture<? extends Iterable<?>>> iterableGetter = iterableGetters.get(table);
         assert iterableGetter != null : "iterableGetter for " + table + " must exist";
         boolean requiresScroll = consumer.requiresScroll();
         return BatchIteratorCollectorBridge.newInstance(
@@ -207,7 +207,7 @@ public class SystemCollectSource implements CollectSource {
         return rowUpdaters.get(ident);
     }
 
-    public void registerIterableGetter(String fqn, Supplier<CompletableFuture<? extends Iterable<?>>> iterableSupplier) {
+    public void registerIterableGetter(String fqn, Supplier<? extends CompletableFuture<? extends Iterable<?>>> iterableSupplier) {
         iterableGetters.put(fqn, iterableSupplier);
     }
 }

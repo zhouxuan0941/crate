@@ -48,8 +48,8 @@ public class SysTableRegistry {
         this.systemCollectSource = systemCollectSource;
     }
 
-    public void registerSysTable(TableInfo tableInfo, Supplier<CompletableFuture<? extends Iterable<?>>> iterableSupplier,
-                                 Map<ColumnIdent, ? extends RowCollectExpressionFactory<?>> expressionFactories) {
+    public <T> void registerSysTable(TableInfo tableInfo, Supplier<CompletableFuture<? extends Iterable<T>>> iterableSupplier,
+                                 Map<ColumnIdent, ? extends RowCollectExpressionFactory<T>> expressionFactories) {
         TableIdent ident = tableInfo.ident();
         sysSchemaInfo.registerSysTable(tableInfo);
         systemCollectSource.registerIterableGetter(ident.fqn(), iterableSupplier);
