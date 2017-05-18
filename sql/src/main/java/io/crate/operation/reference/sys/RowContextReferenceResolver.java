@@ -37,7 +37,6 @@ import io.crate.operation.reference.information.InformationSchemaExpressionFacto
 import io.crate.operation.reference.sys.check.SysCheck;
 import io.crate.operation.reference.sys.check.node.SysNodeCheck;
 import io.crate.operation.reference.sys.job.JobContext;
-import io.crate.operation.reference.sys.job.JobContextLog;
 import io.crate.operation.reference.sys.node.SysNodesExpressionFactories;
 import io.crate.operation.reference.sys.operation.OperationContext;
 import io.crate.operation.reference.sys.operation.OperationContextLog;
@@ -64,7 +63,6 @@ public class RowContextReferenceResolver implements ReferenceResolver<RowCollect
      */
     private RowContextReferenceResolver() {
         tableFactories.put(SysJobsTableInfo.IDENT, getSysJobsExpressions());
-        tableFactories.put(SysJobsLogTableInfo.IDENT, getSysJobsLogExpressions());
         tableFactories.put(SysOperationsTableInfo.IDENT, getSysOperationExpressions());
         tableFactories.put(SysOperationsLogTableInfo.IDENT, getSysOperationLogExpressions());
         tableFactories.put(SysChecksTableInfo.IDENT, getSysChecksExpressions());
@@ -180,44 +178,6 @@ public class RowContextReferenceResolver implements ReferenceResolver<RowCollect
             .build();
     }
 
-    private ImmutableMap<ColumnIdent, RowCollectExpressionFactory<JobContextLog>> getSysJobsLogExpressions() {
-        return ImmutableMap.<ColumnIdent, RowCollectExpressionFactory<JobContextLog>>builder()
-            .put(SysJobsLogTableInfo.Columns.ID, () -> new RowContextCollectorExpression<JobContextLog, BytesRef>() {
-                @Override
-                public BytesRef value() {
-                    return new BytesRef(row.id().toString());
-                }
-            })
-            .put(SysJobsLogTableInfo.Columns.STMT, () -> new RowContextCollectorExpression<JobContextLog, BytesRef>() {
-                @Override
-                public BytesRef value() {
-                    return new BytesRef(row.statement());
-                }
-            })
-            .put(SysJobsLogTableInfo.Columns.STARTED, () -> new RowContextCollectorExpression<JobContextLog, Long>() {
-                @Override
-                public Long value() {
-                    return row.started();
-                }
-            })
-            .put(SysJobsLogTableInfo.Columns.ENDED, () -> new RowContextCollectorExpression<JobContextLog, Long>() {
-                @Override
-                public Long value() {
-                    return row.ended();
-                }
-            })
-            .put(SysJobsLogTableInfo.Columns.ERROR, () -> new RowContextCollectorExpression<JobContextLog, BytesRef>() {
-                @Override
-                public BytesRef value() {
-                    String err = row.errorMessage();
-                    if (err == null) {
-                        return null;
-                    }
-                    return new BytesRef(err);
-                }
-            })
-            .build();
-    }
 
     private ImmutableMap<ColumnIdent, RowCollectExpressionFactory<JobContext>> getSysJobsExpressions() {
         return ImmutableMap.<ColumnIdent, RowCollectExpressionFactory<JobContext>>builder()

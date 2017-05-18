@@ -41,6 +41,10 @@ public class SystemTableDataSource<T> implements ReferenceResolver<RowCollectExp
         this.iterableSupplier = iterableSupplier;
     }
 
+    public Supplier<CompletableFuture<? extends Iterable<T>>> iterableSupplier() {
+        return iterableSupplier;
+    }
+
     @Override
     public RowCollectExpression<T, ?> getImplementation(Reference ref) {
         return rowCollectExpressionFromFactory(ref);

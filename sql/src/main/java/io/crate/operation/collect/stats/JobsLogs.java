@@ -142,7 +142,7 @@ public class JobsLogs {
         return jobsTable.values();
     }
 
-    public Iterable<?> jobsLogGetter() {
+    public Iterable<JobContextLog> jobsLogGetter() {
         return jobsLog.get();
     }
 

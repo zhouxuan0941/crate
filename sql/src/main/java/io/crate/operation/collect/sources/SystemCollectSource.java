@@ -29,10 +29,8 @@ import io.crate.analyze.EvaluatingNormalizer;
 import io.crate.data.BatchConsumer;
 import io.crate.data.Row;
 import io.crate.data.RowsBatchIterator;
-import io.crate.metadata.Functions;
-import io.crate.metadata.ReplaceMode;
-import io.crate.metadata.RowGranularity;
-import io.crate.metadata.TableIdent;
+import io.crate.metadata.*;
+import io.crate.metadata.expressions.SysRowCollectExpressionFactory;
 import io.crate.metadata.information.*;
 import io.crate.metadata.pg_catalog.PgCatalogTables;
 import io.crate.metadata.pg_catalog.PgTypeTable;
@@ -44,17 +42,20 @@ import io.crate.operation.collect.JobCollectContext;
 import io.crate.operation.collect.RowsTransformer;
 import io.crate.operation.collect.files.SummitsIterable;
 import io.crate.operation.collect.stats.JobsLogs;
+import io.crate.operation.reference.ReferenceResolver;
 import io.crate.operation.reference.sys.RowContextReferenceResolver;
 import io.crate.operation.reference.sys.SysRowUpdater;
 import io.crate.operation.reference.sys.check.SysCheck;
 import io.crate.operation.reference.sys.check.SysChecker;
 import io.crate.operation.reference.sys.check.node.SysNodeChecks;
+import io.crate.operation.reference.sys.job.JobContextLog;
 import io.crate.operation.reference.sys.node.local.NodeSysExpression;
 import io.crate.operation.reference.sys.node.local.NodeSysReferenceResolver;
 import io.crate.operation.reference.sys.snapshot.SysSnapshot;
 import io.crate.operation.reference.sys.snapshot.SysSnapshots;
 import io.crate.planner.node.dql.CollectPhase;
 import io.crate.planner.node.dql.RoutedCollectPhase;
+import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.repositories.RepositoriesService;
@@ -141,8 +142,10 @@ public class SystemCollectSource implements CollectSource {
            () -> completedFuture(pgCatalogTables.typesGetter()));
 
         dataSources = new HashMap<>();
-        /*dataSources.put(SysJobsLogTableInfo.IDENT.fqn(),
-            new SystemTableDataSource());*/
+        dataSources.put(SysJobsLogTableInfo.IDENT.fqn(), new SystemTableDataSource<>(
+            getSysJobsLogExpressions(),
+            () -> completedFuture(jobsLogs.jobsLogGetter())
+        ));
     }
 
     @VisibleForTesting
@@ -164,6 +167,7 @@ public class SystemCollectSource implements CollectSource {
     }
 
     private Iterable<? extends Row> dataIterableToRowsIterable(RoutedCollectPhase collectPhase,
+                                                               ReferenceResolver<?> referenceResolver,
                                                                boolean requiresRepeat,
                                                                Iterable<?> data) {
         if (requiresRepeat) {
@@ -171,9 +175,15 @@ public class SystemCollectSource implements CollectSource {
         }
         return RowsTransformer.toRowsIterable(
             inputFactory,
-            RowContextReferenceResolver.INSTANCE,
+            referenceResolver,
             collectPhase,
             data);
+    }
+
+    private Iterable<? extends Row> dataIterableToRowsIterable(RoutedCollectPhase collectPhase,
+                                                               boolean requiresRepeat,
+                                                               Iterable<?> data) {
+        return dataIterableToRowsIterable(collectPhase, RowContextReferenceResolver.INSTANCE, requiresRepeat, data);
     }
 
     @Override
@@ -188,9 +198,23 @@ public class SystemCollectSource implements CollectSource {
 
         Map<String, Map<String, List<Integer>>> locations = collectPhase.routing().locations();
         String table = Iterables.getOnlyElement(locations.get(clusterService.localNode().getId()).keySet());
+        boolean requiresScroll = consumer.requiresScroll();
+
+        SystemTableDataSource<?> dataSource = dataSources.get(table);
+        if (dataSource != null) {
+            Supplier<? extends CompletableFuture<? extends Iterable<?>>> iterableSupplier = dataSource.iterableSupplier();
+            return BatchIteratorCollectorBridge.newInstance(
+                () -> iterableSupplier.get().thenApply(dataIterable ->
+                    RowsBatchIterator.newInstance(
+                        dataIterableToRowsIterable(routedCollectPhase, dataSource, requiresScroll, dataIterable),
+                        collectPhase.toCollect().size()
+                    )),
+                consumer
+            );
+        }
+
         Supplier<? extends CompletableFuture<? extends Iterable<?>>> iterableGetter = iterableGetters.get(table);
         assert iterableGetter != null : "iterableGetter for " + table + " must exist";
-        boolean requiresScroll = consumer.requiresScroll();
         return BatchIteratorCollectorBridge.newInstance(
             () -> iterableGetter.get().thenApply(dataIterable ->
                 RowsBatchIterator.newInstance(
@@ -214,5 +238,45 @@ public class SystemCollectSource implements CollectSource {
 
     public void registerIterableGetter(String fqn, Supplier<? extends CompletableFuture<? extends Iterable<?>>> iterableSupplier) {
         iterableGetters.put(fqn, iterableSupplier);
+    }
+
+
+    private ImmutableMap<ColumnIdent, SysRowCollectExpressionFactory<JobContextLog>> getSysJobsLogExpressions() {
+        return ImmutableMap.<ColumnIdent, SysRowCollectExpressionFactory<JobContextLog>>builder()
+            .put(SysJobsLogTableInfo.Columns.ID, () -> new RowContextCollectorExpression<JobContextLog, BytesRef>() {
+                @Override
+                public BytesRef value() {
+                    return new BytesRef(row.id().toString());
+                }
+            })
+            .put(SysJobsLogTableInfo.Columns.STMT, () -> new RowContextCollectorExpression<JobContextLog, BytesRef>() {
+                @Override
+                public BytesRef value() {
+                    return new BytesRef(row.statement());
+                }
+            })
+            .put(SysJobsLogTableInfo.Columns.STARTED, () -> new RowContextCollectorExpression<JobContextLog, Long>() {
+                @Override
+                public Long value() {
+                    return row.started();
+                }
+            })
+            .put(SysJobsLogTableInfo.Columns.ENDED, () -> new RowContextCollectorExpression<JobContextLog, Long>() {
+                @Override
+                public Long value() {
+                    return row.ended();
+                }
+            })
+            .put(SysJobsLogTableInfo.Columns.ERROR, () -> new RowContextCollectorExpression<JobContextLog, BytesRef>() {
+                @Override
+                public BytesRef value() {
+                    String err = row.errorMessage();
+                    if (err == null) {
+                        return null;
+                    }
+                    return new BytesRef(err);
+                }
+            })
+            .build();
     }
 }
