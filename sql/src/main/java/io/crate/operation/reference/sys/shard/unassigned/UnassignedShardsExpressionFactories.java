@@ -2,8 +2,8 @@ package io.crate.operation.reference.sys.shard.unassigned;
 
 import com.google.common.collect.ImmutableMap;
 import io.crate.metadata.ColumnIdent;
-import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.RowContextCollectorExpression;
+import io.crate.metadata.SysRowCollectExpression;
 import io.crate.metadata.expressions.RowCollectExpressionFactory;
 import io.crate.metadata.shard.unassigned.UnassignedShard;
 import io.crate.metadata.sys.SysNodesTableInfo;
@@ -121,7 +121,7 @@ public class UnassignedShardsExpressionFactories {
                         }
 
                         @Override
-                        public ReferenceImplementation getChildImplementation(String name) {
+                        public SysRowCollectExpression getChildImplementation(String name) {
                             return this;
                         }
                     };
@@ -137,7 +137,7 @@ public class UnassignedShardsExpressionFactories {
                         }
 
                         @Override
-                        public ReferenceImplementation getChildImplementation(String name) {
+                        public SysRowCollectExpression getChildImplementation(String name) {
                             return this;
                         }
                     };

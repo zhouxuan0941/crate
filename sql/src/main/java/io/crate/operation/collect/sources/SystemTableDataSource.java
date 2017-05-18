@@ -22,11 +22,8 @@
 
 package io.crate.operation.collect.sources;
 
-import io.crate.metadata.ColumnIdent;
-import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceImplementation;
-import io.crate.metadata.RowCollectExpression;
-import io.crate.metadata.expressions.RowCollectExpressionFactory;
+import io.crate.metadata.*;
+import io.crate.metadata.expressions.SysRowCollectExpressionFactory;
 import io.crate.operation.reference.ReferenceResolver;
 
 import java.util.Map;
@@ -35,10 +32,10 @@ import java.util.function.Supplier;
 
 public class SystemTableDataSource<T> implements ReferenceResolver<RowCollectExpression<T, ?>>{
 
-    private final Map<ColumnIdent, ? extends RowCollectExpressionFactory<T>> columnFactories;
+    private final Map<ColumnIdent, ? extends SysRowCollectExpressionFactory<T>> columnFactories;
     private final Supplier<CompletableFuture<? extends Iterable<T>>>  iterableSupplier;
 
-    public SystemTableDataSource(Map<ColumnIdent, ? extends RowCollectExpressionFactory<T>> columnFactories,
+    public SystemTableDataSource(Map<ColumnIdent, ? extends SysRowCollectExpressionFactory<T>> columnFactories,
                                  Supplier<CompletableFuture<? extends Iterable<T>>> iterableSupplier) {
         this.columnFactories = columnFactories;
         this.iterableSupplier = iterableSupplier;
@@ -51,7 +48,7 @@ public class SystemTableDataSource<T> implements ReferenceResolver<RowCollectExp
 
     private RowCollectExpression<T, ?> rowCollectExpressionFromFactory(Reference ref) {
         ColumnIdent columnIdent = ref.ident().columnIdent();
-        RowCollectExpressionFactory<T> columnFactory = columnFactories.get(columnIdent);
+        SysRowCollectExpressionFactory<T> columnFactory = columnFactories.get(columnIdent);
         if (columnFactory != null) {
             return columnFactory.create();
         }
@@ -63,17 +60,17 @@ public class SystemTableDataSource<T> implements ReferenceResolver<RowCollectExp
     }
 
     private RowCollectExpression<T, ?> getImplementationByRootTraversal(ColumnIdent columnIdent) {
-        RowCollectExpressionFactory<T> rootFactory = columnFactories.get(columnIdent.getRoot());
+        SysRowCollectExpressionFactory<T> rootFactory = columnFactories.get(columnIdent.getRoot());
         if (rootFactory ==  null) {
             return null;
         }
-        ReferenceImplementation<?> referenceImplementation = rootFactory.create();
+        SysRowCollectExpression<T, ?> rowCollectExpression = rootFactory.create();
         for (String part : columnIdent.path()) {
-            referenceImplementation = referenceImplementation.getChildImplementation(part);
-            if (referenceImplementation == null) {
+            rowCollectExpression = rowCollectExpression.getChildImplementation(part);
+            if (rowCollectExpression == null) {
                 return null;
             }
         }
-        return (RowCollectExpression<T, ?>)referenceImplementation;
+        return rowCollectExpression;
     }
 }

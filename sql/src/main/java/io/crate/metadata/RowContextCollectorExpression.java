@@ -21,12 +21,12 @@
 
 package io.crate.metadata;
 
-public abstract class RowContextCollectorExpression<TRow, TReturnValue> implements RowCollectExpression<TRow, TReturnValue> {
+public abstract class RowContextCollectorExpression<TRow, TReturnValue> implements SysRowCollectExpression<TRow, TReturnValue> {
 
     protected TRow row;
 
     @Override
-    public ReferenceImplementation getChildImplementation(String name) {
+    public SysRowCollectExpression<TRow, ?> getChildImplementation(String name) {
         return null;
     }
 
