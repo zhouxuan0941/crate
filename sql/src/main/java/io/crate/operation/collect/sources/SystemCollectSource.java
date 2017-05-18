@@ -79,6 +79,7 @@ public class SystemCollectSource implements CollectSource {
     private final Functions functions;
     private final NodeSysExpression nodeSysExpression;
     private final Map<String, Supplier<? extends CompletableFuture<? extends Iterable<?>>>> iterableGetters;
+    private final Map<String, SystemTableDataSource> dataSources;
     private final ImmutableMap<TableIdent, SysRowUpdater<?>> rowUpdaters;
     private final ClusterService clusterService;
     private final InputFactory inputFactory;
@@ -138,6 +139,10 @@ public class SystemCollectSource implements CollectSource {
 
         iterableGetters.put(PgTypeTable.IDENT.fqn(),
            () -> completedFuture(pgCatalogTables.typesGetter()));
+
+        dataSources = new HashMap<>();
+        /*dataSources.put(SysJobsLogTableInfo.IDENT.fqn(),
+            new SystemTableDataSource());*/
     }
 
     @VisibleForTesting
