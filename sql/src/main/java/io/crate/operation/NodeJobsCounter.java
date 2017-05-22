@@ -39,7 +39,7 @@ public class NodeJobsCounter {
     /**
      * Represents the maximum number of concurrent operations that can be issued towards a node.
      */
-    public static final long MAX_NODE_CONCURRENT_OPERATIONS = 5;
+    public static final long MAX_NODE_CONCURRENT_OPERATIONS = 3;
 
     private long unknownNodeCount = 0L;
     private final Map<String, long[]> operationsCountPerNode = new ConcurrentHashMap<>();
