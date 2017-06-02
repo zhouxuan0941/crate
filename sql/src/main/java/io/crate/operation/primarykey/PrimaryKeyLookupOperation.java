@@ -28,6 +28,7 @@ import io.crate.Constants;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.where.DocKeys;
 import io.crate.data.Row;
+import io.crate.executor.transport.task.elasticsearch.ESCommonUtils;
 import io.crate.executor.transport.task.elasticsearch.GetResponseRefResolver;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Functions;
@@ -35,7 +36,9 @@ import io.crate.metadata.doc.DocSysColumns;
 import io.crate.operation.InputFactory;
 import io.crate.operation.InputRow;
 import io.crate.operation.collect.CollectExpression;
+import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MetaData;
 import org.elasticsearch.cluster.service.ClusterService;
@@ -80,6 +83,7 @@ public class PrimaryKeyLookupOperation {
 
     public CompletableFuture<Iterable<Row>> primaryKeyLookup(
             Map<ShardId, List<DocKeys.DocKey>> docKeysPerShard,
+            List<DocKeys.DocKey> replacedDocKeys,
             Map<ColumnIdent, Integer> pkMapping,
             List<Symbol> toCollect) throws IOException, InterruptedException {
 
@@ -117,6 +121,16 @@ public class PrimaryKeyLookupOperation {
 
                 responses.add(new GetResponse(result));
             }
+        }
+
+        for (DocKeys.DocKey docKey : replacedDocKeys) {
+            boolean isPartitioned = docKey.partitionValues().isPresent() && docKey.partitionValues().get().size() > 0;
+            GetRequest getRequest = Requests.getRequest("doc.test");
+            getRequest.fetchSourceContext(getFetchSourceContext(columns));
+            getRequest.realtime(true);
+            getRequest.routing(docKey.routing());
+            responses.add(getRequest);
+            getRequest.
         }
 
         responses = responses.stream()

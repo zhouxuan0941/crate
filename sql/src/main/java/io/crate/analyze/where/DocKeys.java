@@ -148,6 +148,9 @@ public class DocKeys implements Iterable<DocKeys.DocKey>, Writeable {
 
         private DocKey(List<Symbol> key, int clusteredByIdx, List<Integer> partitionedByIdx, boolean withVersion) {
             this.key = key;
+            for (Symbol symbol : key) {
+                System.out.println("symbol: " + symbol);
+            }
             this.clusteredByIdx = clusteredByIdx;
             this.partitionedByIdx = partitionedByIdx != null ? partitionedByIdx : Collections.emptyList();
             this.withVersion = withVersion;
@@ -196,6 +199,20 @@ public class DocKeys implements Iterable<DocKeys.DocKey>, Writeable {
 
         public List<Symbol> values() {
             return key;
+        }
+
+        /**
+         * Checks if the DocKey is a Lieteral and its ID can
+         * be computed. If not, it may be resolved to a literal
+         * at a later point in time.
+         */
+        public boolean isLiteral() {
+            for (Symbol symbol : key) {
+                if (!(symbol instanceof Literal)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public static DocKey readFrom(StreamInput in) throws IOException {

@@ -513,9 +513,8 @@ public class ContextPreparer extends AbstractComponent {
 
             String localNodeId = clusterService.localNode().getId();
 
-            Map<ShardId, List<DocKeys.DocKey>> shardIdMap =
-                phase.getDocKeysPerShardNode()
-                    .getOrDefault(localNodeId, Collections.emptyMap());
+            Map<ShardId, List<DocKeys.DocKey>> shardIdMap = phase.getDocKeysPerShard(localNodeId);
+            List<DocKeys.DocKey> replacedDocKeys = phase.getReplacedDocKeys(localNodeId);
 
             RamAccountingContext ramAccountingContext = RamAccountingContext.forExecutionPhase(circuitBreaker, phase);
 
@@ -534,6 +533,7 @@ public class ContextPreparer extends AbstractComponent {
                 consumer,
                 phase.pkMapping(),
                 shardIdMap,
+                replacedDocKeys,
                 phase.toCollect()
             ));
             return true;

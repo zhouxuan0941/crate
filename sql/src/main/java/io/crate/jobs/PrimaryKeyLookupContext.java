@@ -52,6 +52,7 @@ public class PrimaryKeyLookupContext extends AbstractExecutionSubContext {
     private final BatchConsumer consumer;
     private final Map<ShardId, List<DocKeys.DocKey>> localDocKeysPerShard;
     private final Map<ColumnIdent, Integer> pkMapping;
+    private final List<DocKeys.DocKey> replacedDocKeys;
     private final List<Symbol> toCollect;
     private CompletableFuture<Iterable<Row>> primaryKeyLookupFuture;
 
@@ -61,12 +62,14 @@ public class PrimaryKeyLookupContext extends AbstractExecutionSubContext {
             BatchConsumer consumer,
             Map<ColumnIdent, Integer> pkMapping,
             Map<ShardId, List<DocKeys.DocKey>> localDocKeysPerShard,
+            List<DocKeys.DocKey> replacedDocKeys,
             List<Symbol> toCollect) {
         super(id, LOGGER);
         this.primaryKeyLookupOperation = primaryKeyLookupOperation;
         this.consumer = consumer;
         this.localDocKeysPerShard = localDocKeysPerShard;
         this.pkMapping = pkMapping;
+        this.replacedDocKeys = replacedDocKeys;
         this.toCollect = toCollect;
     }
 
@@ -75,6 +78,7 @@ public class PrimaryKeyLookupContext extends AbstractExecutionSubContext {
         try {
             primaryKeyLookupFuture = primaryKeyLookupOperation.primaryKeyLookup(
                 localDocKeysPerShard,
+                replacedDocKeys,
                 pkMapping,
                 toCollect
             );
