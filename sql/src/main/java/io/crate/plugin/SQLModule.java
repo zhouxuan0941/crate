@@ -33,6 +33,7 @@ import io.crate.planner.Planner;
 import io.crate.planner.TableStats;
 import io.crate.planner.TableStatsService;
 import io.crate.protocols.postgres.PostgresNetty;
+import io.crate.protocols.postgres.ssl.SslHandlerProvider;
 import org.elasticsearch.common.inject.AbstractModule;
 
 
