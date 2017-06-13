@@ -31,9 +31,20 @@ from testutils.paths import crate_path
 from testutils.ports import GLOBAL_PORT_POOL
 
 
+def signal_handler(signum, frame):
+    raise Exception("Timed out!")
+
 def decommission(process):
+    signal.signal(signal.SIGALRM, signal_handler)
     os.kill(process.pid, signal.SIGUSR2)
-    return process.wait(timeout=60)
+    output = 0
+    try:
+        signal.alarm(60)
+        process.wait(timeout=60)
+    except Exception:
+        process.kill()
+        output = 1
+    return output
 
 
 def retry_sql(client, statement):
@@ -192,7 +203,7 @@ class TestGracefulStopPrimaries(GracefulStopTest):
 
     def tearDown(self):
         client = self.clients[1]
-        client.sql("drop table t1")
+        client.sql("drop table if exists t1")
 
 
 class TestGracefulStopFull(GracefulStopTest):
@@ -225,7 +236,7 @@ class TestGracefulStopFull(GracefulStopTest):
 
     def tearDown(self):
         client = self.clients[2]
-        client.sql("drop table t1")
+        client.sql("drop table if exists t1")
 
 
 class TestGracefulStopNone(GracefulStopTest):
@@ -270,4 +281,4 @@ class TestGracefulStopNone(GracefulStopTest):
 
     def tearDown(self):
         client = self.clients[1]
-        client.sql("drop table t1")
+        client.sql("drop table if exists t1")
