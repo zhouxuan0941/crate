@@ -127,11 +127,24 @@ public class TransportPrivilegesAction extends TransportMasterNodeAction<Privile
             case GRANT:
                 privileges.add(privilege);
                 return 1L;
-            case REVOKE:
+            case DENY:
                 Privilege grantPrivilege = Privilege.privilegeAsGrant(privilege);
                 if (privileges.contains(grantPrivilege)) {
                     privileges.remove(grantPrivilege);
-                    return 1L;
+                }
+                privileges.add(privilege);
+                return 1L;
+            case REVOKE:
+                for (Privilege assignedPrivilege : privileges) {
+                    if (
+                        (assignedPrivilege.state().equals(Privilege.State.GRANT) ||
+                         assignedPrivilege.state().equals(Privilege.State.DENY)
+                        ) &&
+                        assignedPrivilege.equalsIgnoreState(privilege)) {
+                        // revoke Granted or Denied privilege
+                        privileges.remove(assignedPrivilege);
+                        return 1L;
+                    }
                 }
                 return 0L;
             default:

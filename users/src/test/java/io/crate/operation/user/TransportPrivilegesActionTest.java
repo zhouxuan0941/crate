@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.Is.is;
 
 public class TransportPrivilegesActionTest extends CrateUnitTest {
@@ -41,9 +43,14 @@ public class TransportPrivilegesActionTest extends CrateUnitTest {
         new Privilege(Privilege.State.GRANT, Privilege.Type.DQL, Privilege.Clazz.CLUSTER, null, "crate");
     private static final Privilege GRANT_DML =
         new Privilege(Privilege.State.GRANT, Privilege.Type.DML, Privilege.Clazz.CLUSTER, null, "crate");
+    private static final Privilege DENY_DQL =
+        new Privilege(Privilege.State.DENY, Privilege.Type.DQL, Privilege.Clazz.CLUSTER, null, "crate");
+    private static final Privilege REVOKE_DQL =
+        new Privilege(Privilege.State.REVOKE, Privilege.Type.DQL, Privilege.Clazz.CLUSTER, null, "crate");
 
     private static final Set<Privilege> PRIVILEGES = new HashSet<>(Arrays.asList(GRANT_DQL, GRANT_DML));
     private static final List<String> USERNAMES = Arrays.asList("Ford", "Arthur");
+    private static final String USER_WITHOUT_PRIVILEGES = "noPrivilegesUser";
 
     private MetaData.Builder mdBuilder;
 
@@ -54,6 +61,7 @@ public class TransportPrivilegesActionTest extends CrateUnitTest {
         for (String userName : USERNAMES) {
             usersPrivileges.put(userName, new HashSet<>(PRIVILEGES));
         }
+        usersPrivileges.put(USER_WITHOUT_PRIVILEGES, Collections.emptySet());
         mdBuilder.putCustom(UsersPrivilegesMetaData.TYPE, new UsersPrivilegesMetaData(usersPrivileges));
     }
 
@@ -96,5 +104,39 @@ public class TransportPrivilegesActionTest extends CrateUnitTest {
         assertThat(rowCount, is(1L));
         UsersPrivilegesMetaData privilegesMetaData = (UsersPrivilegesMetaData) mdBuilder.getCustom(UsersPrivilegesMetaData.TYPE);
         assertThat(privilegesMetaData.getUserPrivileges("Arthur"), contains(GRANT_DQL));
+    }
+
+    @Test
+    public void testDenyGrantedPrivilegeForUsers() throws Exception {
+        PrivilegesRequest request = new PrivilegesRequest(USERNAMES, Collections.singletonList(DENY_DQL));
+        long rowCount = TransportPrivilegesAction.applyPrivileges(mdBuilder, request);
+        assertThat(rowCount, is(2L));
+    }
+
+    @Test
+    public void testDenyUngrantedPrivilegeStoresTheDeny() throws Exception {
+        PrivilegesRequest request = new PrivilegesRequest(Collections.singleton(USER_WITHOUT_PRIVILEGES),
+            Collections.singletonList(DENY_DQL));
+        long rowCount = TransportPrivilegesAction.applyPrivileges(mdBuilder, request);
+        assertThat(rowCount, is(1L));
+        UsersPrivilegesMetaData privilegesMetaData =
+            (UsersPrivilegesMetaData) mdBuilder.getCustom(UsersPrivilegesMetaData.TYPE);
+        assertThat(privilegesMetaData.getUserPrivileges(USER_WITHOUT_PRIVILEGES), contains(DENY_DQL));
+    }
+
+    @Test
+    public void testRevokeDenyPrivilegeRemovesIt() throws Exception {
+        PrivilegesRequest denyRequest = new PrivilegesRequest(Collections.singleton(USER_WITHOUT_PRIVILEGES),
+            Collections.singletonList(DENY_DQL));
+        TransportPrivilegesAction.applyPrivileges(mdBuilder, denyRequest);
+
+        PrivilegesRequest revokeRequest = new PrivilegesRequest(Collections.singletonList(USER_WITHOUT_PRIVILEGES),
+            Collections.singletonList(REVOKE_DQL));
+        long rowCount = TransportPrivilegesAction.applyPrivileges(mdBuilder, revokeRequest);
+        assertThat(rowCount, is(1L));
+
+        UsersPrivilegesMetaData privilegesMetaData =
+            (UsersPrivilegesMetaData) mdBuilder.getCustom(UsersPrivilegesMetaData.TYPE);
+        assertThat(privilegesMetaData.getUserPrivileges(USER_WITHOUT_PRIVILEGES), empty());
     }
 }
