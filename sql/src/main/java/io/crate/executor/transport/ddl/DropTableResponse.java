@@ -20,31 +20,32 @@
  * agreement.
  */
 
-package io.crate.metadata.cluster;
+package io.crate.executor.transport.ddl;
 
-import io.crate.metadata.PartitionName;
-import io.crate.metadata.TableIdent;
-import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.common.io.stream.StreamInput;
+import org.elasticsearch.common.io.stream.StreamOutput;
 
-public interface DDLClusterStateModifier {
+import java.io.IOException;
 
-    default ClusterState onCloseTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+public class DropTableResponse extends AcknowledgedResponse {
+
+    DropTableResponse() {
     }
 
-    default ClusterState onCloseTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return currentState;
+    DropTableResponse(boolean acknowledged) {
+        super(acknowledged);
     }
 
-    default ClusterState onOpenTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+    @Override
+    public void readFrom(StreamInput in) throws IOException {
+        super.readFrom(in);
+        readAcknowledged(in);
     }
 
-    default ClusterState onOpenTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return currentState;
-    }
-
-    default ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+    @Override
+    public void writeTo(StreamOutput out) throws IOException {
+        super.writeTo(out);
+        writeAcknowledged(out);
     }
 }

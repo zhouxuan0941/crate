@@ -20,31 +20,32 @@
  * agreement.
  */
 
-package io.crate.metadata.cluster;
+package io.crate.operation.user;
 
-import io.crate.metadata.PartitionName;
 import io.crate.metadata.TableIdent;
+import io.crate.metadata.UsersPrivilegesMetaData;
+import io.crate.metadata.cluster.DDLClusterStateModifier;
 import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.cluster.metadata.MetaData;
 
-public interface DDLClusterStateModifier {
+public class UserManagerDDLModifier implements DDLClusterStateModifier {
 
-    default ClusterState onCloseTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+    @Override
+    public ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
+        MetaData currentMetaData = currentState.metaData();
+        MetaData.Builder mdBuilder = MetaData.builder(currentMetaData);
+
+        dropPrivileges(mdBuilder, tableIdent);
+
+        return ClusterState.builder(currentState).metaData(mdBuilder).build();
     }
 
-    default ClusterState onCloseTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return currentState;
-    }
+    private void dropPrivileges(MetaData.Builder mdBuilder, TableIdent tableIdent) {
+        // create a new instance of the metadata, to guarantee the cluster changed action.
+        UsersPrivilegesMetaData newMetaData = UsersPrivilegesMetaData.copyOf(
+            (UsersPrivilegesMetaData) mdBuilder.getCustom(UsersPrivilegesMetaData.TYPE));
 
-    default ClusterState onOpenTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
-    }
-
-    default ClusterState onOpenTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return currentState;
-    }
-
-    default ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+        newMetaData.dropTablePrivileges(tableIdent.fqn());
+        mdBuilder.putCustom(UsersPrivilegesMetaData.TYPE, newMetaData);
     }
 }
