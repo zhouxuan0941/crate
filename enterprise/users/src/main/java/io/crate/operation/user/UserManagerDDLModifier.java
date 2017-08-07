@@ -35,17 +35,21 @@ public class UserManagerDDLModifier implements DDLClusterStateModifier {
         MetaData currentMetaData = currentState.metaData();
         MetaData.Builder mdBuilder = MetaData.builder(currentMetaData);
 
-        dropPrivileges(mdBuilder, tableIdent);
+        if (dropPrivileges(mdBuilder, tableIdent) == false) {
+            // if nothing is affected, don't modify the state and just return NULL
+            return null;
+        }
 
         return ClusterState.builder(currentState).metaData(mdBuilder).build();
     }
 
-    private void dropPrivileges(MetaData.Builder mdBuilder, TableIdent tableIdent) {
+    private boolean dropPrivileges(MetaData.Builder mdBuilder, TableIdent tableIdent) {
         // create a new instance of the metadata, to guarantee the cluster changed action.
         UsersPrivilegesMetaData newMetaData = UsersPrivilegesMetaData.copyOf(
             (UsersPrivilegesMetaData) mdBuilder.getCustom(UsersPrivilegesMetaData.TYPE));
 
-        newMetaData.dropTablePrivileges(tableIdent.fqn());
+        long affectedRows = newMetaData.dropTablePrivileges(tableIdent.fqn());
         mdBuilder.putCustom(UsersPrivilegesMetaData.TYPE, newMetaData);
+        return affectedRows > 0L;
     }
 }

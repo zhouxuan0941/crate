@@ -99,13 +99,9 @@ public class OpenTableClusterStateTaskExecutor extends AbstractOpenCloseTableClu
 
         // call possible registered modifiers
         if (context.partitionName() != null) {
-            for (DDLClusterStateModifier modifier : ddlClusterStateService.clusterStateModifiers()) {
-                currentState = modifier.onOpenTablePartition(currentState, context.partitionName());
-            }
+            currentState = ddlClusterStateService.onOpenTablePartition(currentState, context.partitionName());
         } else {
-            for (DDLClusterStateModifier modifier : ddlClusterStateService.clusterStateModifiers()) {
-                currentState = modifier.onOpenTable(currentState, request.tableIdent());
-            }
+            currentState = ddlClusterStateService.onOpenTable(currentState, request.tableIdent());
         }
 
         ClusterState updatedState = ClusterState.builder(currentState).metaData(mdBuilder).blocks(blocksBuilder).build();

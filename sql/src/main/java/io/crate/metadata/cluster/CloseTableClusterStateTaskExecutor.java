@@ -83,13 +83,9 @@ public class CloseTableClusterStateTaskExecutor extends AbstractOpenCloseTableCl
 
         // call possible registered modifiers
         if (context.partitionName() != null) {
-            for (DDLClusterStateModifier modifier : ddlClusterStateService.clusterStateModifiers()) {
-                currentState = modifier.onCloseTablePartition(currentState, context.partitionName());
-            }
+            currentState = ddlClusterStateService.onCloseTablePartition(currentState, context.partitionName());
         } else {
-            for (DDLClusterStateModifier modifier : ddlClusterStateService.clusterStateModifiers()) {
-                currentState = modifier.onCloseTable(currentState, request.tableIdent());
-            }
+            currentState = ddlClusterStateService.onCloseTable(currentState, request.tableIdent());
         }
 
         ClusterState updatedState = ClusterState.builder(currentState).metaData(mdBuilder).blocks(blocksBuilder).build();

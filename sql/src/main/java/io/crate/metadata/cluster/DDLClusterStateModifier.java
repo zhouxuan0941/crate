@@ -26,25 +26,54 @@ import io.crate.metadata.PartitionName;
 import io.crate.metadata.TableIdent;
 import org.elasticsearch.cluster.ClusterState;
 
+import javax.annotation.Nullable;
+
+/**
+ * Components can implement this interface to hook into DDL statement which are resulting in a changed cluster state.
+ * Every implementation must register itself at {@link DDLClusterStateService#addModifier(DDLClusterStateModifier)}.
+ *
+ * An implementation should return a NULL value if nothing was modified.
+ * Otherwise a new {@link ClusterState} object created by the {@link ClusterState.Builder} must be build and returned.
+ */
 public interface DDLClusterStateModifier {
 
+    /**
+     * Called while a table is closed.
+     */
+    @Nullable
     default ClusterState onCloseTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+        return null;
     }
 
+    /**
+     * Called while a single partition is closed
+     */
+    @Nullable
     default ClusterState onCloseTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return currentState;
+        return null;
     }
 
+    /**
+     * Called while a table is opened.
+     */
+    @Nullable
     default ClusterState onOpenTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+        return null;
     }
 
+    /**
+     * Called while a single partition is opened.
+     */
+    @Nullable
     default ClusterState onOpenTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return currentState;
+        return null;
     }
 
+    /**
+     * Called while a table is dropped.
+     */
+    @Nullable
     default ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
-        return currentState;
+        return null;
     }
 }

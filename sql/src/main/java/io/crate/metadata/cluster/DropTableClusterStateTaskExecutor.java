@@ -66,9 +66,7 @@ public class DropTableClusterStateTaskExecutor extends DDLClusterStateTaskExecut
         }
 
         // call possible modifiers
-        for (DDLClusterStateModifier modifier : ddlClusterStateService.clusterStateModifiers()) {
-            currentState = modifier.onDropTable(currentState, request.tableIdent());
-        }
+        currentState = ddlClusterStateService.onDropTable(currentState, request.tableIdent());
 
         return currentState;
     }

@@ -22,21 +22,62 @@
 
 package io.crate.metadata.cluster;
 
+import io.crate.metadata.PartitionName;
+import io.crate.metadata.TableIdent;
+import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.common.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
+/**
+ * This service makes it possible to hook into cluster state modification caused by DDL statements.
+ * One must implement the {@link DDLClusterStateModifier} interface and the related methods, and register it here by
+ * {@link #addModifier(DDLClusterStateModifier)}.
+ */
 @Singleton
 public class DDLClusterStateService {
 
     private List<DDLClusterStateModifier> clusterStateModifiers = new ArrayList<>();
 
-    List<DDLClusterStateModifier> clusterStateModifiers() {
-        return clusterStateModifiers;
-    }
-
     public void addModifier(DDLClusterStateModifier modifier) {
         clusterStateModifiers.add(modifier);
+    }
+
+    ClusterState onCloseTable(ClusterState currentState, TableIdent tableIdent) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onCloseTable(currentState, tableIdent));
+    }
+
+    ClusterState onCloseTablePartition(ClusterState currentState, PartitionName partitionName) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onCloseTablePartition(currentState, partitionName));
+    }
+
+    ClusterState onOpenTable(ClusterState currentState, TableIdent tableIdent) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onOpenTable(currentState, tableIdent));
+    }
+
+    ClusterState onOpenTablePartition(ClusterState currentState, PartitionName partitionName) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onOpenTablePartition(currentState, partitionName));
+    }
+
+    ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onDropTable(currentState, tableIdent));
+    }
+
+    private ClusterState applyOnAllModifiers(ClusterState currentState,
+                                             BiFunction<DDLClusterStateModifier, ClusterState, ClusterState> function) {
+        for (DDLClusterStateModifier modifier : clusterStateModifiers) {
+            ClusterState newState = function.apply(modifier, currentState);
+            if (newState != null) {
+                currentState = newState;
+            }
+        }
+        return currentState;
     }
 }
