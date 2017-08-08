@@ -600,14 +600,23 @@ public class ExpressionAnalyzer {
                 throw new UnsupportedFeatureException("ALL is not supported");
             }
 
-            Symbol leftSymbol = process(node.getLeft(), context);
-            Symbol arraySymbol = process(node.getRight(), context);
+            Expression left = node.getLeft();
+            Expression right = node.getRight();
+
+            if (right instanceof SubqueryExpression) {
+                context.registerSubqueryExpression((SubqueryExpression) right);
+            }
+
+            Symbol leftSymbol = process(left, context);
+            Symbol arraySymbol = process(right, context);
+
             DataType rightType = arraySymbol.valueType();
 
             if (!DataTypes.isCollectionType(rightType)) {
                 throw new IllegalArgumentException(
                     SymbolFormatter.format("invalid array expression: '%s'", arraySymbol));
             }
+
             DataType rightInnerType = ((CollectionType) rightType).innerType();
             if (rightInnerType.equals(DataTypes.OBJECT)) {
                 throw new IllegalArgumentException("ANY on object arrays is not supported");
@@ -848,11 +857,17 @@ public class ExpressionAnalyzer {
              */
             Field field = fields.get(0);
             SingleColumnTableType singleColumnTableType = new SingleColumnTableType(field.valueType());
-            SelectSymbol selectSymbol = new SelectSymbol(relation, singleColumnTableType);
+            Symbol symbolToReturn = new SelectSymbol(relation, singleColumnTableType);
+            if (context.isSubqueryArrayExpression(node)) {
+                return symbolToReturn;
+            }
+            // A SubQuery can return more than one row. We don't allow multiple rows,
+            // except in ANY or IN expressions. Thus, we wrap the result into a function
+            // which extracts the first element and checks if there are more than one element.
             return context.allocateFunction(
                 getBuiltinFunctionInfo(SingleValueFunction.NAME, Collections.singletonList(singleColumnTableType)),
                 // needs to be a mutable list as Crate manipulates symbols in-place...
-                Arrays.asList(selectSymbol));
+                Arrays.asList(symbolToReturn));
         }
 
     }

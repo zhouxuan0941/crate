@@ -24,14 +24,27 @@ package io.crate.analyze.expressions;
 import io.crate.analyze.symbol.Function;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.metadata.FunctionInfo;
+import io.crate.sql.tree.SubqueryExpression;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExpressionAnalysisContext {
 
     public boolean hasAggregates = false;
 
-    public Function allocateFunction(FunctionInfo functionInfo, List<Symbol> arguments) {
+    private Set<SubqueryExpression> subqueriesWithArrayExpressions = new HashSet<>();
+
+    void registerSubqueryExpression(SubqueryExpression subqueryExpression) {
+        subqueriesWithArrayExpressions.add(subqueryExpression);
+    }
+
+    boolean isSubqueryArrayExpression(SubqueryExpression subqueryExpression) {
+        return subqueriesWithArrayExpressions.contains(subqueryExpression);
+    }
+
+    Function allocateFunction(FunctionInfo functionInfo, List<Symbol> arguments) {
         Function newFunction = new Function(functionInfo, arguments);
         hasAggregates = hasAggregates || functionInfo.type() == FunctionInfo.Type.AGGREGATE;
         return newFunction;
