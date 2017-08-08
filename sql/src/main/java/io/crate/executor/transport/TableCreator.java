@@ -25,21 +25,17 @@ import com.google.common.base.Joiner;
 import io.crate.Constants;
 import io.crate.analyze.CreateTableAnalyzedStatement;
 import io.crate.exceptions.SQLExceptions;
+import io.crate.executor.transport.ddl.CreateTableRequest;
+import io.crate.executor.transport.ddl.CreateTableResponse;
+import io.crate.executor.transport.ddl.TransportCreateTableAction;
 import io.crate.metadata.PartitionName;
 import io.crate.metadata.TableIdent;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.elasticsearch.action.ActionListener;
-import org.elasticsearch.action.admin.indices.alias.Alias;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.create.TransportCreateIndexAction;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.TransportDeleteIndexAction;
-import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest;
-import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateResponse;
-import org.elasticsearch.action.admin.indices.template.put.TransportPutIndexTemplateAction;
 import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
@@ -63,20 +59,17 @@ public class TableCreator {
 
     private final ClusterService clusterService;
     private final IndexNameExpressionResolver indexNameExpressionResolver;
-    private final TransportPutIndexTemplateAction transportPutIndexTemplateAction;
-    private final TransportCreateIndexAction transportCreateIndexAction;
+    private final TransportCreateTableAction transportCreateTableAction;
     private final TransportDeleteIndexAction transportDeleteIndexAction;
 
     @Inject
     public TableCreator(ClusterService clusterService,
                         IndexNameExpressionResolver indexNameExpressionResolver,
-                        TransportPutIndexTemplateAction transportPutIndexTemplateAction,
-                        TransportCreateIndexAction transportCreateIndexAction,
+                        TransportCreateTableAction transportCreateTableAction,
                         TransportDeleteIndexAction transportDeleteIndexAction) {
         this.clusterService = clusterService;
         this.indexNameExpressionResolver = indexNameExpressionResolver;
-        this.transportPutIndexTemplateAction = transportPutIndexTemplateAction;
-        this.transportCreateIndexAction = transportCreateIndexAction;
+        this.transportCreateTableAction = transportCreateTableAction;
         this.transportDeleteIndexAction = transportDeleteIndexAction;
     }
 
@@ -89,57 +82,28 @@ public class TableCreator {
         return result;
     }
 
-    private CreateIndexRequest createIndexRequest(CreateTableAnalyzedStatement statement) {
-        return new CreateIndexRequest(statement.tableIdent().indexName(), settings(statement))
-            .mapping(Constants.DEFAULT_MAPPING_TYPE, statement.mapping());
-    }
-
     private Settings settings(CreateTableAnalyzedStatement statement) {
         return statement.tableParameter().settings().getByPrefix("index.");
     }
 
-    private PutIndexTemplateRequest createTemplateRequest(CreateTableAnalyzedStatement statement) {
-        return new PutIndexTemplateRequest(statement.templateName())
-            .mapping(Constants.DEFAULT_MAPPING_TYPE, statement.mapping())
-            .create(true)
-            .settings(settings(statement))
-            .template(statement.templatePrefix())
-            .order(100)
-            .alias(new Alias(statement.tableIdent().indexName()));
-    }
-
     private void createTable(final CompletableFuture<Long> result, final CreateTableAnalyzedStatement statement) {
-        if (statement.templateName() != null) {
-            transportPutIndexTemplateAction.execute(createTemplateRequest(statement), new ActionListener<PutIndexTemplateResponse>() {
-                @Override
-                public void onResponse(PutIndexTemplateResponse response) {
-                    if (!response.isAcknowledged()) {
-                        warnNotAcknowledged(String.format(Locale.ENGLISH, "creating table '%s'", statement.tableIdent().fqn()));
-                    }
-                    result.complete(SUCCESS_RESULT);
+        boolean isPartitioned = statement.templateName() != null;
+        CreateTableRequest request = new CreateTableRequest(statement.tableIdent(), isPartitioned, settings(statement))
+            .mapping(Constants.DEFAULT_MAPPING_TYPE, statement.mapping());
+        transportCreateTableAction.execute(request, new ActionListener<CreateTableResponse>() {
+            @Override
+            public void onResponse(CreateTableResponse response) {
+                if (!response.isAcknowledged()) {
+                    warnNotAcknowledged(String.format(Locale.ENGLISH, "creating table '%s'", statement.tableIdent().fqn()));
                 }
+                result.complete(SUCCESS_RESULT);
+            }
 
-                @Override
-                public void onFailure(Exception e) {
-                    setException(result, e, statement);
-                }
-            });
-        } else {
-            transportCreateIndexAction.execute(createIndexRequest(statement), new ActionListener<CreateIndexResponse>() {
-                @Override
-                public void onResponse(CreateIndexResponse response) {
-                    if (!response.isAcknowledged()) {
-                        warnNotAcknowledged(String.format(Locale.ENGLISH, "creating table '%s'", statement.tableIdent().fqn()));
-                    }
-                    result.complete(SUCCESS_RESULT);
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    setException(result, e, statement);
-                }
-            });
-        }
+            @Override
+            public void onFailure(Exception e) {
+                setException(result, e, statement);
+            }
+        });
     }
 
 
@@ -229,7 +193,7 @@ public class TableCreator {
         }
     }
 
-    protected void warnNotAcknowledged(String operationName) {
+    private void warnNotAcknowledged(String operationName) {
         logger.warn("{} was not acknowledged. This could lead to inconsistent state.",
             operationName);
     }
@@ -239,7 +203,7 @@ public class TableCreator {
         final CompletableFuture<Long> result;
         final CreateTableAnalyzedStatement statement;
 
-        public CreateTableResponseListener(CompletableFuture<Long> result, CreateTableAnalyzedStatement statement) {
+        CreateTableResponseListener(CompletableFuture<Long> result, CreateTableAnalyzedStatement statement) {
             this.result = result;
             this.statement = statement;
 

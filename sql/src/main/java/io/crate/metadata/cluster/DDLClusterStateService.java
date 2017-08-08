@@ -45,6 +45,16 @@ public class DDLClusterStateService {
         clusterStateModifiers.add(modifier);
     }
 
+    ClusterState onCreateTable(ClusterState currentState, TableIdent tableIdent) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onCreateTable(currentState, tableIdent));
+    }
+
+    ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
+        return applyOnAllModifiers(currentState,
+            (modifier, clusterState) -> modifier.onDropTable(currentState, tableIdent));
+    }
+
     ClusterState onCloseTable(ClusterState currentState, TableIdent tableIdent) {
         return applyOnAllModifiers(currentState,
             (modifier, clusterState) -> modifier.onCloseTable(currentState, tableIdent));
@@ -63,11 +73,6 @@ public class DDLClusterStateService {
     ClusterState onOpenTablePartition(ClusterState currentState, PartitionName partitionName) {
         return applyOnAllModifiers(currentState,
             (modifier, clusterState) -> modifier.onOpenTablePartition(currentState, partitionName));
-    }
-
-    ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
-        return applyOnAllModifiers(currentState,
-            (modifier, clusterState) -> modifier.onDropTable(currentState, tableIdent));
     }
 
     private ClusterState applyOnAllModifiers(ClusterState currentState,

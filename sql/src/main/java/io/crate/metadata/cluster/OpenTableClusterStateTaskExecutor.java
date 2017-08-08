@@ -62,7 +62,7 @@ public class OpenTableClusterStateTaskExecutor extends AbstractOpenCloseTableClu
     }
 
     @Override
-    protected ClusterState execute(ClusterState currentState, OpenCloseTableOrPartitionRequest request) {
+    protected ClusterState execute(ClusterState currentState, OpenCloseTableOrPartitionRequest request) throws Exception {
         Context context = prepare(currentState, request);
         Set<IndexMetaData> indicesToOpen = context.indicesMetaData();
         IndexTemplateMetaData templateMetaData = context.templateMetaData();

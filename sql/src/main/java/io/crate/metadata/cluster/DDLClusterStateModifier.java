@@ -38,6 +38,22 @@ import javax.annotation.Nullable;
 public interface DDLClusterStateModifier {
 
     /**
+     * Called while a table is created.
+     */
+    @Nullable
+    default ClusterState onCreateTable(ClusterState currentState, TableIdent tableIdent) {
+        return null;
+    }
+
+    /**
+     * Called while a table is dropped.
+     */
+    @Nullable
+    default ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
+        return null;
+    }
+
+    /**
      * Called while a table is closed.
      */
     @Nullable
@@ -66,14 +82,6 @@ public interface DDLClusterStateModifier {
      */
     @Nullable
     default ClusterState onOpenTablePartition(ClusterState currentState, PartitionName partitionName) {
-        return null;
-    }
-
-    /**
-     * Called while a table is dropped.
-     */
-    @Nullable
-    default ClusterState onDropTable(ClusterState currentState, TableIdent tableIdent) {
         return null;
     }
 }

@@ -20,30 +20,32 @@
  * agreement.
  */
 
-package io.crate.metadata.cluster;
+package io.crate.executor.transport.ddl;
 
-import org.elasticsearch.cluster.ClusterState;
-import org.elasticsearch.cluster.ClusterStateTaskExecutor;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.common.io.stream.StreamInput;
+import org.elasticsearch.common.io.stream.StreamOutput;
 
-import java.util.List;
+import java.io.IOException;
 
-public abstract class DDLClusterStateTaskExecutor<Request> implements ClusterStateTaskExecutor<Request> {
+public class CreateTableResponse extends AcknowledgedResponse {
 
-    @Override
-    public ClusterTasksResult<Request> execute(ClusterState currentState, List<Request> requests) throws Exception {
-        ClusterTasksResult.Builder<Request> builder = ClusterTasksResult.builder();
-
-        for (Request request : requests) {
-            try {
-                currentState = execute(currentState, request);
-                builder.success(request);
-            } catch (Exception e) {
-                builder.failure(request, e);
-            }
-        }
-
-        return builder.build(currentState);
+    CreateTableResponse() {
     }
 
-    protected abstract ClusterState execute(ClusterState currentState, Request request) throws Exception;
+    CreateTableResponse(boolean acknowledged) {
+        super(acknowledged);
+    }
+
+    @Override
+    public void readFrom(StreamInput in) throws IOException {
+        super.readFrom(in);
+        readAcknowledged(in);
+    }
+
+    @Override
+    public void writeTo(StreamOutput out) throws IOException {
+        super.writeTo(out);
+        writeAcknowledged(out);
+    }
 }
