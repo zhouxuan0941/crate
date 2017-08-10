@@ -36,10 +36,17 @@ public class ExpressionAnalysisContext {
 
     private Set<SubqueryExpression> subqueriesWithArrayExpressions = new HashSet<>();
 
+    /**
+     * Registers the supplied SubqueryExpression to indicate that it is part of an
+     * array expression and may return multiple values.
+     */
     void registerSubqueryArrayExpression(SubqueryExpression subqueryExpression) {
         subqueriesWithArrayExpressions.add(subqueryExpression);
     }
 
+    /**
+     * Checks if the supplied SubqueryExpression is part of an array expression.
+     */
     boolean isSubqueryArrayExpression(SubqueryExpression subqueryExpression) {
         return subqueriesWithArrayExpressions.contains(subqueryExpression);
     }
