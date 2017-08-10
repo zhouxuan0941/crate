@@ -36,7 +36,7 @@ public class ExpressionAnalysisContext {
 
     private Set<SubqueryExpression> subqueriesWithArrayExpressions = new HashSet<>();
 
-    void registerSubqueryExpression(SubqueryExpression subqueryExpression) {
+    void registerSubqueryArrayExpression(SubqueryExpression subqueryExpression) {
         subqueriesWithArrayExpressions.add(subqueryExpression);
     }
 

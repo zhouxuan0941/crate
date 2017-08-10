@@ -604,7 +604,7 @@ public class ExpressionAnalyzer {
             Expression right = node.getRight();
 
             if (right instanceof SubqueryExpression) {
-                context.registerSubqueryExpression((SubqueryExpression) right);
+                context.registerSubqueryArrayExpression((SubqueryExpression) right);
             }
 
             Symbol leftSymbol = process(left, context);
@@ -857,9 +857,9 @@ public class ExpressionAnalyzer {
              */
             Field field = fields.get(0);
             SingleColumnTableType singleColumnTableType = new SingleColumnTableType(field.valueType());
-            Symbol symbolToReturn = new SelectSymbol(relation, singleColumnTableType);
+            SelectSymbol selectSymbol = new SelectSymbol(relation, singleColumnTableType);
             if (context.isSubqueryArrayExpression(node)) {
-                return symbolToReturn;
+                return selectSymbol;
             }
             // A SubQuery can return more than one row. We don't allow multiple rows,
             // except in ANY or IN expressions. Thus, we wrap the result into a function
@@ -867,7 +867,7 @@ public class ExpressionAnalyzer {
             return context.allocateFunction(
                 getBuiltinFunctionInfo(SingleValueFunction.NAME, Collections.singletonList(singleColumnTableType)),
                 // needs to be a mutable list as Crate manipulates symbols in-place...
-                Arrays.asList(symbolToReturn));
+                Arrays.asList(selectSymbol));
         }
 
     }
