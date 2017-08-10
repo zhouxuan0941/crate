@@ -24,7 +24,7 @@ package io.crate.analyze.expressions;
 import io.crate.analyze.symbol.Function;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.metadata.FunctionInfo;
-import io.crate.sql.tree.SubqueryExpression;
+import io.crate.sql.tree.Expression;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,21 +34,21 @@ public class ExpressionAnalysisContext {
 
     public boolean hasAggregates = false;
 
-    private Set<SubqueryExpression> subqueriesWithArrayExpressions = new HashSet<>();
+    private Set<Expression> expressionsInArrayExpression = new HashSet<>();
 
     /**
-     * Registers the supplied SubqueryExpression to indicate that it is part of an
+     * Registers the supplied Expression to indicate that it is part of an
      * array expression and may return multiple values.
      */
-    void registerSubqueryArrayExpression(SubqueryExpression subqueryExpression) {
-        subqueriesWithArrayExpressions.add(subqueryExpression);
+    void registerArrayExpression(Expression expression) {
+        expressionsInArrayExpression.add(expression);
     }
 
     /**
-     * Checks if the supplied SubqueryExpression is part of an array expression.
+     * Checks if the supplied Expression is part of an array expression.
      */
-    boolean isSubqueryArrayExpression(SubqueryExpression subqueryExpression) {
-        return subqueriesWithArrayExpressions.contains(subqueryExpression);
+    boolean isArrayExpression(Expression expression) {
+        return expressionsInArrayExpression.contains(expression);
     }
 
     Function allocateFunction(FunctionInfo functionInfo, List<Symbol> arguments) {

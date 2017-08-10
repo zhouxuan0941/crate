@@ -603,9 +603,7 @@ public class ExpressionAnalyzer {
             Expression left = node.getLeft();
             Expression right = node.getRight();
 
-            if (right instanceof SubqueryExpression) {
-                context.registerSubqueryArrayExpression((SubqueryExpression) right);
-            }
+            context.registerArrayExpression(right);
 
             Symbol leftSymbol = process(left, context);
             Symbol arraySymbol = process(right, context);
@@ -858,7 +856,7 @@ public class ExpressionAnalyzer {
             Field field = fields.get(0);
             SingleColumnTableType singleColumnTableType = new SingleColumnTableType(field.valueType());
             SelectSymbol selectSymbol = new SelectSymbol(relation, singleColumnTableType);
-            if (context.isSubqueryArrayExpression(node)) {
+            if (context.isArrayExpression(node)) {
                 return selectSymbol;
             }
             // A SubQuery can return more than one row. We don't allow multiple rows,
