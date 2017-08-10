@@ -39,10 +39,10 @@ public class SelectSymbol extends Symbol {
 
     private boolean isPlanned = false;
 
-    public SelectSymbol(AnalyzedRelation relation, SingleColumnTableType type, boolean isArrayExpression) {
+    public SelectSymbol(AnalyzedRelation relation, SingleColumnTableType type) {
         this.relation = relation;
         this.type = type;
-        this.isArrayExpression = isArrayExpression;
+        this.isArrayExpression = true;
     }
 
     public AnalyzedRelation relation() {

@@ -24,32 +24,12 @@ package io.crate.analyze.expressions;
 import io.crate.analyze.symbol.Function;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.metadata.FunctionInfo;
-import io.crate.sql.tree.Expression;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ExpressionAnalysisContext {
 
     public boolean hasAggregates = false;
-
-    private Set<Expression> expressionsInArrayExpression = new HashSet<>();
-
-    /**
-     * Registers the supplied Expression to indicate that it is part of an
-     * array expression and may return multiple values.
-     */
-    void registerArrayExpression(Expression expression) {
-        expressionsInArrayExpression.add(expression);
-    }
-
-    /**
-     * Checks if the supplied Expression is part of an array expression.
-     */
-    boolean isArrayExpression(Expression expression) {
-        return expressionsInArrayExpression.contains(expression);
-    }
 
     Function allocateFunction(FunctionInfo functionInfo, List<Symbol> arguments) {
         Function newFunction = new Function(functionInfo, arguments);
