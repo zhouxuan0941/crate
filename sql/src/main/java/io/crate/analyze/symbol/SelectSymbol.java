@@ -35,11 +35,14 @@ public class SelectSymbol extends Symbol {
 
     private final AnalyzedRelation relation;
     private final SingleColumnTableType type;
+    private final boolean isArrayExpression;
+
     private boolean isPlanned = false;
 
-    public SelectSymbol(AnalyzedRelation relation, SingleColumnTableType type) {
+    public SelectSymbol(AnalyzedRelation relation, SingleColumnTableType type, boolean isArrayExpression) {
         this.relation = relation;
         this.type = type;
+        this.isArrayExpression = isArrayExpression;
     }
 
     public AnalyzedRelation relation() {
@@ -82,5 +85,12 @@ public class SelectSymbol extends Symbol {
 
     public void markAsPlanned() {
         isPlanned = true;
+    }
+
+    /**
+     * Returns true if this SelectSymbol should return a result array.
+     */
+    public boolean isArrayExpression() {
+        return isArrayExpression;
     }
 }

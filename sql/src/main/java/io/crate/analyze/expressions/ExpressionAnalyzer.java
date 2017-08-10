@@ -855,8 +855,9 @@ public class ExpressionAnalyzer {
              */
             Field field = fields.get(0);
             SingleColumnTableType singleColumnTableType = new SingleColumnTableType(field.valueType());
-            SelectSymbol selectSymbol = new SelectSymbol(relation, singleColumnTableType);
-            if (context.isArrayExpression(node)) {
+            boolean isArrayExpression = context.isArrayExpression(node);
+            SelectSymbol selectSymbol = new SelectSymbol(relation, singleColumnTableType, isArrayExpression);
+            if (isArrayExpression) {
                 return selectSymbol;
             }
             // A SubQuery can return more than one row. We don't allow multiple rows,
