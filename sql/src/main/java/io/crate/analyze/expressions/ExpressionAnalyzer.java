@@ -329,6 +329,8 @@ public class ExpressionAnalyzer {
         if (!(symbol instanceof SelectSymbol)) {
             return symbol;
         }
+        SelectSymbol selectSymbol = (SelectSymbol) symbol;
+        selectSymbol.setResultType(SelectSymbol.ResultType.SINGLE_COLUMN_SINGLE_VALUE);
         // A SubQuery can return more than one row. We don't allow multiple rows,
         // except in ANY or IN expressions. Thus, we wrap the result into a function
         // which extracts the first element and checks if there are more than one element.
