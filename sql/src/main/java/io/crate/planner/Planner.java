@@ -51,7 +51,6 @@ import io.crate.analyze.UpdateAnalyzedStatement;
 import io.crate.analyze.WhereClause;
 import io.crate.analyze.relations.AnalyzedRelation;
 import io.crate.analyze.symbol.Literal;
-import io.crate.analyze.symbol.SelectSymbol;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.data.Input;
 import io.crate.exceptions.UnhandledServerException;
@@ -181,10 +180,8 @@ public class Planner extends AnalyzedStatementVisitor<Planner.Context, Plan> {
             return transactionContext;
         }
 
-        public Plan planSubselect(AnalyzedStatement statement, SelectSymbol selectSymbol) {
+        Plan planSubselect(AnalyzedStatement statement) {
             UUID subJobId = UUID.randomUUID();
-            int softLimit = selectSymbol.isArrayExpression() ? this.softLimit : 2;
-            int fetchSize = selectSymbol.isArrayExpression() ? this.fetchSize : 2;
             return planner.process(statement, new Planner.Context(
                 planner, clusterService, subJobId, consumingPlanner, normalizer, transactionContext, softLimit, fetchSize));
         }

@@ -24,8 +24,13 @@ package io.crate.analyze;
 import io.crate.analyze.relations.AbstractTableRelation;
 import io.crate.analyze.relations.QueriedRelation;
 import io.crate.analyze.symbol.Field;
+import io.crate.analyze.symbol.Literal;
 import io.crate.analyze.symbol.Symbol;
-import io.crate.metadata.*;
+import io.crate.metadata.Functions;
+import io.crate.metadata.Path;
+import io.crate.metadata.ReplaceMode;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TransactionContext;
 import io.crate.metadata.table.Operation;
 import io.crate.sql.tree.QualifiedName;
 
@@ -34,6 +39,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class QueriedTableRelation<TR extends AbstractTableRelation> implements QueriedRelation {
 
@@ -91,6 +97,11 @@ public abstract class QueriedTableRelation<TR extends AbstractTableRelation> imp
     @Override
     public void setQualifiedName(@Nonnull QualifiedName qualifiedName) {
         tableRelation.setQualifiedName(qualifiedName);
+    }
+
+    @Override
+    public void setLimit(int limit) {
+        querySpec().limit(Optional.of(Literal.of(limit)));
     }
 
     @Override

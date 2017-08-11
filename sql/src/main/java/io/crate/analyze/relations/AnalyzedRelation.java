@@ -41,4 +41,6 @@ public interface AnalyzedRelation {
     QualifiedName getQualifiedName();
 
     void setQualifiedName(@Nonnull QualifiedName qualifiedName);
+
+    void setLimit(int limit);
 }

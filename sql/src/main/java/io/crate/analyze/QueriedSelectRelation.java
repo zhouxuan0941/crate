@@ -25,6 +25,7 @@ package io.crate.analyze;
 import io.crate.analyze.relations.AnalyzedRelationVisitor;
 import io.crate.analyze.relations.QueriedRelation;
 import io.crate.analyze.symbol.Field;
+import io.crate.analyze.symbol.Literal;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.exceptions.ColumnUnknownException;
 import io.crate.metadata.Path;
@@ -36,6 +37,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public class QueriedSelectRelation implements QueriedRelation {
 
@@ -94,5 +96,10 @@ public class QueriedSelectRelation implements QueriedRelation {
     @Override
     public void setQualifiedName(@Nonnull QualifiedName qualifiedName) {
         subRelation.setQualifiedName(qualifiedName);
+    }
+
+    @Override
+    public void setLimit(int limit) {
+        querySpec.limit(Optional.of(Literal.of(limit)));
     }
 }
