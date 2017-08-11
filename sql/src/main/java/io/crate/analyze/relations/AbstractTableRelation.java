@@ -35,12 +35,7 @@ import io.crate.types.ObjectType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 public abstract class AbstractTableRelation<T extends TableInfo> implements AnalyzedRelation, FieldResolver {
@@ -149,11 +144,6 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
     @Override
     public void setQualifiedName(@Nonnull QualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
-    }
-
-    @Override
-    public void setLimit(int limit) {
-        throw new UnsupportedOperationException("Setting the limit not supported.");
     }
 
     /**

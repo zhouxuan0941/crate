@@ -24,23 +24,14 @@ package io.crate.analyze;
 
 import io.crate.analyze.relations.QueriedDocTable;
 import io.crate.analyze.relations.QueriedRelation;
-import io.crate.analyze.symbol.Function;
-import io.crate.analyze.symbol.Literal;
-import io.crate.analyze.symbol.SelectSymbol;
-import io.crate.analyze.symbol.Symbol;
 import io.crate.exceptions.AmbiguousColumnAliasException;
-import io.crate.operation.operator.EqOperator;
-import io.crate.operation.scalar.SingleValueFunction;
 import io.crate.sql.tree.QualifiedName;
 import io.crate.test.integration.CrateDummyClusterServiceUnitTest;
 import io.crate.testing.SQLExecutor;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Optional;
-
 import static io.crate.testing.SymbolMatchers.isField;
-import static io.crate.testing.SymbolMatchers.isFunction;
 import static io.crate.testing.T3.T1_INFO;
 import static io.crate.testing.TestingHelpers.isSQL;
 import static org.hamcrest.Matchers.is;
@@ -66,22 +57,6 @@ public class SubSelectAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         assertThat(relation.fields().size(), is(1));
         assertThat(relation.fields().get(0), isField("(x / i)"));
         assertThat(relation.tableRelation().tableInfo(), is(T1_INFO));
-    }
-
-    @Test
-    public void testSingleValueSubSelectLimit() {
-        SelectAnalyzedStatement statement = analyze("select 1 where 1 = (select 1)");
-        QueriedTable relation = (QueriedTable) statement.relation();
-        Symbol whereQuery = relation.querySpec().where().query();
-        assertThat(whereQuery, isFunction(EqOperator.NAME));
-        Function eqOperator = (Function) whereQuery;
-        Symbol subQuery = eqOperator.arguments().get(1);
-        assertThat(subQuery, isFunction(SingleValueFunction.NAME));
-        Function singleValue = (Function) subQuery;
-        SelectSymbol selectSymbol = (SelectSymbol) singleValue.arguments().get(0);
-        QueriedTable queriedTable = (QueriedTable) selectSymbol.relation();
-        // ensure we have set a limit of 2 for subqueries which should return a single value
-        assertThat(queriedTable.querySpec().limit(), is(Optional.of(Literal.of(2))));
     }
 
     @Test

@@ -30,7 +30,6 @@ import io.crate.metadata.Functions;
 import io.crate.metadata.Path;
 import io.crate.metadata.TransactionContext;
 import io.crate.metadata.table.Operation;
-import io.crate.sql.tree.Literal;
 import io.crate.sql.tree.QualifiedName;
 
 import javax.annotation.Nonnull;
@@ -200,11 +199,6 @@ public class MultiSourceSelect implements QueriedRelation {
     @Override
     public void setQualifiedName(@Nonnull QualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
-    }
-
-    @Override
-    public void setLimit(int limit) {
-        querySpec.limit(Optional.of(io.crate.analyze.symbol.Literal.of(limit)));
     }
 
     @Override

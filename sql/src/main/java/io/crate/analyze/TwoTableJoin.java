@@ -134,11 +134,6 @@ public class TwoTableJoin implements QueriedRelation {
     }
 
     @Override
-    public void setLimit(int limit) {
-        throw new UnsupportedOperationException("method not supported");
-    }
-
-    @Override
     public String toString() {
         return name.toString();
     }

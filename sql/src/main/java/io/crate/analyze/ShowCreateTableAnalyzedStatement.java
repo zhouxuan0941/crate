@@ -86,9 +86,4 @@ public class ShowCreateTableAnalyzedStatement implements AnalyzedStatement, Anal
     public void setQualifiedName(@Nonnull QualifiedName qualifiedName) {
         throw new UnsupportedOperationException("method not supported");
     }
-
-    @Override
-    public void setLimit(int limit) {
-        throw new UnsupportedOperationException("Setting a limit not supported");
-    }
 }

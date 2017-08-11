@@ -77,9 +77,4 @@ public class DummyRelation implements AnalyzedRelation {
     public void setQualifiedName(@Nonnull QualifiedName qualifiedName) {
         this.name = qualifiedName;
     }
-
-    @Override
-    public void setLimit(int limit) {
-        throw new UnsupportedOperationException("Setting the limit not supported here");
-    }
 }
