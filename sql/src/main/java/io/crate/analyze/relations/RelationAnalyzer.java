@@ -336,7 +336,7 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
                                                        ExpressionAnalysisContext expressionAnalysisContext) {
         if (optExpression.isPresent()) {
             Symbol symbol = expressionAnalyzer.convert(optExpression.get(), expressionAnalysisContext);
-            return Optional.of(ExpressionAnalyzer.castIfNeededOrFail(symbol, DataTypes.LONG));
+            return Optional.of(ExpressionAnalyzer.castIfNeeded(symbol, DataTypes.LONG));
         }
         return Optional.empty();
     }

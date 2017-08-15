@@ -59,7 +59,7 @@ public class ValueNormalizer {
 
         DataType<?> targetType = getTargetType(valueSymbol, reference);
         if (!(valueSymbol instanceof Literal)) {
-            return ExpressionAnalyzer.castIfNeededOrFail(valueSymbol, targetType);
+            return ExpressionAnalyzer.castIfNeeded(valueSymbol, targetType);
         }
         Literal literal = (Literal) valueSymbol;
         try {

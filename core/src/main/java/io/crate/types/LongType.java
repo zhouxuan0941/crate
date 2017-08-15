@@ -32,7 +32,7 @@ public class
 LongType extends DataType<Long> implements FixedWidthType, Streamer<Long> {
 
     public static final LongType INSTANCE = new LongType();
-    public static final int ID = 10;
+    public static final int ID = Precedence.LongType;
 
     @Override
     public int id() {
