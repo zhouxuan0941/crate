@@ -45,8 +45,8 @@ public class PlannerTest extends CrateDummyClusterServiceUnitTest {
         ESClusterUpdateSettingsPlan plan = e.plan("set GLOBAL PERSISTENT stats.jobs_log_size=1024");
 
         // set transient settings too when setting persistent ones
-        assertThat(plan.transientSettings().get("stats.jobs_log_size").get(0), Is.is(new LongLiteral("1024")));
-        assertThat(plan.persistentSettings().get("stats.jobs_log_size").get(0), Is.is(new LongLiteral("1024")));
+        assertThat(plan.transientSettings().get("stats.jobs_log_size").get(0), Is.is(new LongLiteral(1024)));
+        assertThat(plan.persistentSettings().get("stats.jobs_log_size").get(0), Is.is(new LongLiteral(1024)));
 
         plan = e.plan("set GLOBAL TRANSIENT stats.enabled=false,stats.jobs_log_size=0");
 

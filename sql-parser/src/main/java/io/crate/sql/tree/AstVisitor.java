@@ -217,6 +217,10 @@ public abstract class AstVisitor<R, C> {
         return visitExpression(node, context);
     }
 
+    protected R visitIntLiteral(IntLiteral node, C context) {
+        return visitLiteral(node, context);
+    }
+
     protected R visitLongLiteral(LongLiteral node, C context) {
         return visitLiteral(node, context);
     }

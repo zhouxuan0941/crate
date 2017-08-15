@@ -91,6 +91,7 @@ import io.crate.sql.tree.IndexColumnConstraint;
 import io.crate.sql.tree.IndexDefinition;
 import io.crate.sql.tree.InsertFromSubquery;
 import io.crate.sql.tree.InsertFromValues;
+import io.crate.sql.tree.IntLiteral;
 import io.crate.sql.tree.Intersect;
 import io.crate.sql.tree.IsNotNullPredicate;
 import io.crate.sql.tree.IsNullPredicate;
@@ -1298,7 +1299,11 @@ class AstBuilder extends SqlBaseBaseVisitor<Node> {
 
     @Override
     public Node visitIntegerLiteral(SqlBaseParser.IntegerLiteralContext context) {
-        return new LongLiteral(context.getText());
+        try {
+            return new IntLiteral(Integer.parseInt(context.getText()));
+        } catch(NumberFormatException e) {
+            return new LongLiteral(Long.parseLong(context.getText()));
+        }
     }
 
     @Override

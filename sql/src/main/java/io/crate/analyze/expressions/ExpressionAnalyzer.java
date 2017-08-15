@@ -93,6 +93,7 @@ import io.crate.sql.tree.FunctionCall;
 import io.crate.sql.tree.IfExpression;
 import io.crate.sql.tree.InListExpression;
 import io.crate.sql.tree.InPredicate;
+import io.crate.sql.tree.IntLiteral;
 import io.crate.sql.tree.IsNotNullPredicate;
 import io.crate.sql.tree.IsNullPredicate;
 import io.crate.sql.tree.LikePredicate;
@@ -726,6 +727,11 @@ public class ExpressionAnalyzer {
 
         @Override
         protected Symbol visitDoubleLiteral(DoubleLiteral node, ExpressionAnalysisContext context) {
+            return Literal.of(node.getValue());
+        }
+
+        @Override
+        protected Symbol visitIntLiteral(IntLiteral node, ExpressionAnalysisContext context) {
             return Literal.of(node.getValue());
         }
 

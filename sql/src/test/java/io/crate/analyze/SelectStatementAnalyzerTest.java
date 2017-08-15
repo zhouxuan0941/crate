@@ -966,15 +966,15 @@ public class SelectStatementAnalyzerTest extends CrateDummyClusterServiceUnitTes
     public void testPrefixedNumericLiterals() throws Exception {
         SelectAnalyzedStatement analysis = analyze("select - - - 10");
         List<Symbol> outputs = analysis.relation().querySpec().outputs();
-        assertThat(outputs.get(0), is(Literal.of(-10L)));
+        assertThat(outputs.get(0), is(Literal.of(-10)));
 
         analysis = analyze("select - + - 10");
         outputs = analysis.relation().querySpec().outputs();
-        assertThat(outputs.get(0), is(Literal.of(10L)));
+        assertThat(outputs.get(0), is(Literal.of(10)));
 
         analysis = analyze("select - (- 10 - + 10) * - (+ 10 + - 10)");
         outputs = analysis.relation().querySpec().outputs();
-        assertThat(outputs.get(0), is(Literal.of(0L)));
+        assertThat(outputs.get(0), is(Literal.of(0)));
     }
 
     @Test

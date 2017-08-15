@@ -58,6 +58,11 @@ public class ExpressionToNumberVisitor extends AstVisitor<Number, Row> {
     }
 
     @Override
+    protected Number visitIntLiteral(IntLiteral node, Row context) {
+        return node.getValue();
+    }
+
+    @Override
     protected Number visitLongLiteral(LongLiteral node, Row context) {
         return node.getValue();
     }

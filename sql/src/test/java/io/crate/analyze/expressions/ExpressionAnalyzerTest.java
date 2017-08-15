@@ -157,7 +157,7 @@ public class ExpressionAnalyzerTest extends CrateUnitTest {
             new QualifiedName("subscript"),
             ImmutableList.of(
                 new ArrayLiteral(ImmutableList.of(new StringLiteral("obj"))),
-                new LongLiteral("1")));
+                new LongLiteral(1)));
 
         Function function = (Function) expressionAnalyzer.convert(subscriptFunctionCall, expressionAnalysisContext);
         assertEquals("subscript(_array('obj'), 1)", function.toString());

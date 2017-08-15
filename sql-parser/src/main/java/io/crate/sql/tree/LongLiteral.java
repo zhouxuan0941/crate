@@ -27,9 +27,8 @@ public class LongLiteral
     extends Literal {
     private final long value;
 
-    public LongLiteral(String value) {
-        Preconditions.checkNotNull(value, "value is null");
-        this.value = Long.parseLong(value);
+    public LongLiteral(long value) {
+        this.value = value;
     }
 
     public long getValue() {

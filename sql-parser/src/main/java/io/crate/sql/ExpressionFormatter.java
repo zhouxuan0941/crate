@@ -127,6 +127,11 @@ public final class ExpressionFormatter {
         }
 
         @Override
+        protected String visitIntLiteral(IntLiteral node, Void context) {
+            return Integer.toString(node.getValue());
+        }
+
+        @Override
         protected String visitLongLiteral(LongLiteral node, Void context) {
             return Long.toString(node.getValue());
         }

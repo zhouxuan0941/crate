@@ -178,7 +178,7 @@ public class MetaDataToASTNodeResolver {
             if (clusteredBy != null && !clusteredBy.isSystemColumn()) {
                 clusteredByExpression = expressionFromColumn(clusteredBy);
             }
-            Expression numShards = new LongLiteral(Integer.toString(tableInfo.numberOfShards()));
+            Expression numShards = new IntLiteral(tableInfo.numberOfShards());
             options.add(new ClusteredBy(Optional.ofNullable(clusteredByExpression), Optional.of(numShards)));
             // PARTITIONED BY (...)
             if (tableInfo.isPartitioned() && !tableInfo.partitionedBy().isEmpty()) {
