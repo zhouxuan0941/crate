@@ -291,22 +291,23 @@ public class InformationSchemaTest extends SQLTransportIntegrationTest {
         execute("select * from INFORMATION_SCHEMA.table_constraints order by table_schema asc, table_name asc");
         assertEquals(13L, response.rowCount());
         assertThat(response.cols(),
-            arrayContaining("constraint_name", "constraint_type", "table_name", "table_schema"));
+            arrayContaining("constraint_catalog", "constraint_name", "constraint_schema", "constraint_type",
+                "initially_deferred", "is_deferrable", "table_catalog", "table_name", "table_schema"));
         assertThat(TestingHelpers.printedTable(response.rows()),
             is(
-            "[table_name, table_schema, column_name]| PRIMARY_KEY| columns| information_schema\n" +
-            "[schema_name]| PRIMARY_KEY| schemata| information_schema\n" +
-            "[feature_id, feature_name, sub_feature_id, sub_feature_name, is_supported, is_verified_by, comments]| PRIMARY_KEY| sql_features| information_schema\n" +
-            "[table_schema, table_name]| PRIMARY_KEY| tables| information_schema\n" +
-            "[id]| PRIMARY_KEY| checks| sys\n" +
-            "[id]| PRIMARY_KEY| jobs| sys\n" +
-            "[id]| PRIMARY_KEY| jobs_log| sys\n" +
-            "[id, node_id]| PRIMARY_KEY| node_checks| sys\n" +
-            "[id]| PRIMARY_KEY| nodes| sys\n" +
-            "[name]| PRIMARY_KEY| repositories| sys\n" +
-            "[schema_name, table_name, id, partition_ident]| PRIMARY_KEY| shards| sys\n" +
-            "[name, repository]| PRIMARY_KEY| snapshots| sys\n" +
-            "[mountain]| PRIMARY_KEY| summits| sys\n"
+            "information_schema| table_name| information_schema| PRIMARY_KEY| NO| NO| information_schema| columns| information_schema\n" +
+            "information_schema| schema_name| information_schema| PRIMARY_KEY| NO| NO| information_schema| schemata| information_schema\n" +
+            "information_schema| feature_id| information_schema| PRIMARY_KEY| NO| NO| information_schema| sql_features| information_schema\n" +
+            "information_schema| table_schema| information_schema| PRIMARY_KEY| NO| NO| information_schema| tables| information_schema\n" +
+            "sys| id| sys| PRIMARY_KEY| NO| NO| sys| checks| sys\n" +
+            "sys| id| sys| PRIMARY_KEY| NO| NO| sys| jobs| sys\n" +
+            "sys| id| sys| PRIMARY_KEY| NO| NO| sys| jobs_log| sys\n" +
+            "sys| id| sys| PRIMARY_KEY| NO| NO| sys| node_checks| sys\n" +
+            "sys| id| sys| PRIMARY_KEY| NO| NO| sys| nodes| sys\n" +
+            "sys| name| sys| PRIMARY_KEY| NO| NO| sys| repositories| sys\n" +
+            "sys| schema_name| sys| PRIMARY_KEY| NO| NO| sys| shards| sys\n" +
+            "sys| name| sys| PRIMARY_KEY| NO| NO| sys| snapshots| sys\n" +
+            "sys| mountain| sys| PRIMARY_KEY| NO| NO| sys| summits| sys\n"
         ));
 
         execute("create table test (col1 integer primary key, col2 string)");
