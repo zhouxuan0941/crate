@@ -28,10 +28,10 @@ import java.util.Map;
 
 public class ClusterReferenceResolver implements ReferenceResolver<ReferenceImplementation<?>> {
 
-    private final Map<ReferenceIdent, ReferenceImplementation> implementations;
+    private final Map<ColumnIdent, ReferenceImplementation> implementations;
 
     @Inject
-    public ClusterReferenceResolver(Map<ReferenceIdent, ReferenceImplementation> implementations) {
+    public ClusterReferenceResolver(Map<ColumnIdent, ReferenceImplementation> implementations) {
         this.implementations = implementations;
     }
 

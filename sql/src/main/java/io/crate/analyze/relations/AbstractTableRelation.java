@@ -35,7 +35,12 @@ import io.crate.types.ObjectType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public abstract class AbstractTableRelation<T extends TableInfo> implements AnalyzedRelation, FieldResolver {
@@ -129,8 +134,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
                 if (reference.valueType().equals(DataTypes.NOT_SUPPORTED)) {
                     continue;
                 }
-                ColumnIdent columnIdent = reference.ident().columnIdent();
-                outputs.add(getField(columnIdent));
+                outputs.add(getField(reference.ident()));
             }
         }
         return outputs;
@@ -152,7 +156,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
      * returns false if info has no parent column.
      */
     private boolean hasMatchingParent(Reference info, Predicate<Reference> parentMatchPredicate) {
-        ColumnIdent parent = info.ident().columnIdent().getParent();
+        ColumnIdent parent = info.ident().getParent();
         while (parent != null) {
             Reference parentInfo = tableInfo.getReference(parent);
             if (parentMatchPredicate.test(parentInfo)) {
@@ -164,7 +168,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
     }
 
     private boolean hasNestedObjectReference(Reference info) {
-        ColumnIdent parent = info.ident().columnIdent().getParent();
+        ColumnIdent parent = info.ident().getParent();
         if (parent != null) {
             Reference parentRef = tableInfo.getReference(parent);
             if (parentRef.valueType().id() == ObjectType.ID) {

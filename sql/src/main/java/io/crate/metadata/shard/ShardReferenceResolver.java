@@ -24,11 +24,11 @@ package io.crate.metadata.shard;
 import com.google.common.collect.ImmutableMap;
 import io.crate.exceptions.ResourceUnknownException;
 import io.crate.exceptions.UnhandledServerException;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.IndexParts;
 import io.crate.metadata.MapBackedRefResolver;
 import io.crate.metadata.PartitionName;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
@@ -70,37 +70,37 @@ public class ShardReferenceResolver {
         ShardId shardId = indexShard.shardId();
         Index index = shardId.getIndex();
 
-        ImmutableMap.Builder<ReferenceIdent, ReferenceImplementation> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<ColumnIdent, ReferenceImplementation> builder = ImmutableMap.builder();
         if (IndexParts.isPartitioned(index.getName())) {
             addPartitions(index, schemas, builder);
         }
-        builder.put(SysShardsTableInfo.ReferenceIdents.ID, new LiteralReferenceImplementation<>(shardId.getId()));
-        builder.put(SysShardsTableInfo.ReferenceIdents.SIZE, new ShardSizeExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.NUM_DOCS, new ShardNumDocsExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.PRIMARY, new ShardPrimaryExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.RELOCATING_NODE,
+        builder.put(SysShardsTableInfo.Columns.ID, new LiteralReferenceImplementation<>(shardId.getId()));
+        builder.put(SysShardsTableInfo.Columns.SIZE, new ShardSizeExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.NUM_DOCS, new ShardNumDocsExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.PRIMARY, new ShardPrimaryExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.RELOCATING_NODE,
             new ShardRelocatingNodeExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.SCHEMA_NAME,
+        builder.put(SysShardsTableInfo.Columns.SCHEMA_NAME,
             new ShardSchemaNameExpression(shardId));
-        builder.put(SysShardsTableInfo.ReferenceIdents.STATE, new ShardStateExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.ROUTING_STATE, new ShardRoutingStateExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.TABLE_NAME, new ShardTableNameExpression(shardId));
-        builder.put(SysShardsTableInfo.ReferenceIdents.PARTITION_IDENT,
+        builder.put(SysShardsTableInfo.Columns.STATE, new ShardStateExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.ROUTING_STATE, new ShardRoutingStateExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.TABLE_NAME, new ShardTableNameExpression(shardId));
+        builder.put(SysShardsTableInfo.Columns.PARTITION_IDENT,
             new ShardPartitionIdentExpression(shardId));
-        builder.put(SysShardsTableInfo.ReferenceIdents.ORPHAN_PARTITION,
+        builder.put(SysShardsTableInfo.Columns.ORPHAN_PARTITION,
             new ShardPartitionOrphanedExpression(shardId, clusterService));
-        builder.put(SysShardsTableInfo.ReferenceIdents.PATH, new ShardPathExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.BLOB_PATH, new LiteralReferenceImplementation<>(null));
-        builder.put(SysShardsTableInfo.ReferenceIdents.MIN_LUCENE_VERSION,
+        builder.put(SysShardsTableInfo.Columns.PATH, new ShardPathExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.BLOB_PATH, new LiteralReferenceImplementation<>(null));
+        builder.put(SysShardsTableInfo.Columns.MIN_LUCENE_VERSION,
             new ShardMinLuceneVersionExpression(indexShard));
-        builder.put(SysShardsTableInfo.ReferenceIdents.RECOVERY, new ShardRecoveryExpression(indexShard));
+        builder.put(SysShardsTableInfo.Columns.RECOVERY, new ShardRecoveryExpression(indexShard));
 
         return new MapBackedRefResolver(builder.build());
     }
 
     private static void addPartitions(Index index,
                                       Schemas schemas,
-                                      ImmutableMap.Builder<ReferenceIdent, ReferenceImplementation> builder) {
+                                      ImmutableMap.Builder<ColumnIdent, ReferenceImplementation> builder) {
         PartitionName partitionName;
         try {
             partitionName = PartitionName.fromIndexOrTemplate(index.getName());

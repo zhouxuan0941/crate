@@ -66,8 +66,8 @@ public final class DocReferences {
      * </pre>
      */
     public static Reference toSourceLookup(Reference reference) {
-        ReferenceIdent ident = reference.ident();
-        if (ident.columnIdent().isSystemColumn()) {
+        ColumnIdent ident = reference.ident();
+        if (ident.isSystemColumn()) {
             return reference;
         }
         if (reference.granularity() == RowGranularity.DOC && Schemas.isDefaultOrCustomSchema(ident.tableIdent().schema())) {

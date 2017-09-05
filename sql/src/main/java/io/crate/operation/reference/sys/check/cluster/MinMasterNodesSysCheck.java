@@ -23,8 +23,11 @@ package io.crate.operation.reference.sys.check.cluster;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import io.crate.metadata.*;
-import io.crate.metadata.sys.SysClusterTableInfo;
+import io.crate.metadata.ClusterReferenceResolver;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.ReferenceImplementation;
+import io.crate.metadata.RowGranularity;
 import io.crate.operation.reference.sys.check.AbstractSysCheck;
 import io.crate.operation.reference.sys.cluster.ClusterSettingsExpression;
 import io.crate.types.DataTypes;
@@ -45,8 +48,7 @@ public class MinMasterNodesSysCheck extends AbstractSysCheck {
                                               "It should be set to (number_master_nodes / 2) + 1.";
 
     private static final Reference MIN_MASTER_NODES_REFERENCE_INFO = new Reference(
-        new ReferenceIdent(
-            SysClusterTableInfo.IDENT,
+        new ColumnIdent(
             ClusterSettingsExpression.NAME,
             Lists.newArrayList(Splitter.on(".").split(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES_SETTING.getKey()))
         ),

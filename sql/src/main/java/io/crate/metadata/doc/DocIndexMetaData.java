@@ -46,7 +46,6 @@ import io.crate.metadata.GeoReference;
 import io.crate.metadata.IndexMappings;
 import io.crate.metadata.IndexReference;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.table.ColumnPolicy;
@@ -82,7 +81,7 @@ public class DocIndexMetaData {
     private final Map<ColumnIdent, IndexReference.Builder> indicesBuilder = new HashMap<>();
 
     private final ImmutableSortedSet.Builder<Reference> columnsBuilder = ImmutableSortedSet.orderedBy(
-        Comparator.comparing(o -> o.ident().columnIdent().fqn()));
+        Comparator.comparing(o -> o.ident().fqn()));
 
     // columns should be ordered
     private final ImmutableMap.Builder<ColumnIdent, Reference> referencesBuilder = ImmutableSortedMap.naturalOrder();
@@ -222,7 +221,7 @@ public class DocIndexMetaData {
             if (info.ident().isColumn()) {
                 columnsBuilder.add(info);
             }
-            referencesBuilder.put(info.ident().columnIdent(), info);
+            referencesBuilder.put(info.ident(), info);
             if (info instanceof GeneratedReference) {
                 generatedColumnReferencesBuilder.add((GeneratedReference) info);
             }
@@ -238,17 +237,13 @@ public class DocIndexMetaData {
                                  @Nullable Integer treeLevels,
                                  @Nullable Double distanceErrorPct) {
         GeoReference info = new GeoReference(
-            refIdent(column),
+            column,
             tree,
             precision,
             treeLevels,
             distanceErrorPct);
         columnsBuilder.add(info);
         referencesBuilder.put(column, info);
-    }
-
-    private ReferenceIdent refIdent(ColumnIdent column) {
-        return new ReferenceIdent(ident, column);
     }
 
     private GeneratedReference newGeneratedColumnInfo(ColumnIdent column,
@@ -258,7 +253,7 @@ public class DocIndexMetaData {
                                                       String generatedExpression,
                                                       boolean isNotNull) {
         return new GeneratedReference(
-            refIdent(column), granularity(column), type, columnPolicy, indexType, generatedExpression, isNotNull);
+            column, granularity(column), type, columnPolicy, indexType, generatedExpression, isNotNull);
     }
 
     private RowGranularity granularity(ColumnIdent column) {
@@ -273,7 +268,7 @@ public class DocIndexMetaData {
                               ColumnPolicy columnPolicy,
                               Reference.IndexType indexType,
                               boolean nullable) {
-        return new Reference(refIdent(column), granularity(column), type, columnPolicy, indexType, nullable);
+        return new Reference(column, granularity(column), type, columnPolicy, indexType, nullable);
     }
 
     /**
@@ -436,7 +431,7 @@ public class DocIndexMetaData {
     }
 
     private IndexReference.Builder getOrCreateIndexBuilder(ColumnIdent ident) {
-        return indicesBuilder.computeIfAbsent(ident, k -> new IndexReference.Builder(refIdent(ident)));
+        return indicesBuilder.computeIfAbsent(ident, k -> new IndexReference.Builder(ident));
     }
 
     private ImmutableList<ColumnIdent> getPrimaryKey() {

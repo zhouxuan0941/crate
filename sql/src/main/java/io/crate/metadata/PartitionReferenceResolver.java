@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class PartitionReferenceResolver implements ReferenceResolver<PartitionExpression> {
 
-    private final Map<ReferenceIdent, PartitionExpression> expressionMap;
+    private final Map<ColumnIdent, PartitionExpression> expressionMap;
     private final List<PartitionExpression> partitionExpressions;
 
     public PartitionReferenceResolver(List<PartitionExpression> partitionExpressions) {

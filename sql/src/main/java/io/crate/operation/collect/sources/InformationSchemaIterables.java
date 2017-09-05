@@ -22,7 +22,14 @@
 package io.crate.operation.collect.sources;
 
 import com.google.common.collect.FluentIterable;
-import io.crate.metadata.*;
+import io.crate.metadata.FulltextAnalyzerResolver;
+import io.crate.metadata.IndexParts;
+import io.crate.metadata.PartitionInfo;
+import io.crate.metadata.PartitionInfos;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RoutineInfo;
+import io.crate.metadata.RoutineInfos;
+import io.crate.metadata.Schemas;
 import io.crate.metadata.table.SchemaInfo;
 import io.crate.metadata.table.TableInfo;
 import io.crate.operation.collect.files.SqlFeatureContext;
@@ -126,7 +133,7 @@ public class InformationSchemaIterables {
 
         ColumnsIterator(TableInfo tableInfo) {
             columns = StreamSupport.stream(tableInfo.spliterator(), false)
-                .filter(reference -> !reference.ident().columnIdent().isSystemColumn()
+                .filter(reference -> !reference.ident().isSystemColumn()
                                      && reference.valueType() != DataTypes.NOT_SUPPORTED).iterator();
             this.tableInfo = tableInfo;
         }

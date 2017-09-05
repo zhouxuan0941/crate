@@ -35,7 +35,6 @@ import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Functions;
 import io.crate.metadata.GeneratedReference;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.operation.scalar.cast.CastFunctionResolver;
@@ -310,12 +309,12 @@ public class AnalyzedTableElements {
         Reference reference;
         if (columnDefinition.generatedExpression() == null) {
             reference = new Reference(
-                new ReferenceIdent(tableIdent, columnDefinition.ident()),
+                columnDefinition.ident(),
                 RowGranularity.DOC,
                 DataTypes.ofMappingNameSafe(columnDefinition.dataType()));
         } else {
             reference = new GeneratedReference(
-                new ReferenceIdent(tableIdent, columnDefinition.ident()),
+                columnDefinition.ident(),
                 RowGranularity.DOC,
                 columnDefinition.dataType() ==
                 null ? DataTypes.UNDEFINED : DataTypes.ofMappingNameSafe(columnDefinition.dataType()),

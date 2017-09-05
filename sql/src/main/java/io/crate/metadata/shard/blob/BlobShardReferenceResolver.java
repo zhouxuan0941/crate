@@ -22,13 +22,20 @@
 package io.crate.metadata.shard.blob;
 
 import io.crate.blob.v2.BlobShard;
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.MapBackedRefResolver;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.blob.BlobSchemaInfo;
 import io.crate.metadata.sys.SysShardsTableInfo;
 import io.crate.operation.reference.ReferenceResolver;
-import io.crate.operation.reference.sys.shard.*;
+import io.crate.operation.reference.sys.shard.LiteralReferenceImplementation;
+import io.crate.operation.reference.sys.shard.ShardMinLuceneVersionExpression;
+import io.crate.operation.reference.sys.shard.ShardPathExpression;
+import io.crate.operation.reference.sys.shard.ShardPrimaryExpression;
+import io.crate.operation.reference.sys.shard.ShardRecoveryExpression;
+import io.crate.operation.reference.sys.shard.ShardRelocatingNodeExpression;
+import io.crate.operation.reference.sys.shard.ShardRoutingStateExpression;
+import io.crate.operation.reference.sys.shard.ShardStateExpression;
 import io.crate.operation.reference.sys.shard.blob.BlobShardBlobPathExpression;
 import io.crate.operation.reference.sys.shard.blob.BlobShardNumDocsExpression;
 import io.crate.operation.reference.sys.shard.blob.BlobShardSizeExpression;
@@ -44,27 +51,27 @@ public class BlobShardReferenceResolver {
     public static ReferenceResolver<ReferenceImplementation<?>> create(BlobShard blobShard) {
         IndexShard indexShard = blobShard.indexShard();
         ShardId shardId = indexShard.shardId();
-        HashMap<ReferenceIdent, ReferenceImplementation> implementations = new HashMap<>(15);
-        implementations.put(SysShardsTableInfo.ReferenceIdents.ID, new LiteralReferenceImplementation<>(shardId.id()));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.NUM_DOCS, new BlobShardNumDocsExpression(blobShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.PRIMARY, new ShardPrimaryExpression(indexShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.RELOCATING_NODE,
+        HashMap<ColumnIdent, ReferenceImplementation> implementations = new HashMap<>(15);
+        implementations.put(SysShardsTableInfo.Columns.ID, new LiteralReferenceImplementation<>(shardId.id()));
+        implementations.put(SysShardsTableInfo.Columns.NUM_DOCS, new BlobShardNumDocsExpression(blobShard));
+        implementations.put(SysShardsTableInfo.Columns.PRIMARY, new ShardPrimaryExpression(indexShard));
+        implementations.put(SysShardsTableInfo.Columns.RELOCATING_NODE,
             new ShardRelocatingNodeExpression(indexShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.SCHEMA_NAME,
+        implementations.put(SysShardsTableInfo.Columns.SCHEMA_NAME,
             new LiteralReferenceImplementation<>(new BytesRef(BlobSchemaInfo.NAME)));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.SIZE, new BlobShardSizeExpression(blobShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.STATE, new ShardStateExpression(indexShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.ROUTING_STATE, new ShardRoutingStateExpression(indexShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.TABLE_NAME, new BlobShardTableNameExpression(shardId));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.PARTITION_IDENT,
+        implementations.put(SysShardsTableInfo.Columns.SIZE, new BlobShardSizeExpression(blobShard));
+        implementations.put(SysShardsTableInfo.Columns.STATE, new ShardStateExpression(indexShard));
+        implementations.put(SysShardsTableInfo.Columns.ROUTING_STATE, new ShardRoutingStateExpression(indexShard));
+        implementations.put(SysShardsTableInfo.Columns.TABLE_NAME, new BlobShardTableNameExpression(shardId));
+        implementations.put(SysShardsTableInfo.Columns.PARTITION_IDENT,
             new LiteralReferenceImplementation<>(new BytesRef("")));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.ORPHAN_PARTITION,
+        implementations.put(SysShardsTableInfo.Columns.ORPHAN_PARTITION,
             new LiteralReferenceImplementation<>(false));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.PATH, new ShardPathExpression(indexShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.BLOB_PATH, new BlobShardBlobPathExpression(blobShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.MIN_LUCENE_VERSION,
+        implementations.put(SysShardsTableInfo.Columns.PATH, new ShardPathExpression(indexShard));
+        implementations.put(SysShardsTableInfo.Columns.BLOB_PATH, new BlobShardBlobPathExpression(blobShard));
+        implementations.put(SysShardsTableInfo.Columns.MIN_LUCENE_VERSION,
             new ShardMinLuceneVersionExpression(indexShard));
-        implementations.put(SysShardsTableInfo.ReferenceIdents.RECOVERY, new ShardRecoveryExpression(indexShard));
+        implementations.put(SysShardsTableInfo.Columns.RECOVERY, new ShardRecoveryExpression(indexShard));
         return new MapBackedRefResolver(implementations);
     }
 }

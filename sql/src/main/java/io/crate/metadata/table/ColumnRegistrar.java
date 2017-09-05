@@ -26,9 +26,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
-import io.crate.metadata.TableIdent;
 import io.crate.types.DataType;
 
 import javax.annotation.Nullable;
@@ -40,11 +38,9 @@ public class ColumnRegistrar {
     private final ImmutableSortedMap.Builder<ColumnIdent, Reference> infosBuilder;
     private final ImmutableSortedSet.Builder<Reference> columnsBuilder;
 
-    private final TableIdent tableIdent;
     private final RowGranularity rowGranularity;
 
-    public ColumnRegistrar(TableIdent tableIdent, RowGranularity rowGranularity) {
-        this.tableIdent = tableIdent;
+    public ColumnRegistrar(RowGranularity rowGranularity) {
         this.rowGranularity = rowGranularity;
         this.infosBuilder = ImmutableSortedMap.naturalOrder();
         this.columnsBuilder = ImmutableSortedSet.orderedBy(Reference.COMPARE_BY_COLUMN_IDENT);
@@ -55,11 +51,11 @@ public class ColumnRegistrar {
     }
 
     public ColumnRegistrar register(ColumnIdent column, DataType type) {
-        Reference info = new Reference(new ReferenceIdent(tableIdent, column), rowGranularity, type);
+        Reference info = new Reference(column, rowGranularity, type);
         if (info.ident().isColumn()) {
             columnsBuilder.add(info);
         }
-        infosBuilder.put(info.ident().columnIdent(), info);
+        infosBuilder.put(info.ident(), info);
         return this;
     }
 

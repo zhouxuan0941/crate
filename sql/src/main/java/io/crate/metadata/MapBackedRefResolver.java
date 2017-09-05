@@ -27,9 +27,9 @@ import java.util.Map;
 
 public final class MapBackedRefResolver implements ReferenceResolver<ReferenceImplementation<?>> {
 
-    private final Map<ReferenceIdent, ReferenceImplementation> implByIdent;
+    private final Map<ColumnIdent, ReferenceImplementation> implByIdent;
 
-    public MapBackedRefResolver(Map<ReferenceIdent, ReferenceImplementation> implByIdent) {
+    public MapBackedRefResolver(Map<ColumnIdent, ReferenceImplementation> implByIdent) {
         this.implByIdent = implByIdent;
     }
 
@@ -38,15 +38,15 @@ public final class MapBackedRefResolver implements ReferenceResolver<ReferenceIm
         return lookupMapWithChildTraversal(implByIdent, ref.ident());
     }
 
-    static ReferenceImplementation lookupMapWithChildTraversal(Map<ReferenceIdent, ReferenceImplementation> implByIdent,
-                                                               ReferenceIdent ident) {
+    static ReferenceImplementation lookupMapWithChildTraversal(Map<ColumnIdent, ReferenceImplementation> implByIdent,
+                                                               ColumnIdent ident) {
         if (ident.isColumn()) {
             return implByIdent.get(ident);
         }
-        ReferenceImplementation<?> impl = implByIdent.get(ident.columnReferenceIdent());
+        ReferenceImplementation<?> impl = implByIdent.get(ident.getRoot());
         if (impl == null) {
             return null;
         }
-        return ReferenceImplementation.getChildByPath(impl, ident.columnIdent().path());
+        return ReferenceImplementation.getChildByPath(impl, ident.path());
     }
 }

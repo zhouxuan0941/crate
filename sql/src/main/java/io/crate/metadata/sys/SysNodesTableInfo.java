@@ -27,7 +27,6 @@ import io.crate.action.sql.SessionContext;
 import io.crate.analyze.WhereClause;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.Routing;
 import io.crate.metadata.RowContextCollectorExpression;
 import io.crate.metadata.RowGranularity;
@@ -355,7 +354,7 @@ public class SysNodesTableInfo extends StaticTableInfo {
     private final ClusterService clusterService;
 
     public SysNodesTableInfo(ClusterService clusterService) {
-        super(IDENT, new ColumnRegistrar(IDENT, GRANULARITY)
+        super(IDENT, new ColumnRegistrar(GRANULARITY)
                 .register(Columns.ID, DataTypes.STRING)
                 .register(Columns.NAME, DataTypes.STRING)
                 .register(Columns.HOSTNAME, DataTypes.STRING)
@@ -474,7 +473,7 @@ public class SysNodesTableInfo extends StaticTableInfo {
 
     static Reference tableColumnInfo(TableIdent tableIdent) {
         return new Reference(
-            new ReferenceIdent(tableIdent, SYS_COL_IDENT),
+            SYS_COL_IDENT,
             RowGranularity.NODE,
             ObjectType.INSTANCE,
             ColumnPolicy.STRICT,

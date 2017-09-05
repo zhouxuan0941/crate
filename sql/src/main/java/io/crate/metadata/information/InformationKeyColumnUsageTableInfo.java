@@ -25,7 +25,11 @@ package io.crate.metadata.information;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Reference;
+import io.crate.metadata.RowContextCollectorExpression;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.metadata.expressions.RowCollectExpressionFactory;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
@@ -80,7 +84,7 @@ public class InformationKeyColumnUsageTableInfo extends InformationTableInfo {
     }
 
     private static Reference createRef(ColumnIdent columnIdent, DataType dataType) {
-        return new Reference(new ReferenceIdent(IDENT, columnIdent), RowGranularity.DOC, dataType);
+        return new Reference( columnIdent, RowGranularity.DOC, dataType);
     }
 
     InformationKeyColumnUsageTableInfo(ClusterService clusterService) {

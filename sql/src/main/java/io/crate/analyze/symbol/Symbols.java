@@ -118,7 +118,7 @@ public class Symbols {
         if (symbol instanceof Field) {
             return ((Field) symbol).path();
         } else if (symbol instanceof Reference) {
-            return ((Reference) symbol).ident().columnIdent();
+            return ((Reference) symbol).ident();
         }
         return new OutputName(SymbolPrinter.INSTANCE.printSimple(symbol));
     }
@@ -150,7 +150,7 @@ public class Symbols {
 
         @Override
         public Boolean visitReference(Reference symbol, ColumnIdent context) {
-            return context.equals(symbol.ident().columnIdent());
+            return context.equals(symbol.ident());
         }
     }
 

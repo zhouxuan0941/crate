@@ -39,18 +39,13 @@ import java.util.Comparator;
 
 public class Reference extends Symbol {
 
-    public static final Comparator<Reference> COMPARE_BY_COLUMN_IDENT = new Comparator<Reference>() {
-        @Override
-        public int compare(Reference o1, Reference o2) {
-            return o1.ident().columnIdent().compareTo(o2.ident().columnIdent());
-        }
-    };
+    public static final Comparator<Reference> COMPARE_BY_COLUMN_IDENT = Comparator.comparing(Reference::ident);
 
     public static final Function<? super Reference, ColumnIdent> TO_COLUMN_IDENT = new Function<Reference, ColumnIdent>() {
         @Nullable
         @Override
         public ColumnIdent apply(@Nullable Reference input) {
-            return input == null ? null : input.ident.columnIdent();
+            return input == null ? null : input.ident;
         }
     };
 
@@ -58,7 +53,7 @@ public class Reference extends Symbol {
         @Nullable
         @Override
         public String apply(@Nullable Reference input) {
-            return input == null ? null : input.ident.columnIdent().sqlFqn();
+            return input == null ? null : input.ident.sqlFqn();
         }
     };
 
@@ -69,14 +64,14 @@ public class Reference extends Symbol {
     }
 
     protected DataType type;
-    private ReferenceIdent ident;
+    private ColumnIdent ident;
     private ColumnPolicy columnPolicy = ColumnPolicy.DYNAMIC;
     private RowGranularity granularity;
     private IndexType indexType = IndexType.NOT_ANALYZED;
     private boolean nullable = true;
 
     public Reference(StreamInput in) throws IOException {
-        ident = new ReferenceIdent(in);
+        ident = new ColumnIdent(in);
         type = DataTypes.fromStream(in);
         granularity = RowGranularity.fromStream(in);
 
@@ -89,13 +84,13 @@ public class Reference extends Symbol {
 
     }
 
-    public Reference(ReferenceIdent ident,
+    public Reference(ColumnIdent ident,
                      RowGranularity granularity,
                      DataType type) {
         this(ident, granularity, type, ColumnPolicy.DYNAMIC, IndexType.NOT_ANALYZED, true);
     }
 
-    public Reference(ReferenceIdent ident,
+    public Reference(ColumnIdent ident,
                      RowGranularity granularity,
                      DataType type,
                      ColumnPolicy columnPolicy,
@@ -107,13 +102,6 @@ public class Reference extends Symbol {
         this.columnPolicy = columnPolicy;
         this.indexType = indexType;
         this.nullable = nullable;
-    }
-
-    /**
-     * Returns a cloned Reference with the given ident
-     */
-    public Reference getRelocated(ReferenceIdent newIdent) {
-        return new Reference(newIdent, granularity, type, columnPolicy, indexType, nullable);
     }
 
     @Override
@@ -132,7 +120,7 @@ public class Reference extends Symbol {
     }
 
 
-    public ReferenceIdent ident() {
+    public ColumnIdent ident() {
         return ident;
     }
 
@@ -180,7 +168,7 @@ public class Reference extends Symbol {
 
     @Override
     public String representation() {
-        return "Ref{" + ident.tableIdent() + '.' + ident.columnIdent() + ", " + type + '}';
+        return "Ref{" + ident + ", " + type + '}';
     }
 
     @Override

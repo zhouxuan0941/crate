@@ -74,7 +74,7 @@ public class SysJobsLogTableInfo extends StaticTableInfo {
     private final ClusterService clusterService;
 
     SysJobsLogTableInfo(ClusterService clusterService) {
-        super(IDENT, new ColumnRegistrar(IDENT, RowGranularity.DOC)
+        super(IDENT, new ColumnRegistrar(RowGranularity.DOC)
             .register(Columns.ID, DataTypes.STRING)
             .register(Columns.USERNAME, DataTypes.STRING)
             .register(Columns.STMT, DataTypes.STRING)

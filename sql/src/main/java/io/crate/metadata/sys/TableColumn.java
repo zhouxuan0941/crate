@@ -23,7 +23,6 @@ package io.crate.metadata.sys;
 
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.TableIdent;
 
 import java.util.Map;
@@ -58,6 +57,6 @@ public class TableColumn {
         if (info == null) {
             return null;
         }
-        return info.getRelocated(new ReferenceIdent(tableIdent, columnIdent));
+        return null; // TODO info.getRelocated(new ReferenceIdent(tableIdent, columnIdent));
     }
 }

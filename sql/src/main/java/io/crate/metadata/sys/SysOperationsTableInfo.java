@@ -76,7 +76,7 @@ public class SysOperationsTableInfo extends StaticTableInfo {
     private final TableColumn nodesTableColumn;
 
     SysOperationsTableInfo(ClusterService clusterService, SysNodesTableInfo sysNodesTableInfo) {
-        super(IDENT, new ColumnRegistrar(IDENT, RowGranularity.DOC)
+        super(IDENT, new ColumnRegistrar(RowGranularity.DOC)
                 .register(Columns.ID, DataTypes.STRING)
                 .register(Columns.JOB_ID, DataTypes.STRING)
                 .register(Columns.NAME, DataTypes.STRING)

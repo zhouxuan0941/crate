@@ -64,7 +64,7 @@ public class SysClusterTableInfo extends StaticTableInfo {
     }
 
     private static ColumnRegistrar buildColumnRegistrar() {
-        ColumnRegistrar columnRegistrar = new ColumnRegistrar(IDENT, RowGranularity.CLUSTER)
+        ColumnRegistrar columnRegistrar = new ColumnRegistrar(RowGranularity.CLUSTER)
             .register("id", DataTypes.STRING, null)
             .register("name", DataTypes.STRING, null)
             .register("master_node", DataTypes.STRING, null)

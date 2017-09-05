@@ -26,7 +26,14 @@ import com.google.common.collect.ImmutableSet;
 import io.crate.analyze.OrderBy;
 import io.crate.analyze.QuerySpec;
 import io.crate.analyze.relations.QueriedDocTable;
-import io.crate.analyze.symbol.*;
+import io.crate.analyze.symbol.FetchReference;
+import io.crate.analyze.symbol.Field;
+import io.crate.analyze.symbol.FieldReplacer;
+import io.crate.analyze.symbol.FieldsVisitor;
+import io.crate.analyze.symbol.InputColumn;
+import io.crate.analyze.symbol.RefReplacer;
+import io.crate.analyze.symbol.RefVisitor;
+import io.crate.analyze.symbol.Symbol;
 import io.crate.collections.Lists2;
 import io.crate.metadata.DocReferences;
 import io.crate.metadata.Reference;
@@ -35,7 +42,12 @@ import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.doc.DocTableInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 public final class FetchRewriter {
@@ -263,7 +275,7 @@ public final class FetchRewriter {
 
         private Symbol maybeConvertToSourceLookupAndAddToFetch(Reference ref) {
             if (ref.granularity() == RowGranularity.DOC) {
-                if (ref.ident().columnIdent().equals(DocSysColumns.SCORE)) {
+                if (ref.ident().equals(DocSysColumns.SCORE)) {
                     scoreRef = ref;
                     return ref;
                 }
