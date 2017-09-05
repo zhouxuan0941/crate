@@ -55,8 +55,12 @@ import java.util.Map;
 
 import static io.crate.analyze.TableDefinitions.SHARD_ROUTING;
 import static io.crate.analyze.TableDefinitions.USER_TABLE_INFO;
-import static io.crate.testing.SymbolMatchers.*;
-import static org.hamcrest.Matchers.*;
+import static io.crate.testing.SymbolMatchers.isFunction;
+import static io.crate.testing.SymbolMatchers.isLiteral;
+import static io.crate.testing.SymbolMatchers.isReference;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class UpdateAnalyzerTest extends CrateDummyClusterServiceUnitTest {
 
@@ -191,8 +195,8 @@ public class UpdateAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         assertThat(((DocTableRelation) statement.sourceRelation()).tableInfo().ident(), is(new TableIdent(Schemas.DOC_SCHEMA_NAME, "users")));
 
         Reference ref = statement1.assignments().keySet().iterator().next();
-        assertThat(ref.ident().tableIdent().name(), is("users"));
-        assertThat(ref.ident().columnIdent().name(), is("name"));
+        assertThat(ref.table().name(), is("users"));
+        assertThat(ref.column().name(), is("name"));
         assertTrue(statement1.assignments().containsKey(ref));
 
         Symbol value = statement1.assignments().entrySet().iterator().next().getValue();
@@ -208,8 +212,8 @@ public class UpdateAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         Reference ref = statement.assignments().keySet().iterator().next();
         assertThat(ref, instanceOf(DynamicReference.class));
         Assert.assertEquals(DataTypes.LONG, ref.valueType());
-        assertThat(ref.ident().columnIdent().isColumn(), is(false));
-        assertThat(ref.ident().columnIdent().fqn(), is("details.arms"));
+        assertThat(ref.column().isColumn(), is(false));
+        assertThat(ref.column().fqn(), is("details.arms"));
     }
 
     @Test(expected = ColumnValidationException.class)

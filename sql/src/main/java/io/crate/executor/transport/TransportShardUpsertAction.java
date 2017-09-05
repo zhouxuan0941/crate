@@ -25,7 +25,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import io.crate.Constants;
-import io.crate.analyze.AnalyzedColumnDefinition;
 import io.crate.analyze.ConstraintsValidator;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.data.ArrayRow;
@@ -91,6 +90,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,7 +100,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.crate.exceptions.Exceptions.userFriendlyMessage;
@@ -424,7 +423,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
                 if (ref.granularity() == RowGranularity.DOC) {
                     // don't include values for partitions in the _source
                     // ideally columns with partition granularity shouldn't be part of the request
-                    builder.field(ref.ident().columnIdent().fqn(), value);
+                    builder.field(ref.column().fqn(), value);
                     if (ref instanceof GeneratedReference) {
                         generatedReferencesWithValue.add((GeneratedReference) ref);
                     }
@@ -559,7 +558,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
         } else {
             sourceAsMap = new LinkedHashMap<>(insertColumns.length);
             for (int i = 0; i < insertColumns.length; i++) {
-                sourceAsMap.put(insertColumns[i].ident().columnIdent().fqn(), insertValues[i]);
+                sourceAsMap.put(insertColumns[i].column().fqn(), insertValues[i]);
             }
         }
         return sourceAsMap;
@@ -583,7 +582,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
             final GeneratedReference reference = generatedReferences.get(i);
             // partitionedBy columns cannot be updated
             if (!tableInfo.partitionedByColumns().contains(reference)) {
-                Object userSuppliedValue = updatedGeneratedColumns.get(reference.ident().columnIdent().fqn());
+                Object userSuppliedValue = updatedGeneratedColumns.get(reference.column().fqn());
                 if (validateConstraints) {
                     ConstraintsValidator.validate(userSuppliedValue, reference, tableInfo.notNullColumns());
                 }
@@ -596,7 +595,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
                     if (userSuppliedValue == null) {
                         // add column & value
-                        updatedColumns.put(reference.ident().columnIdent().fqn(), generatedValue);
+                        updatedColumns.put(reference.column().fqn(), generatedValue);
                     } else if (validateConstraints &&
                                reference.valueType().compareValueTo(generatedValue, userSuppliedValue) != 0) {
                         throw new IllegalArgumentException(String.format(Locale.ENGLISH,
@@ -617,8 +616,8 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
         boolean evalNeeded = referencedReferences.isEmpty();
         for (Reference reference : referencedReferences) {
             for (String columnName : updatedColumns) {
-                if (reference.ident().columnIdent().fqn().equals(columnName)
-                    || reference.ident().columnIdent().isChildOf(ColumnIdent.fromPath(columnName))) {
+                if (reference.column().fqn().equals(columnName)
+                    || reference.column().isChildOf(ColumnIdent.fromPath(columnName))) {
                     evalNeeded = true;
                     break;
                 }
@@ -670,14 +669,14 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
         if (targetColumns != null) {
             for (Reference targetColumn : targetColumns) {
-                targetColumnsSet.add(targetColumn.ident().columnIdent().fqn());
+                targetColumnsSet.add(targetColumn.column().fqn());
             }
         }
 
         for (Reference reference : tableInfo.columns()) {
             if (!(reference instanceof GeneratedReference) && !reference.isNullable()) {
-                if (!targetColumnsSet.contains(reference.ident().columnIdent().fqn())) {
-                    columnsNotUsed.add(reference.ident().columnIdent());
+                if (!targetColumnsSet.contains(reference.column().fqn())) {
+                    columnsNotUsed.add(reference.column());
                 }
             }
         }
@@ -690,7 +689,7 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
         @Override
         public CollectExpression<GetResult, ?> getImplementation(Reference ref) {
-            ColumnIdent columnIdent = ref.ident().columnIdent();
+            ColumnIdent columnIdent = ref.column();
             String fqn = columnIdent.fqn();
             switch (fqn) {
                 case DocSysColumns.Names.VERSION:
@@ -728,10 +727,10 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
 
         @Override
         public CollectExpression<GetResult, ?> getImplementation(Reference ref) {
-            Object suppliedValue = updatedColumns.get(ref.ident().columnIdent().fqn());
+            Object suppliedValue = updatedColumns.get(ref.column().fqn());
             final Object value;
-            if (suppliedValue == null && !ref.ident().isColumn()) {
-                value = XContentMapValues.extractValue(ref.ident().columnIdent().fqn(), updatedColumns);
+            if (suppliedValue == null && !ref.column().isColumn()) {
+                value = XContentMapValues.extractValue(ref.column().fqn(), updatedColumns);
             } else {
                 value = suppliedValue;
             }

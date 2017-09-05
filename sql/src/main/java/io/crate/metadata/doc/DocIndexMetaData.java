@@ -82,7 +82,7 @@ public class DocIndexMetaData {
     private final Map<ColumnIdent, IndexReference.Builder> indicesBuilder = new HashMap<>();
 
     private final ImmutableSortedSet.Builder<Reference> columnsBuilder = ImmutableSortedSet.orderedBy(
-        Comparator.comparing(o -> o.ident().columnIdent().fqn()));
+        Comparator.comparing(o -> o.column().fqn()));
 
     // columns should be ordered
     private final ImmutableMap.Builder<ColumnIdent, Reference> referencesBuilder = ImmutableSortedMap.naturalOrder();
@@ -219,10 +219,10 @@ public class DocIndexMetaData {
 
         // don't add it if there is a partitioned equivalent of this column
         if (partitioned || !(partitionedBy != null && partitionedBy.contains(column))) {
-            if (info.ident().isColumn()) {
+            if (info.column().isColumn()) {
                 columnsBuilder.add(info);
             }
-            referencesBuilder.put(info.ident().columnIdent(), info);
+            referencesBuilder.put(info.column(), info);
             if (info instanceof GeneratedReference) {
                 generatedColumnReferencesBuilder.add((GeneratedReference) info);
             }

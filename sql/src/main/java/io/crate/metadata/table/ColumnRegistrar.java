@@ -56,10 +56,10 @@ public class ColumnRegistrar {
 
     public ColumnRegistrar register(ColumnIdent column, DataType type) {
         Reference info = new Reference(new ReferenceIdent(tableIdent, column), rowGranularity, type);
-        if (info.ident().isColumn()) {
+        if (info.column().isColumn()) {
             columnsBuilder.add(info);
         }
-        infosBuilder.put(info.ident().columnIdent(), info);
+        infosBuilder.put(info.column(), info);
         return this;
     }
 

@@ -245,7 +245,7 @@ public class NodeStatsIterator implements BatchIterator {
 
         @Override
         public Void visitReference(Reference symbol, Set<ColumnIdent> context) {
-            context.add(symbol.ident().columnIdent().getRoot());
+            context.add(symbol.column().getRoot());
             return null;
         }
     }

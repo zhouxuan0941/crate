@@ -45,9 +45,9 @@ public class StaticTableReferenceResolver<R> implements ReferenceResolver<RowCol
 
     private static <R> RowCollectExpression<R, ?> rowCollectExpressionFromFactoryMap(
         Map<ColumnIdent, ? extends RowCollectExpressionFactory<R>> factories,
-        Reference info) {
+        Reference ref) {
 
-        ColumnIdent columnIdent = info.ident().columnIdent();
+        ColumnIdent columnIdent = ref.column();
         RowCollectExpressionFactory<R> factory = factories.get(columnIdent);
         if (factory != null) {
             return factory.create();

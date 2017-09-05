@@ -45,9 +45,9 @@ public class BlobReferenceResolver implements ReferenceResolver<CollectExpressio
 
     @Override
     public CollectExpression<File, ?> getImplementation(Reference refInfo) {
-        assert BlobSchemaInfo.NAME.equals(refInfo.ident().tableIdent().schema()) :
+        assert BlobSchemaInfo.NAME.equals(refInfo.table().schema()) :
             "schema name must be 'blob";
-        ExpressionBuilder builder = EXPRESSION_BUILDER.get(refInfo.ident().columnIdent().name());
+        ExpressionBuilder builder = EXPRESSION_BUILDER.get(refInfo.column().name());
         if (builder != null) {
             return builder.create();
         }

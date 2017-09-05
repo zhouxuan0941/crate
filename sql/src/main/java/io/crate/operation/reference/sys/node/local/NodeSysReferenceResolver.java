@@ -22,8 +22,8 @@
 
 package io.crate.operation.reference.sys.node.local;
 
+import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.ReferenceImplementation;
 import io.crate.metadata.sys.SysNodesTableInfo;
 import io.crate.operation.reference.ReferenceResolver;
@@ -52,13 +52,13 @@ public class NodeSysReferenceResolver implements ReferenceResolver<ReferenceImpl
 
     @Override
     public ReferenceImplementation getImplementation(Reference refInfo) {
-        ReferenceIdent ident = refInfo.ident();
-        if (SysNodesTableInfo.SYS_COL_NAME.equals(ident.columnIdent().name())) {
-            if (ident.columnIdent().isColumn()) {
+        ColumnIdent column = refInfo.column();
+        if (SysNodesTableInfo.SYS_COL_NAME.equals(column.name())) {
+            if (column.isColumn()) {
                 return nodeSysExpression;
             }
             ReferenceImplementation impl = null;
-            for (String part : ident.columnIdent().path()) {
+            for (String part : column.path()) {
                 if (impl == null) {
                     impl = getCachedImplementation(part);
                 } else {

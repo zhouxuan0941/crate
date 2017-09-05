@@ -22,7 +22,11 @@
 package io.crate.analyze.relations;
 
 import io.crate.analyze.OrderBy;
-import io.crate.analyze.symbol.*;
+import io.crate.analyze.symbol.DynamicReference;
+import io.crate.analyze.symbol.Field;
+import io.crate.analyze.symbol.Function;
+import io.crate.analyze.symbol.Symbol;
+import io.crate.analyze.symbol.SymbolVisitor;
 import io.crate.analyze.symbol.format.SymbolFormatter;
 import io.crate.exceptions.ColumnUnknownException;
 import io.crate.exceptions.ColumnValidationException;
@@ -53,7 +57,7 @@ public class DocTableRelation extends AbstractTableRelation<DocTableInfo> {
 
         @Override
         public Void visitReference(Reference symbol, DocTableRelation context) {
-            if (context.tableInfo.partitionedBy().contains(symbol.ident().columnIdent())) {
+            if (context.tableInfo.partitionedBy().contains(symbol.column())) {
                 throw new UnsupportedOperationException(
                     SymbolFormatter.format(
                         "cannot use partitioned column %s in ORDER BY clause", symbol));
@@ -130,7 +134,7 @@ public class DocTableRelation extends AbstractTableRelation<DocTableInfo> {
             if (idx >= 0) {
                 GeneratedReference generatedReference = generatedReferences.get(idx);
                 for (Reference reference : generatedReference.referencedReferences()) {
-                    ensureNotUpdated(ci, reference.ident().columnIdent(),
+                    ensureNotUpdated(ci, reference.column(),
                         "Updating a column which is referenced in a partitioned by generated column expression is not supported");
                 }
             }

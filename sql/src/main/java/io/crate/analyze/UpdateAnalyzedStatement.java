@@ -72,7 +72,7 @@ public class UpdateAnalyzedStatement implements AnalyzedStatement {
 
         public void addAssignment(Reference reference, Symbol value) {
             if (assignments.containsKey(reference)) {
-                throw new IllegalArgumentException(String.format(Locale.ENGLISH, "reference repeated %s", reference.ident().columnIdent().sqlFqn()));
+                throw new IllegalArgumentException(String.format(Locale.ENGLISH, "reference repeated %s", reference.column().sqlFqn()));
             }
             assignments.put(reference, value);
         }

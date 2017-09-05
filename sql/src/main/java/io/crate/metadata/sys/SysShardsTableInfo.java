@@ -23,7 +23,9 @@ package io.crate.metadata.sys;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.crate.action.sql.SessionContext;
 import io.crate.analyze.WhereClause;
+import io.crate.analyze.user.Privilege;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceIdent;
@@ -36,8 +38,6 @@ import io.crate.metadata.expressions.RowCollectExpressionFactory;
 import io.crate.metadata.shard.unassigned.UnassignedShard;
 import io.crate.metadata.table.ColumnRegistrar;
 import io.crate.metadata.table.StaticTableInfo;
-import io.crate.action.sql.SessionContext;
-import io.crate.analyze.user.Privilege;
 import io.crate.operation.user.User;
 import io.crate.types.BooleanType;
 import io.crate.types.DataTypes;
@@ -65,18 +65,18 @@ public class SysShardsTableInfo extends StaticTableInfo {
 
     public static class Columns {
         public static final ColumnIdent ID = new ColumnIdent("id");
-        static final ColumnIdent SCHEMA_NAME = new ColumnIdent("schema_name");
+        public static final ColumnIdent SCHEMA_NAME = new ColumnIdent("schema_name");
         public static final ColumnIdent TABLE_NAME = new ColumnIdent("table_name");
-        static final ColumnIdent PARTITION_IDENT = new ColumnIdent("partition_ident");
-        static final ColumnIdent NUM_DOCS = new ColumnIdent("num_docs");
+        public static final ColumnIdent PARTITION_IDENT = new ColumnIdent("partition_ident");
+        public static final ColumnIdent NUM_DOCS = new ColumnIdent("num_docs");
         public static final ColumnIdent PRIMARY = new ColumnIdent("primary");
-        static final ColumnIdent RELOCATING_NODE = new ColumnIdent("relocating_node");
+        public static final ColumnIdent RELOCATING_NODE = new ColumnIdent("relocating_node");
         public static final ColumnIdent SIZE = new ColumnIdent("size");
-        static final ColumnIdent STATE = new ColumnIdent("state");
-        static final ColumnIdent ROUTING_STATE = new ColumnIdent("routing_state");
-        static final ColumnIdent ORPHAN_PARTITION = new ColumnIdent("orphan_partition");
+        public static final ColumnIdent STATE = new ColumnIdent("state");
+        public static final ColumnIdent ROUTING_STATE = new ColumnIdent("routing_state");
+        public static final ColumnIdent ORPHAN_PARTITION = new ColumnIdent("orphan_partition");
 
-        static final ColumnIdent RECOVERY = new ColumnIdent("recovery");
+        public static final ColumnIdent RECOVERY = new ColumnIdent("recovery");
         static final ColumnIdent RECOVERY_STAGE = new ColumnIdent("recovery", ImmutableList.of("stage"));
         static final ColumnIdent RECOVERY_TYPE = new ColumnIdent("recovery", ImmutableList.of("type"));
         static final ColumnIdent RECOVERY_TOTAL_TIME =
@@ -103,10 +103,10 @@ public class SysShardsTableInfo extends StaticTableInfo {
         static final ColumnIdent RECOVERY_SIZE_PERCENT =
             new ColumnIdent("recovery", ImmutableList.of("size", "percent"));
 
-        static final ColumnIdent PATH = new ColumnIdent("path");
-        static final ColumnIdent BLOB_PATH = new ColumnIdent("blob_path");
+        public static final ColumnIdent PATH = new ColumnIdent("path");
+        public static final ColumnIdent BLOB_PATH = new ColumnIdent("blob_path");
 
-        static final ColumnIdent MIN_LUCENE_VERSION = new ColumnIdent("min_lucene_version");
+        public static final ColumnIdent MIN_LUCENE_VERSION = new ColumnIdent("min_lucene_version");
     }
 
     public static class ReferenceIdents {
@@ -119,20 +119,8 @@ public class SysShardsTableInfo extends StaticTableInfo {
          */
 
         public static final ReferenceIdent ID = new ReferenceIdent(IDENT, Columns.ID);
-        public static final ReferenceIdent SCHEMA_NAME = new ReferenceIdent(IDENT, Columns.SCHEMA_NAME);
         public static final ReferenceIdent TABLE_NAME = new ReferenceIdent(IDENT, Columns.TABLE_NAME);
         public static final ReferenceIdent PARTITION_IDENT = new ReferenceIdent(IDENT, Columns.PARTITION_IDENT);
-        public static final ReferenceIdent NUM_DOCS = new ReferenceIdent(IDENT, Columns.NUM_DOCS);
-        public static final ReferenceIdent PRIMARY = new ReferenceIdent(IDENT, Columns.PRIMARY);
-        public static final ReferenceIdent RELOCATING_NODE = new ReferenceIdent(IDENT, Columns.RELOCATING_NODE);
-        public static final ReferenceIdent SIZE = new ReferenceIdent(IDENT, Columns.SIZE);
-        public static final ReferenceIdent STATE = new ReferenceIdent(IDENT, Columns.STATE);
-        public static final ReferenceIdent ROUTING_STATE = new ReferenceIdent(IDENT, Columns.ROUTING_STATE);
-        public static final ReferenceIdent ORPHAN_PARTITION = new ReferenceIdent(IDENT, Columns.ORPHAN_PARTITION);
-        public static final ReferenceIdent RECOVERY = new ReferenceIdent(IDENT, Columns.RECOVERY);
-        public static final ReferenceIdent PATH = new ReferenceIdent(IDENT, Columns.PATH);
-        public static final ReferenceIdent BLOB_PATH = new ReferenceIdent(IDENT, Columns.BLOB_PATH);
-        public static final ReferenceIdent MIN_LUCENE_VERSION = new ReferenceIdent(IDENT, Columns.MIN_LUCENE_VERSION);
     }
 
     public static Map<ColumnIdent, RowCollectExpressionFactory<UnassignedShard>> unassignedShardsExpressions() {

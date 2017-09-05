@@ -21,7 +21,11 @@
 
 package io.crate.analyze;
 
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.Functions;
+import io.crate.metadata.GeneratedReference;
+import io.crate.metadata.Reference;
+import io.crate.metadata.Schemas;
 import io.crate.sql.tree.Insert;
 
 import java.util.ArrayList;
@@ -60,7 +64,7 @@ abstract class AbstractInsertAnalyzer {
                 if (i >= maxInsertValues) {
                     break;
                 }
-                addColumn(columnInfo.ident().columnIdent(), context, i);
+                addColumn(columnInfo.column(), context, i);
                 i++;
             }
 
@@ -102,7 +106,7 @@ abstract class AbstractInsertAnalyzer {
             for (Reference referencedReference : ((GeneratedReference) reference).referencedReferences()) {
                 for (Reference column : context.columns()) {
                     if (column.equals(referencedReference) ||
-                        referencedReference.ident().columnIdent().isChildOf(column.ident().columnIdent())) {
+                        referencedReference.column().isChildOf(column.column())) {
                         return true;
                     }
                 }

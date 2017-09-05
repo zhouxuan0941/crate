@@ -195,10 +195,10 @@ class MultiSourceFetchPushDown {
     }
 
     private void allocateFetchedReference(FetchReference fr, List<Reference> partitionedByColumns) {
-        FetchSource fs = fetchSources.get(fr.ref().ident().tableIdent());
+        FetchSource fs = fetchSources.get(fr.ref().table());
         if (fs == null) {
             fs = new FetchSource(partitionedByColumns);
-            fetchSources.put(fr.ref().ident().tableIdent(), fs);
+            fetchSources.put(fr.ref().table(), fs);
         }
         fs.fetchIdCols().add(fr.fetchId());
         if (fr.ref().granularity() == RowGranularity.DOC) {

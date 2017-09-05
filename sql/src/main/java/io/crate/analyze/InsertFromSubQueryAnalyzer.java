@@ -21,8 +21,6 @@
 
 package io.crate.analyze;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import io.crate.action.sql.SessionContext;
 import io.crate.analyze.expressions.ExpressionAnalysisContext;
@@ -59,6 +57,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 class InsertFromSubQueryAnalyzer {
 
@@ -178,11 +178,11 @@ class InsertFromSubQueryAnalyzer {
     private static void validateColumnsAndAddCastsIfNecessary(List<Reference> targetColumns,
                                                               QuerySpec querySpec) {
         if (targetColumns.size() != querySpec.outputs().size()) {
-            Joiner commaJoiner = Joiner.on(", ");
+            Collector<CharSequence, ?, String> commaJoiner = Collectors.joining(", ");
             throw new IllegalArgumentException(String.format(Locale.ENGLISH,
                 "Number of target columns (%s) of insert statement doesn't match number of source columns (%s)",
-                commaJoiner.join(Iterables.transform(targetColumns, Reference.TO_COLUMN_NAME)),
-                commaJoiner.join(Iterables.transform(querySpec.outputs(), SymbolPrinter.FUNCTION))));
+                targetColumns.stream().map(Reference.TO_COLUMN_NAME).collect(commaJoiner),
+                querySpec.outputs().stream().map(SymbolPrinter.FUNCTION).collect(commaJoiner)));
         }
 
         int failedCastPosition = querySpec.castOutputs(Iterators.transform(targetColumns.iterator(), Symbol::valueType));
@@ -193,7 +193,7 @@ class InsertFromSubQueryAnalyzer {
                 "Type of subquery column %s (%s) does not match is not convertable to the type of table column %s (%s)",
                 failedSource,
                 failedSource.valueType(),
-                failedTarget.ident().columnIdent().fqn(),
+                failedTarget.column().fqn(),
                 failedTarget.valueType()
             ));
         }

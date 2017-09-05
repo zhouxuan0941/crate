@@ -30,7 +30,6 @@ import io.crate.analyze.symbol.Symbol;
 import io.crate.exceptions.ColumnUnknownException;
 import io.crate.metadata.Functions;
 import io.crate.metadata.Reference;
-import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocSchemaInfo;
 import io.crate.metadata.doc.DocTableInfo;
@@ -145,7 +144,7 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
             analyze("select 1/age as age from foo.users group by age order by age");
         assertThat(analyzedStatement.relation().querySpec().groupBy().isPresent(), is(true));
         List<Symbol> groupBySymbols = analyzedStatement.relation().querySpec().groupBy().get();
-        assertThat(((Reference) groupBySymbols.get(0)).ident().columnIdent().fqn(), is("age"));
+        assertThat(((Reference) groupBySymbols.get(0)).column().fqn(), is("age"));
     }
 
     @Test
@@ -157,7 +156,7 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         Symbol groupBy = groupBySymbols.get(0);
         assertThat(groupBy, instanceOf(Function.class));
         Function groupByFunction = (Function) groupBy;
-        assertThat(((Reference) groupByFunction.arguments().get(1)).ident().columnIdent().fqn(), is("age"));
+        assertThat(((Reference) groupByFunction.arguments().get(1)).column().fqn(), is("age"));
     }
 
     @Test
@@ -166,7 +165,7 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         SelectAnalyzedStatement analyzedStatement = analyze("select 1/age as height from foo.users group by age");
         assertThat(analyzedStatement.relation().querySpec().groupBy().isPresent(), is(true));
         List<Symbol> groupBySymbols = analyzedStatement.relation().querySpec().groupBy().get();
-        assertThat(((Reference) groupBySymbols.get(0)).ident().columnIdent().fqn(), is("age"));
+        assertThat(((Reference) groupBySymbols.get(0)).column().fqn(), is("age"));
     }
 
     @Test
@@ -191,9 +190,9 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         SelectAnalyzedStatement analyzedStatement = analyze("select 58 as age from foo.users group by age;");
         assertThat(analyzedStatement.relation().querySpec().groupBy().isPresent(), is(true));
         List<Symbol> groupBySymbols = analyzedStatement.relation().querySpec().groupBy().get();
-        ReferenceIdent groupByIdent = ((Reference) groupBySymbols.get(0)).ident();
-        assertThat(groupByIdent.columnIdent().fqn(), is("age"));
-        assertThat(groupByIdent.tableIdent().fqn(), is("foo.users"));
+        Reference ageRef = (Reference) groupBySymbols.get(0);
+        assertThat(ageRef.column().fqn(), is("age"));
+        assertThat(ageRef.table().fqn(), is("foo.users"));
     }
 
     @Test
@@ -201,9 +200,9 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
         SelectAnalyzedStatement analyzedStatement = analyze("select age age, - age age from foo.users group by age;");
         assertThat(analyzedStatement.relation().querySpec().groupBy().isPresent(), is(true));
         List<Symbol> groupBySymbols = analyzedStatement.relation().querySpec().groupBy().get();
-        ReferenceIdent groupByIdent = ((Reference) groupBySymbols.get(0)).ident();
-        assertThat(groupByIdent.columnIdent().fqn(), is("age"));
-        assertThat(groupByIdent.tableIdent().fqn(), is("foo.users"));
+        Reference ageRef = ((Reference) groupBySymbols.get(0));
+        assertThat(ageRef.column().fqn(), is("age"));
+        assertThat(ageRef.table().fqn(), is("foo.users"));
     }
 
     @Test

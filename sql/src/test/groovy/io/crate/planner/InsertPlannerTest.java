@@ -35,7 +35,11 @@ import io.crate.planner.node.dql.Collect;
 import io.crate.planner.node.dql.MergePhase;
 import io.crate.planner.node.dql.RoutedCollectPhase;
 import io.crate.planner.node.dql.join.NestedLoop;
-import io.crate.planner.projection.*;
+import io.crate.planner.projection.ColumnIndexWriterProjection;
+import io.crate.planner.projection.EvalProjection;
+import io.crate.planner.projection.FilterProjection;
+import io.crate.planner.projection.GroupProjection;
+import io.crate.planner.projection.MergeCountProjection;
 import io.crate.test.integration.CrateDummyClusterServiceUnitTest;
 import io.crate.testing.SQLExecutor;
 import io.crate.types.DataTypes;
@@ -45,7 +49,10 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static io.crate.testing.SymbolMatchers.*;
+import static io.crate.testing.SymbolMatchers.isFunction;
+import static io.crate.testing.SymbolMatchers.isInputColumn;
+import static io.crate.testing.SymbolMatchers.isLiteral;
+import static io.crate.testing.SymbolMatchers.isReference;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
@@ -69,9 +76,9 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
 
         assertThat(upsertById.insertColumns().length, is(2));
         Reference idRef = upsertById.insertColumns()[0];
-        assertThat(idRef.ident().columnIdent().fqn(), is("id"));
+        assertThat(idRef.column().fqn(), is("id"));
         Reference nameRef = upsertById.insertColumns()[1];
-        assertThat(nameRef.ident().columnIdent().fqn(), is("name"));
+        assertThat(nameRef.column().fqn(), is("name"));
 
         assertThat(upsertById.items().size(), is(1));
         UpsertById.Item item = upsertById.items().get(0);
@@ -90,9 +97,9 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
 
         assertThat(upsertById.insertColumns().length, is(2));
         Reference idRef = upsertById.insertColumns()[0];
-        assertThat(idRef.ident().columnIdent().fqn(), is("id"));
+        assertThat(idRef.column().fqn(), is("id"));
         Reference nameRef = upsertById.insertColumns()[1];
-        assertThat(nameRef.ident().columnIdent().fqn(), is("name"));
+        assertThat(nameRef.column().fqn(), is("name"));
 
         assertThat(upsertById.items().size(), is(2));
 
@@ -158,8 +165,8 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat(projection.primaryKeys().size(), is(1));
         assertThat(projection.primaryKeys().get(0).fqn(), is("id"));
         assertThat(projection.columnReferences().size(), is(2));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("id"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("name"));
 
         assertNotNull(projection.clusteredByIdent());
         assertThat(projection.clusteredByIdent().fqn(), is("id"));
@@ -188,7 +195,7 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat(projection.primaryKeys().get(1).fqn(), is("date"));
 
         assertThat(projection.columnReferences().size(), is(1));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("id"));
 
         assertThat(projection.partitionedBySymbols().size(), is(1));
         assertThat(((InputColumn) projection.partitionedBySymbols().get(0)).index(), is(1));
@@ -217,8 +224,8 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
         ColumnIndexWriterProjection projection = (ColumnIndexWriterProjection) mergePhase.projections().get(2);
 
         assertThat(projection.columnReferences().size(), is(2));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("name"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("id"));
 
         assertThat(projection.columnSymbols().size(), is(2));
         assertThat(((InputColumn) projection.columnSymbols().get(0)).index(), is(0));
@@ -244,9 +251,9 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
         ColumnIndexWriterProjection projection = (ColumnIndexWriterProjection) collectPhase.projections().get(0);
 
         assertThat(projection.columnReferences().size(), is(3));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("date"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("id"));
-        assertThat(projection.columnReferences().get(2).ident().columnIdent().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("date"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(2).column().fqn(), is("name"));
         assertThat(((InputColumn) projection.ids().get(0)).index(), is(1));
         assertThat(((InputColumn) projection.clusteredBy()).index(), is(1));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
@@ -265,8 +272,8 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
         ColumnIndexWriterProjection projection = (ColumnIndexWriterProjection) nestedLoop.nestedLoopPhase().projections().get(1);
 
         assertThat(projection.columnReferences().size(), is(2));
-        assertThat(projection.columnReferences().get(0).ident().columnIdent().fqn(), is("id"));
-        assertThat(projection.columnReferences().get(1).ident().columnIdent().fqn(), is("name"));
+        assertThat(projection.columnReferences().get(0).column().fqn(), is("id"));
+        assertThat(projection.columnReferences().get(1).column().fqn(), is("name"));
         assertThat(((InputColumn) projection.ids().get(0)).index(), is(0));
         assertThat(((InputColumn) projection.clusteredBy()).index(), is(0));
         assertThat(projection.partitionedBySymbols().isEmpty(), is(true));
@@ -362,9 +369,9 @@ public class InsertPlannerTest extends CrateDummyClusterServiceUnitTest {
 
         assertThat(node.insertColumns().length, is(2));
         Reference idRef = node.insertColumns()[0];
-        assertThat(idRef.ident().columnIdent().fqn(), is("id"));
+        assertThat(idRef.column().fqn(), is("id"));
         Reference nameRef = node.insertColumns()[1];
-        assertThat(nameRef.ident().columnIdent().fqn(), is("name"));
+        assertThat(nameRef.column().fqn(), is("name"));
 
         assertThat(node.items().size(), is(1));
         UpsertById.Item item = node.items().get(0);

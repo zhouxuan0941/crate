@@ -23,9 +23,15 @@ package io.crate.analyze;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.crate.metadata.IndexMappings;
 import io.crate.Version;
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.GeneratedReference;
+import io.crate.metadata.IndexMappings;
+import io.crate.metadata.IndexReference;
+import io.crate.metadata.Reference;
+import io.crate.metadata.ReferenceIdent;
+import io.crate.metadata.RowGranularity;
+import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.Operation;
@@ -117,7 +123,7 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
     private static ImmutableMap<ColumnIdent, Reference> referencesMap(List<Reference> columns) {
         ImmutableMap.Builder<ColumnIdent, Reference> referencesMap = ImmutableMap.builder();
         for (Reference info : columns) {
-            referencesMap.put(info.ident().columnIdent(), info);
+            referencesMap.put(info.column(), info);
         }
         return referencesMap.build();
     }
@@ -346,7 +352,7 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
             ImmutableList.of(),
             new ColumnIdent("cluster_column"),
             ImmutableMap.of(),
-            ImmutableList.of(columns.get(1).ident().columnIdent()),
+            ImmutableList.of(columns.get(1).column()),
             ColumnPolicy.DYNAMIC);
 
         CreateTable node = MetaDataToASTNodeResolver.resolveCreateTable(tableInfo);

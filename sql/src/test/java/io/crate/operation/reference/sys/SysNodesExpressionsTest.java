@@ -105,7 +105,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testLoad() throws Exception {
         Reference refInfo = refInfo("sys.nodes.load", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression load =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = load.value();
         assertNull(v.get("something"));
@@ -125,7 +125,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testName() throws Exception {
         Reference refInfo = refInfo("sys.nodes.name", DataTypes.STRING, RowGranularity.NODE);
         @SuppressWarnings("unchecked") ReferenceImplementation<BytesRef> name =
-            (ReferenceImplementation<BytesRef>) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (ReferenceImplementation<BytesRef>) nodeSysExpression.getChildImplementation(refInfo.column().name());
         assertEquals(new BytesRef("node-name"), name.value());
     }
 
@@ -133,7 +133,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testId() throws Exception {
         Reference refInfo = refInfo("sys.nodes.id", DataTypes.STRING, RowGranularity.NODE);
         @SuppressWarnings("unchecked") ReferenceImplementation<BytesRef> id =
-            (ReferenceImplementation<BytesRef>) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (ReferenceImplementation<BytesRef>) nodeSysExpression.getChildImplementation(refInfo.column().name());
         assertEquals(new BytesRef("node"), id.value());
     }
 
@@ -141,7 +141,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testHostname() throws Exception {
         Reference refInfo = refInfo("sys.nodes.hostname", DataTypes.STRING, RowGranularity.NODE);
         @SuppressWarnings("unchecked") ReferenceImplementation<BytesRef> expression =
-            (ReferenceImplementation) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (ReferenceImplementation) nodeSysExpression.getChildImplementation(refInfo.column().name());
         BytesRef hostname = expression.value();
         assertThat(hostname, notNullValue());
         assertThat(InetAddresses.isInetAddress(BytesRefs.toString(hostname)), is(false));
@@ -151,7 +151,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testPorts() throws Exception {
         Reference refInfo = refInfo("sys.nodes.port", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression port =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = port.value();
         assertEquals(44200, v.get("http"));
@@ -162,7 +162,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testMemory() throws Exception {
         Reference refInfo = refInfo("sys.nodes.mem", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression mem =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = mem.value();
 
@@ -177,7 +177,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testHeap() throws Exception {
         Reference refInfo = refInfo("sys.nodes.heap", DataTypes.STRING, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression heap =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = heap.value();
 
@@ -191,7 +191,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testFs() throws Exception {
         Reference refInfo = refInfo("sys.nodes.fs", DataTypes.STRING, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression fs =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = fs.value();
         String total = mapToSortedString((Map<String, Object>) v.get("total"));
@@ -216,14 +216,14 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
 
         refInfo = refInfo("sys.nodes.fs", DataTypes.STRING, RowGranularity.NODE, "data", "dev");
         NestedObjectExpression fsRef =
-            (NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         SysStaticObjectArrayReference dataRef =
-            (SysStaticObjectArrayReference) fsRef.getChildImplementation(refInfo.ident().columnIdent().path().get(0));
+            (SysStaticObjectArrayReference) fsRef.getChildImplementation(refInfo.column().path().get(0));
 
         for (io.crate.operation.reference.NestedObjectExpression exp : dataRef.getChildImplementations()) {
             assertThat(
-                exp.getChildImplementation(refInfo.ident().columnIdent().path().get(1)).value(),
+                exp.getChildImplementation(refInfo.column().path().get(1)).value(),
                 instanceOf(BytesRef.class)
             );
         }
@@ -233,7 +233,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testVersion() throws Exception {
         Reference refInfo = refInfo("sys.nodes.version", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression version =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = version.value();
         assertEquals(Version.CURRENT.number(), v.get("number"));
@@ -246,7 +246,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testNetwork() throws Exception {
         Reference refInfo = refInfo("sys.nodes.network", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression networkRef =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> networkStats = networkRef.value();
         assertThat(mapToSortedString(networkStats),
@@ -259,7 +259,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     @Test
     public void testNetworkTCP() throws Exception {
         Reference refInfo = refInfo("sys.nodes.network", DataTypes.OBJECT, RowGranularity.NODE, "tcp");
-        ColumnIdent columnIdent = refInfo.ident().columnIdent();
+        ColumnIdent columnIdent = refInfo.column();
         io.crate.operation.reference.NestedObjectExpression network = (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(columnIdent.name());
         NestedObjectExpression tcpRef = (NestedObjectExpression) network.getChildImplementation(columnIdent.path().get(0));
         Map<String, Object> tcpStats = tcpRef.value();
@@ -274,7 +274,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testCpu() throws Exception {
         Reference refInfo = refInfo("sys.nodes.os", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression os =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = os.value();
         assertEquals(3600000L, v.get("uptime"));
@@ -292,7 +292,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testProcess() throws Exception {
         Reference refInfo = refInfo("sys.nodes.process", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression processRef = (io.crate.operation.reference.NestedObjectExpression)
-            nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = processRef.value();
 
@@ -312,7 +312,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     public void testOsInfo() throws Exception {
         Reference refInfo = refInfo("sys.nodes.os_info", DataTypes.OBJECT, RowGranularity.NODE);
         io.crate.operation.reference.NestedObjectExpression ref =
-            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.ident().columnIdent().name());
+            (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(refInfo.column().name());
 
         Map<String, Object> v = ref.value();
         int cores = (int) v.get("available_processors");
@@ -322,7 +322,7 @@ public class SysNodesExpressionsTest extends CrateDummyClusterServiceUnitTest {
     @Test
     public void testNestedBytesRefExpressionsString() throws Exception {
         Reference refInfo = refInfo("sys.nodes.version", DataTypes.OBJECT, RowGranularity.NODE);
-        ColumnIdent versionColIdent = refInfo.ident().columnIdent();
+        ColumnIdent versionColIdent = refInfo.column();
         io.crate.operation.reference.NestedObjectExpression version =
             (io.crate.operation.reference.NestedObjectExpression) nodeSysExpression.getChildImplementation(versionColIdent.name());
 

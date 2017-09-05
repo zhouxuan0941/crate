@@ -28,15 +28,15 @@ import java.util.Map;
 
 public class ClusterReferenceResolver implements ReferenceResolver<ReferenceImplementation<?>> {
 
-    private final Map<ReferenceIdent, ReferenceImplementation> implementations;
+    private final Map<ColumnIdent, ReferenceImplementation> implementations;
 
     @Inject
-    public ClusterReferenceResolver(Map<ReferenceIdent, ReferenceImplementation> implementations) {
+    public ClusterReferenceResolver(Map<ColumnIdent, ReferenceImplementation> implementations) {
         this.implementations = implementations;
     }
 
     @Override
     public ReferenceImplementation<?> getImplementation(Reference ref) {
-        return MapBackedRefResolver.lookupMapWithChildTraversal(implementations, ref.ident());
+        return MapBackedRefResolver.lookupMapWithChildTraversal(implementations, ref.column());
     }
 }

@@ -65,13 +65,6 @@ public class ReferenceIdent {
         return columnIdent;
     }
 
-    public ReferenceIdent columnReferenceIdent() {
-        if (isColumn()) {
-            return this;
-        }
-        return new ReferenceIdent(tableIdent, columnIdent.name());
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

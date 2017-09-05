@@ -71,7 +71,7 @@ public final class VersionExtractor {
             if (functionName.equals(EqOperator.NAME)) {
                 assert function.arguments().size() == 2 : "function's number of arguments must be 2";
                 Symbol left = function.arguments().get(0);
-                if (left instanceof Reference && ((Reference) left).ident().columnIdent().equals(DocSysColumns.VERSION)) {
+                if (left instanceof Reference && ((Reference) left).column().equals(DocSysColumns.VERSION)) {
                     versions.add(function.arguments().get(1));
                     return Literal.BOOLEAN_TRUE;
                 }

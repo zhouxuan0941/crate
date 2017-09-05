@@ -21,7 +21,6 @@
 
 package io.crate.metadata;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.crate.analyze.symbol.Symbol;
@@ -33,34 +32,15 @@ import io.crate.types.DataTypes;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.function.Function;
 
 public class Reference extends Symbol {
 
-    public static final Comparator<Reference> COMPARE_BY_COLUMN_IDENT = new Comparator<Reference>() {
-        @Override
-        public int compare(Reference o1, Reference o2) {
-            return o1.ident().columnIdent().compareTo(o2.ident().columnIdent());
-        }
-    };
-
-    public static final Function<? super Reference, ColumnIdent> TO_COLUMN_IDENT = new Function<Reference, ColumnIdent>() {
-        @Nullable
-        @Override
-        public ColumnIdent apply(@Nullable Reference input) {
-            return input == null ? null : input.ident.columnIdent();
-        }
-    };
-
-    public static final Function<? super Reference, String> TO_COLUMN_NAME = new Function<Reference, String>() {
-        @Nullable
-        @Override
-        public String apply(@Nullable Reference input) {
-            return input == null ? null : input.ident.columnIdent().sqlFqn();
-        }
-    };
+    public static final Comparator<Reference> COMPARE_BY_COLUMN_IDENT = Comparator.comparing(Reference::column);
+    public static final Function<? super Reference, ColumnIdent> TO_COLUMN_IDENT = Reference::column;
+    public static final Function<? super Reference, String> TO_COLUMN_NAME = ref -> ref.column().sqlFqn();
 
     public enum IndexType {
         ANALYZED,
@@ -83,10 +63,6 @@ public class Reference extends Symbol {
         columnPolicy = ColumnPolicy.values()[in.readVInt()];
         indexType = IndexType.values()[in.readVInt()];
         nullable = in.readBoolean();
-    }
-
-    public Reference() {
-
     }
 
     public Reference(ReferenceIdent ident,
@@ -131,9 +107,12 @@ public class Reference extends Symbol {
         return type;
     }
 
+    public ColumnIdent column() {
+        return ident.columnIdent();
+    }
 
-    public ReferenceIdent ident() {
-        return ident;
+    public TableIdent table() {
+        return ident.tableIdent();
     }
 
     public RowGranularity granularity() {
@@ -216,5 +195,16 @@ public class Reference extends Symbol {
 
     public static <R extends Reference> R fromStream(StreamInput in) throws IOException {
         return (R) SymbolType.VALUES.get(in.readVInt()).newInstance(in);
+    }
+
+    public Reference withNewType(DataType dataType) {
+        return new Reference(
+            ident,
+            granularity,
+            dataType,
+            columnPolicy,
+            indexType,
+            nullable
+        );
     }
 }

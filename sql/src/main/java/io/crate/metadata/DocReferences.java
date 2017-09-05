@@ -66,21 +66,20 @@ public final class DocReferences {
      * </pre>
      */
     public static Reference toSourceLookup(Reference reference) {
-        ReferenceIdent ident = reference.ident();
-        if (ident.columnIdent().isSystemColumn()) {
+        if (reference.column().isSystemColumn()) {
             return reference;
         }
-        if (reference.granularity() == RowGranularity.DOC && Schemas.isDefaultOrCustomSchema(ident.tableIdent().schema())) {
+        if (reference.granularity() == RowGranularity.DOC && Schemas.isDefaultOrCustomSchema(reference.table().schema())) {
             return reference.getRelocated(
-                new ReferenceIdent(ident.tableIdent(), ident.columnIdent().prepend(DocSysColumns.Names.DOC)));
+                new ReferenceIdent(reference.table(), reference.column().prepend(DocSysColumns.Names.DOC)));
         }
         return reference;
     }
 
     private static Reference docRefToRegularRef(Reference reference) {
-        ReferenceIdent ident = reference.ident();
-        if (!ident.isColumn() && ident.columnIdent().name().equals(DocSysColumns.Names.DOC)) {
-            return reference.getRelocated(new ReferenceIdent(ident.tableIdent(), ident.columnIdent().shiftRight()));
+        ColumnIdent column = reference.column();
+        if (!column.isColumn() && column.name().equals(DocSysColumns.Names.DOC)) {
+            return reference.getRelocated(new ReferenceIdent(reference.table(), column.shiftRight()));
         }
         return reference;
     }

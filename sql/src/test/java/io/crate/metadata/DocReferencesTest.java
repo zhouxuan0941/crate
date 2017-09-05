@@ -41,26 +41,26 @@ public class DocReferencesTest {
         // users._doc['name'] -> users.name
         Reference reference = stringRef("_doc.name");
         Reference newRef = (Reference) DocReferences.inverseSourceLookup(reference);
-        assertEquals(stringRef("name").ident(), newRef.ident());
+        assertEquals(stringRef("name").column(), newRef.column());
 
         // users._doc -> users._doc
         reference = stringRef("_doc");
         newRef = (Reference) DocReferences.inverseSourceLookup(reference);
-        assertEquals(stringRef("_doc").ident(), newRef.ident());
+        assertEquals(stringRef("_doc").column(), newRef.column());
     }
 
     @Test
     public void testDontConvertOtherReferences() throws Exception {
         Reference reference = stringRef("_raw");
         Reference newRef = (Reference) DocReferences.inverseSourceLookup(reference);
-        assertEquals(reference.ident(), newRef.ident());
+        assertEquals(reference.column(), newRef.column());
 
         reference = stringRef("_id");
         newRef = (Reference) DocReferences.inverseSourceLookup(reference);
-        assertEquals(reference.ident(), newRef.ident());
+        assertEquals(reference.column(), newRef.column());
 
         reference = stringRef("address.zip_code");
         newRef = (Reference) DocReferences.inverseSourceLookup(reference);
-        assertEquals(reference.ident(), newRef.ident());
+        assertEquals(reference.column(), newRef.column());
     }
 }

@@ -22,7 +22,12 @@
 
 package io.crate.planner.fetch;
 
-import io.crate.analyze.symbol.*;
+import io.crate.analyze.symbol.Aggregation;
+import io.crate.analyze.symbol.DynamicReference;
+import io.crate.analyze.symbol.Field;
+import io.crate.analyze.symbol.Function;
+import io.crate.analyze.symbol.Symbol;
+import io.crate.analyze.symbol.SymbolVisitor;
 import io.crate.metadata.Reference;
 import io.crate.metadata.doc.DocSysColumns;
 
@@ -48,7 +53,7 @@ public final class FetchFeasibility extends SymbolVisitor<Collection<? super Sym
 
     @Override
     public Boolean visitReference(Reference ref, Collection<? super Symbol> querySymbols) {
-        if (querySymbols.contains(ref) || ref.ident().columnIdent().equals(DocSysColumns.SCORE)) {
+        if (querySymbols.contains(ref) || ref.column().equals(DocSysColumns.SCORE)) {
             return false;
         }
         return true;

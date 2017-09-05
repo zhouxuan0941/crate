@@ -126,13 +126,13 @@ public class InformationColumnsTableInfo extends InformationTableInfo {
     public static Map<ColumnIdent, RowCollectExpressionFactory<ColumnContext>> expression() {
         return ImmutableMap.<ColumnIdent, RowCollectExpressionFactory<ColumnContext>>builder()
             .put(InformationColumnsTableInfo.Columns.TABLE_SCHEMA,
-                () -> RowContextCollectorExpression.objToBytesRef(r -> r.info.ident().tableIdent().schema()))
+                () -> RowContextCollectorExpression.objToBytesRef(r -> r.tableInfo.ident().schema()))
             .put(InformationColumnsTableInfo.Columns.TABLE_NAME,
-                () -> RowContextCollectorExpression.objToBytesRef(r -> r.info.ident().tableIdent().name()))
+                () -> RowContextCollectorExpression.objToBytesRef(r -> r.tableInfo.ident().name()))
             .put(InformationColumnsTableInfo.Columns.TABLE_CATALOG,
-                () -> RowContextCollectorExpression.objToBytesRef(r -> r.info.ident().tableIdent().schema()))
+                () -> RowContextCollectorExpression.objToBytesRef(r -> r.tableInfo.ident().schema()))
             .put(InformationColumnsTableInfo.Columns.COLUMN_NAME,
-                () -> RowContextCollectorExpression.objToBytesRef(r -> r.info.ident().columnIdent().sqlFqn()))
+                () -> RowContextCollectorExpression.objToBytesRef(r -> r.info.column().sqlFqn()))
             .put(InformationColumnsTableInfo.Columns.ORDINAL_POSITION,
                 () -> RowContextCollectorExpression.forFunction(ColumnContext::getOrdinal))
             .put(InformationColumnsTableInfo.Columns.DATA_TYPE,
@@ -197,7 +197,7 @@ public class InformationColumnsTableInfo extends InformationTableInfo {
                 () -> RowContextCollectorExpression.forFunction(r -> r.info instanceof GeneratedReference))
             .put(InformationColumnsTableInfo.Columns.IS_NULLABLE,
                 () -> RowContextCollectorExpression.forFunction(r ->
-                    !r.tableInfo.primaryKey().contains(r.info.ident().columnIdent()) && r.info.isNullable()))
+                    !r.tableInfo.primaryKey().contains(r.info.column()) && r.info.isNullable()))
             .put(InformationColumnsTableInfo.Columns.GENERATION_EXPRESSION,
                 () -> RowContextCollectorExpression.objToBytesRef(r -> {
                     if (r.info instanceof GeneratedReference) {

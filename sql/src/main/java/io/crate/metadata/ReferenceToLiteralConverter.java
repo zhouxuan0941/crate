@@ -28,7 +28,11 @@ import io.crate.analyze.symbol.Symbol;
 import io.crate.types.DataType;
 import org.elasticsearch.common.xcontent.support.XContentMapValues;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class ReferenceToLiteralConverter implements Function<Reference, Symbol> {
@@ -47,7 +51,7 @@ public class ReferenceToLiteralConverter implements Function<Reference, Symbol> 
                     referenceInputColumnMap.put(reference, new InputColumn(idx, reference.valueType()));
                     inputIsMap.set(idx, false);
                     break;
-                } else if (reference.ident().columnIdent().isChildOf(insertColumn.ident().columnIdent())) {
+                } else if (reference.column().isChildOf(insertColumn.column())) {
                     referenceInputColumnMap.put(reference, new InputColumn(idx, reference.valueType()));
                     inputIsMap.set(idx, true);
                     break;
@@ -70,7 +74,7 @@ public class ReferenceToLiteralConverter implements Function<Reference, Symbol> 
             DataType dataType = inputColumn.valueType();
             Object value;
             if (inputIsMap.get(inputColumn.index())) {
-                ColumnIdent columnIdent = reference.ident().columnIdent().shiftRight();
+                ColumnIdent columnIdent = reference.column().shiftRight();
                 assert columnIdent != null : "shifted ColumnIdent must not be null";
 
                 //noinspection unchecked

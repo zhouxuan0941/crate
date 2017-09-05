@@ -39,9 +39,8 @@ public class MapBackedRefResolverTest {
 
     @Test
     public void testGetImplementation() throws Exception {
-        ReferenceIdent ident = new ReferenceIdent(USERS_TI, new ColumnIdent("obj"));
         ReferenceResolver<ReferenceImplementation<?>> refResolver = new MapBackedRefResolver(
-            Collections.singletonMap(ident, mock(ReferenceImplementation.class)));
+            Collections.singletonMap(new ColumnIdent("obj"), mock(ReferenceImplementation.class)));
         ReferenceImplementation implementation = refResolver.getImplementation(new Reference(
             new ReferenceIdent(USERS_TI, new ColumnIdent("obj", Arrays.asList("x", "z"))), RowGranularity.DOC, DataTypes.STRING));
 

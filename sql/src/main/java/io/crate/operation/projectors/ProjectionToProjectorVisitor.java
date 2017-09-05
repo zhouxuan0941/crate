@@ -466,13 +466,13 @@ public class ProjectionToProjectorVisitor
 
         for (Map.Entry<Reference, Symbol> e : assignments.entrySet()) {
             Reference ref = e.getKey();
-            assert tableIdent == null || tableIdent.equals(ref.ident().tableIdent()) : "mixed table assignments found";
-            tableIdent = ref.ident().tableIdent();
+            assert tableIdent == null || tableIdent.equals(ref.table()) : "mixed table assignments found";
+            tableIdent = ref.table();
             if (readCtx == null) {
                 StaticTableDefinition<?> tableDefinition = staticTableDefinitionGetter.apply(tableIdent);
                 readCtx = inputFactory.ctxForRefs(tableDefinition.getReferenceResolver());
             }
-            assignmentCols.add(ref.ident().columnIdent());
+            assignmentCols.add(ref.column());
             Input<?> sourceInput = readCtx.add(e.getValue());
             valueInputs.add(sourceInput);
         }

@@ -21,14 +21,51 @@
 
 package io.crate.analyze;
 
-import io.crate.metadata.*;
+import io.crate.metadata.ColumnIdent;
+import io.crate.metadata.FulltextAnalyzerResolver;
+import io.crate.metadata.GeneratedReference;
+import io.crate.metadata.GeoReference;
+import io.crate.metadata.IndexReference;
+import io.crate.metadata.Reference;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.sql.parser.SqlParser;
-import io.crate.sql.tree.*;
-import io.crate.types.*;
+import io.crate.sql.tree.ClusteredBy;
+import io.crate.sql.tree.CollectionColumnType;
+import io.crate.sql.tree.ColumnConstraint;
+import io.crate.sql.tree.ColumnDefinition;
+import io.crate.sql.tree.ColumnType;
+import io.crate.sql.tree.CrateTableOption;
+import io.crate.sql.tree.CreateTable;
+import io.crate.sql.tree.Expression;
+import io.crate.sql.tree.GenericProperties;
+import io.crate.sql.tree.GenericProperty;
+import io.crate.sql.tree.IndexColumnConstraint;
+import io.crate.sql.tree.IndexDefinition;
+import io.crate.sql.tree.Literal;
+import io.crate.sql.tree.LongLiteral;
+import io.crate.sql.tree.NotNullColumnConstraint;
+import io.crate.sql.tree.ObjectColumnType;
+import io.crate.sql.tree.PartitionedBy;
+import io.crate.sql.tree.PrimaryKeyConstraint;
+import io.crate.sql.tree.QualifiedName;
+import io.crate.sql.tree.QualifiedNameReference;
+import io.crate.sql.tree.StringLiteral;
+import io.crate.sql.tree.SubscriptExpression;
+import io.crate.sql.tree.Table;
+import io.crate.sql.tree.TableElement;
+import io.crate.types.ArrayType;
+import io.crate.types.CollectionType;
+import io.crate.types.DataType;
+import io.crate.types.DataTypes;
+import io.crate.types.SetType;
 import org.elasticsearch.common.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 
 public class MetaDataToASTNodeResolver {
 
@@ -66,7 +103,7 @@ public class MetaDataToASTNodeResolver {
             List<ColumnDefinition> elements = new ArrayList<>();
             while (referenceIterator.hasNext()) {
                 Reference info = referenceIterator.next();
-                ColumnIdent ident = info.ident().columnIdent();
+                ColumnIdent ident = info.column();
                 if (ident.isSystemColumn()) continue;
                 if (parent != null && !ident.isChildOf(parent)) continue;
                 if (parent == null && !ident.path().isEmpty()) continue;
@@ -152,7 +189,7 @@ public class MetaDataToASTNodeResolver {
             if (indexColumns != null) {
                 while (indexColumns.hasNext()) {
                     IndexReference indexRef = (IndexReference) indexColumns.next();
-                    String name = indexRef.ident().columnIdent().name();
+                    String name = indexRef.column().name();
                     List<Expression> columns = expressionsFromReferences(indexRef.columns());
                     if (indexRef.indexType().equals(Reference.IndexType.ANALYZED)) {
                         String analyzer = indexRef.analyzer();
@@ -233,7 +270,7 @@ public class MetaDataToASTNodeResolver {
         private List<Expression> expressionsFromReferences(List<Reference> columns) {
             List<Expression> expressions = new ArrayList<>(columns.size());
             for (Reference ident : columns) {
-                expressions.add(expressionFromColumn(ident.ident().columnIdent()));
+                expressions.add(expressionFromColumn(ident.column()));
             }
             return expressions;
         }
