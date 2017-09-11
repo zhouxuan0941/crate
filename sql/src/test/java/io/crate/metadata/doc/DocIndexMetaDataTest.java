@@ -21,15 +21,16 @@ import io.crate.metadata.IndexReference;
 import io.crate.metadata.Reference;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.operation.udf.UserDefinedFunctionService;
 import io.crate.sql.parser.SqlParser;
 import io.crate.sql.tree.CreateTable;
 import io.crate.sql.tree.Statement;
 import io.crate.test.integration.CrateDummyClusterServiceUnitTest;
 import io.crate.types.ArrayType;
+import io.crate.types.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
@@ -183,11 +184,20 @@ public class DocIndexMetaDataTest extends CrateDummyClusterServiceUnitTest {
         IndexMetaData metaData = getIndexMetaData("test1", builder);
         DocIndexMetaData md = newMeta(metaData, "test1");
         assertThat(md.columns().size(), is(4));
-        assertThat(md.references().size(), is(17));
-        assertThat(md.references().get(new ColumnIdent("implicit_dynamic")).columnPolicy(), is(ColumnPolicy.DYNAMIC));
-        assertThat(md.references().get(new ColumnIdent("explicit_dynamic")).columnPolicy(), is(ColumnPolicy.DYNAMIC));
-        assertThat(md.references().get(new ColumnIdent("ignored")).columnPolicy(), is(ColumnPolicy.IGNORED));
-        assertThat(md.references().get(new ColumnIdent("strict")).columnPolicy(), is(ColumnPolicy.STRICT));
+        ImmutableMap<ColumnIdent,Reference> refs = md.references();
+        assertThat(refs.size(), is(17));
+        assertThat(
+            ((ObjectType)refs.get(new ColumnIdent("implicit_dynamic")).valueType()).columnPolicy(),
+            is(ColumnPolicy.DYNAMIC));
+        assertThat(
+            ((ObjectType)refs.get(new ColumnIdent("explicit_dynamic")).valueType()).columnPolicy(),
+            is(ColumnPolicy.DYNAMIC));
+        assertThat(
+            ((ObjectType)refs.get(new ColumnIdent("ignored")).valueType()).columnPolicy(),
+            is(ColumnPolicy.IGNORED));
+        assertThat(
+            ((ObjectType)refs.get(new ColumnIdent("strict")).valueType()).columnPolicy(),
+            is(ColumnPolicy.STRICT));
     }
 
     @Test
@@ -1129,10 +1139,9 @@ public class DocIndexMetaDataTest extends CrateDummyClusterServiceUnitTest {
                                                                "    quote string index using fulltext" +
                                                                "  ))" +
                                                                ")");
-        assertThat(md.references().get(ColumnIdent.fromPath("tags")).valueType(),
-            is(new ArrayType(DataTypes.OBJECT)));
-        assertThat(md.references().get(ColumnIdent.fromPath("tags")).columnPolicy(),
-            is(ColumnPolicy.STRICT));
+        Reference tags = md.references().get(ColumnIdent.fromPath("tags"));
+        assertThat(tags.valueType(), is(new ArrayType(DataTypes.OBJECT)));
+        assertThat(((ObjectType)((ArrayType)tags.valueType()).innerType()).columnPolicy(), is(ColumnPolicy.STRICT));
         assertThat(md.references().get(ColumnIdent.fromPath("tags.size")).valueType(),
             is(DataTypes.DOUBLE));
         assertThat(md.references().get(ColumnIdent.fromPath("tags.size")).indexType(),

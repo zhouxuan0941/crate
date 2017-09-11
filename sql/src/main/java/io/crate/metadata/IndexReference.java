@@ -25,7 +25,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import io.crate.analyze.symbol.SymbolType;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -88,7 +87,7 @@ public class IndexReference extends Reference {
                           IndexType indexType,
                           List<Reference> columns,
                           @Nullable String analyzer) {
-        super(ident, RowGranularity.DOC, DataTypes.STRING, ColumnPolicy.DYNAMIC, indexType, false);
+        super(ident, RowGranularity.DOC, DataTypes.STRING, indexType, false);
         this.columns = MoreObjects.firstNonNull(columns, Collections.<Reference>emptyList());
         this.analyzer = analyzer;
     }

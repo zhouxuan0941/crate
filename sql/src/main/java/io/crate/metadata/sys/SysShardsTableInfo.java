@@ -214,18 +214,18 @@ public class SysShardsTableInfo extends StaticTableInfo {
                 .register(Columns.ROUTING_STATE, StringType.INSTANCE)
                 .register(Columns.ORPHAN_PARTITION, BooleanType.INSTANCE)
 
-                .register(Columns.RECOVERY, ObjectType.INSTANCE)
+                .register(Columns.RECOVERY, ObjectType.DYNAMIC)
                 .register(Columns.RECOVERY_STAGE, StringType.INSTANCE)
                 .register(Columns.RECOVERY_TYPE, StringType.INSTANCE)
                 .register(Columns.RECOVERY_TOTAL_TIME, LongType.INSTANCE)
 
-                .register(Columns.RECOVERY_SIZE, ObjectType.INSTANCE)
+                .register(Columns.RECOVERY_SIZE, ObjectType.DYNAMIC)
                 .register(Columns.RECOVERY_SIZE_USED, LongType.INSTANCE)
                 .register(Columns.RECOVERY_SIZE_REUSED, LongType.INSTANCE)
                 .register(Columns.RECOVERY_SIZE_RECOVERED, LongType.INSTANCE)
                 .register(Columns.RECOVERY_SIZE_PERCENT, FloatType.INSTANCE)
 
-                .register(Columns.RECOVERY_FILES, ObjectType.INSTANCE)
+                .register(Columns.RECOVERY_FILES, ObjectType.DYNAMIC)
                 .register(Columns.RECOVERY_FILES_USED, IntegerType.INSTANCE)
                 .register(Columns.RECOVERY_FILES_REUSED, IntegerType.INSTANCE)
                 .register(Columns.RECOVERY_FILES_RECOVERED, IntegerType.INSTANCE)

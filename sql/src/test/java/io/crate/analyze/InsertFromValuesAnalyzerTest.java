@@ -35,7 +35,6 @@ import io.crate.metadata.Routing;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocTableInfo;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.TestingTableInfo;
 import io.crate.operation.scalar.arithmetic.ArithmeticFunctions;
 import io.crate.test.integration.CrateDummyClusterServiceUnitTest;
@@ -107,7 +106,7 @@ public class InsertFromValuesAnalyzerTest extends CrateDummyClusterServiceUnitTe
         TestingTableInfo.Builder notNullColumnTable = new TestingTableInfo.Builder(
             notNullColumnTableIdent, new Routing(ImmutableMap.of()))
             .add("id", DataTypes.INTEGER, null)
-            .add("name", DataTypes.STRING, null, ColumnPolicy.DYNAMIC, IndexType.NOT_ANALYZED, false, false);
+            .add("name", DataTypes.STRING, null, IndexType.NOT_ANALYZED, false, false);
         executorBuilder.addDocTable(notNullColumnTable);
 
         TableIdent generatedColumnTableIdent = new TableIdent(Schemas.DOC_SCHEMA_NAME, "generated_column");
@@ -144,7 +143,7 @@ public class InsertFromValuesAnalyzerTest extends CrateDummyClusterServiceUnitTe
         TableIdent generatedNestedClusteredByTableIdent = new TableIdent(Schemas.DOC_SCHEMA_NAME, "generated_nested_clustered_by");
         TestingTableInfo.Builder generatedNestedClusteredByInfo = new TestingTableInfo.Builder(
             generatedNestedClusteredByTableIdent, SHARD_ROUTING)
-            .add("o", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+            .add("o", DataTypes.OBJECT, null)
             .add("o", DataTypes.INTEGER, Arrays.asList("serial_number"))
             .addGeneratedColumn("routing_col", DataTypes.INTEGER, "o['serial_number'] + 1", false)
             .clusteredBy("routing_col");

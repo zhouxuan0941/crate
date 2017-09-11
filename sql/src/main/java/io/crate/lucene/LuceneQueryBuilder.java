@@ -84,6 +84,7 @@ import io.crate.operation.scalar.geo.WithinFunction;
 import io.crate.types.CollectionType;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.geo.Polygon;
 import org.apache.lucene.index.Term;
@@ -392,7 +393,7 @@ public class LuceneQueryBuilder {
             protected Query applyArrayReference(Reference arrayReference, Literal literal, Context context) throws IOException {
                 MappedFieldType fieldType = context.getFieldTypeOrNull(arrayReference.ident().columnIdent().fqn());
                 if (fieldType == null) {
-                    if (CollectionType.unnest(arrayReference.valueType()).equals(DataTypes.OBJECT)) {
+                    if (CollectionType.unnest(arrayReference.valueType()) instanceof ObjectType) {
                         return null; // fallback to generic query to enable {x=10} = any(objects)
                     }
                     return Queries.newMatchNoDocsQuery("column doesn't exist in this index");
@@ -654,7 +655,7 @@ public class LuceneQueryBuilder {
                 String columnName = reference.ident().columnIdent().fqn();
                 MappedFieldType fieldType = context.getFieldTypeOrNull(columnName);
                 if (fieldType == null) {
-                    if (reference.valueType().equals(DataTypes.OBJECT)) {
+                    if (reference.valueType() instanceof ObjectType) {
                         return null; // fallback to generic filter for  "o = {x=10, y=20}"
                     }
                     // field doesn't exist, can't match

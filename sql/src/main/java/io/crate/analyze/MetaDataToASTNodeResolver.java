@@ -57,6 +57,7 @@ import io.crate.types.ArrayType;
 import io.crate.types.CollectionType;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import io.crate.types.SetType;
 import org.elasticsearch.common.Nullable;
 
@@ -111,14 +112,16 @@ public class MetaDataToASTNodeResolver {
                     if (ident.getParent().compareTo(parent) > 0) continue;
                 }
 
-                ColumnType columnType = null;
-                if (info.valueType().equals(DataTypes.OBJECT)) {
-                    columnType = new ObjectColumnType(info.columnPolicy().value(), extractColumnDefinitions(ident));
+                final ColumnType columnType;
+                if (info.valueType() instanceof ObjectType) {
+                    columnType = new ObjectColumnType(
+                        ((ObjectType) info.valueType()).columnPolicy().value(), extractColumnDefinitions(ident));
                 } else if (info.valueType().id() == ArrayType.ID) {
                     DataType innerType = ((CollectionType) info.valueType()).innerType();
                     ColumnType innerColumnType = null;
-                    if (innerType.equals(DataTypes.OBJECT)) {
-                        innerColumnType = new ObjectColumnType(info.columnPolicy().value(), extractColumnDefinitions(ident));
+                    if (innerType instanceof ObjectType) {
+                        innerColumnType = new ObjectColumnType(
+                            ((ObjectType) innerType).columnPolicy().value(), extractColumnDefinitions(ident));
                     } else {
                         innerColumnType = new ColumnType(innerType.getName());
                     }
@@ -135,9 +138,8 @@ public class MetaDataToASTNodeResolver {
                     constraints.add(new NotNullColumnConstraint());
                 }
                 if (info.indexType().equals(Reference.IndexType.NO)
-                    && !info.valueType().equals(DataTypes.OBJECT)
-                    && !(info.valueType().id() == ArrayType.ID &&
-                         ((CollectionType) info.valueType()).innerType().equals(DataTypes.OBJECT))) {
+                    && !(info.valueType() instanceof ObjectType)
+                    && !(ArrayType.isObjectArray(info.valueType()))) {
                     constraints.add(IndexColumnConstraint.OFF);
                 } else if (info.indexType().equals(Reference.IndexType.ANALYZED)) {
                     String analyzer = tableInfo.getAnalyzerForColumnIdent(ident);

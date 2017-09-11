@@ -24,7 +24,6 @@ package io.crate.metadata;
 
 import com.google.common.collect.ImmutableList;
 import io.crate.analyze.relations.AnalyzedRelation;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.sql.tree.QualifiedName;
 import io.crate.test.integration.CrateUnitTest;
 import io.crate.testing.SqlExpressions;
@@ -51,7 +50,7 @@ public class GeneratedReferenceTest extends CrateUnitTest {
         ReferenceIdent referenceIdent = new ReferenceIdent(T3.T1_INFO.ident(), "generated_column");
         String formattedGeneratedExpression = "concat(a, 'bar')";
         GeneratedReference generatedReferenceInfo = new GeneratedReference(referenceIdent, RowGranularity.DOC,
-            StringType.INSTANCE, ColumnPolicy.STRICT, Reference.IndexType.ANALYZED,
+            StringType.INSTANCE, Reference.IndexType.ANALYZED,
             formattedGeneratedExpression, false);
 
         generatedReferenceInfo.generatedExpression(SQL_EXPRESSIONS.normalize(SQL_EXPRESSIONS.asSymbol(formattedGeneratedExpression)));

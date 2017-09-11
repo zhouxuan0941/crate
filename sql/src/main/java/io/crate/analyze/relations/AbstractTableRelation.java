@@ -45,10 +45,7 @@ import java.util.function.Predicate;
 
 public abstract class AbstractTableRelation<T extends TableInfo> implements AnalyzedRelation, FieldResolver {
 
-    private static final Predicate<Reference> IS_OBJECT_ARRAY =
-        input -> input != null
-        && input.valueType().id() == ArrayType.ID
-        && ((ArrayType) input.valueType()).innerType().equals(DataTypes.OBJECT);
+    private static final Predicate<Reference> IS_OBJECT_ARRAY = ref -> ArrayType.isObjectArray(ref.valueType());
 
     protected T tableInfo;
     private List<Field> outputs;
@@ -105,7 +102,6 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
                 reference.ident(),
                 reference.granularity(),
                 dataType,
-                reference.columnPolicy(),
                 reference.indexType(),
                 reference.isNullable());
         } else {

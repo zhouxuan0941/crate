@@ -26,7 +26,6 @@ import com.google.common.base.Objects;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.symbol.SymbolType;
 import io.crate.analyze.symbol.Symbols;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataType;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -56,11 +55,10 @@ public class GeneratedReference extends Reference {
     public GeneratedReference(ReferenceIdent ident,
                               RowGranularity granularity,
                               DataType type,
-                              ColumnPolicy columnPolicy,
                               IndexType indexType,
                               String formattedGeneratedExpression,
                               boolean nullable) {
-        super(ident, granularity, type, columnPolicy, indexType, nullable);
+        super(ident, granularity, type, indexType, nullable);
         this.formattedGeneratedExpression = formattedGeneratedExpression;
     }
 

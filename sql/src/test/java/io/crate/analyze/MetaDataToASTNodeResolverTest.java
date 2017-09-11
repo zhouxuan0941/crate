@@ -33,14 +33,15 @@ import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocTableInfo;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.Operation;
 import io.crate.sql.SqlFormatter;
 import io.crate.sql.tree.CreateTable;
 import io.crate.test.integration.CrateUnitTest;
 import io.crate.types.ArrayType;
+import io.crate.types.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.service.ClusterService;
@@ -103,20 +104,18 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
     }
 
     private static Reference newReference(TableIdent tableIdent, String name, DataType type) {
-        return newReference(tableIdent, name, type, null, null, false);
+        return newReference(tableIdent, name, type, null, false);
     }
 
     private static Reference newReference(TableIdent tableIdent,
                                           String name,
                                           DataType type,
                                           @Nullable List<String> path,
-                                          @Nullable ColumnPolicy policy,
                                           Boolean partitionColumn) {
         return new Reference(
             new ReferenceIdent(tableIdent, name, path),
             partitionColumn ? RowGranularity.PARTITION : RowGranularity.DOC,
             type,
-            policy == null ? ColumnPolicy.DYNAMIC : policy,
             Reference.IndexType.NOT_ANALYZED, true);
     }
 
@@ -146,12 +145,12 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
             newReference(ident, "ip_addr", DataTypes.IP),
             newReference(ident, "arr_simple", new ArrayType(DataTypes.STRING)),
             newReference(ident, "arr_geo_point", new ArrayType(DataTypes.GEO_POINT)),
-            newReference(ident, "arr_obj", new ArrayType(DataTypes.OBJECT), null, ColumnPolicy.STRICT, false),
-            newReference(ident, "arr_obj", DataTypes.LONG, Collections.singletonList("col_1"), null, false),
-            newReference(ident, "arr_obj", DataTypes.STRING, Collections.singletonList("col_2"), null, false),
-            newReference(ident, "obj", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC, false),
-            newReference(ident, "obj", DataTypes.LONG, Collections.singletonList("col_1"), null, false),
-            newReference(ident, "obj", DataTypes.STRING, Collections.singletonList("col_2"), null, false)
+            newReference(ident, "arr_obj", new ArrayType(ObjectType.STRICT), null, false),
+            newReference(ident, "arr_obj", DataTypes.LONG, Collections.singletonList("col_1"), false),
+            newReference(ident, "arr_obj", DataTypes.STRING, Collections.singletonList("col_2"), false),
+            newReference(ident, "obj", DataTypes.OBJECT, null, false),
+            newReference(ident, "obj", DataTypes.LONG, Collections.singletonList("col_1"), false),
+            newReference(ident, "obj", DataTypes.STRING, Collections.singletonList("col_2"), false)
         );
 
         DocTableInfo tableInfo = new TestDocTableInfo(
@@ -247,9 +246,9 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
         TableIdent ident = new TableIdent("myschema", "test");
 
         Reference colA = new Reference(new ReferenceIdent(ident, "col_a", null),
-            RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NOT_ANALYZED, true);
+            RowGranularity.DOC, DataTypes.STRING, Reference.IndexType.NOT_ANALYZED, true);
         Reference colB = new Reference(new ReferenceIdent(ident, "col_b", null),
-            RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.ANALYZED, false);
+            RowGranularity.DOC, DataTypes.STRING, Reference.IndexType.ANALYZED, false);
         List<Reference> columns = ImmutableList.of(colA, colB);
 
         List<ColumnIdent> primaryKeys = ImmutableList.of(new ColumnIdent("col_a"));
@@ -336,7 +335,7 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
 
         List<Reference> columns = ImmutableList.of(
             newReference(ident, "id", DataTypes.LONG),
-            newReference(ident, "partition_column", DataTypes.STRING, null, null, true),
+            newReference(ident, "partition_column", DataTypes.STRING, null, true),
             newReference(ident, "cluster_column", DataTypes.STRING)
         );
 
@@ -375,15 +374,15 @@ public class MetaDataToASTNodeResolverTest extends CrateUnitTest {
     public void testBuildCreateTableIndexes() throws Exception {
         TableIdent ident = new TableIdent("myschema", "test");
         Reference colA = new Reference(new ReferenceIdent(ident, "col_a", null),
-            RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NOT_ANALYZED, true);
+            RowGranularity.DOC, DataTypes.STRING, Reference.IndexType.NOT_ANALYZED, true);
         Reference colB = new Reference(new ReferenceIdent(ident, "col_b", null),
-            RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.ANALYZED, true);
+            RowGranularity.DOC, DataTypes.STRING, Reference.IndexType.ANALYZED, true);
         Reference colC = new Reference(new ReferenceIdent(ident, "col_c", null),
-            RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NO, true);
+            RowGranularity.DOC, DataTypes.STRING, Reference.IndexType.NO, true);
         Reference colD = new Reference(new ReferenceIdent(ident, "col_d", null),
             RowGranularity.DOC, DataTypes.OBJECT);
         Reference colE = new Reference(new ReferenceIdent(ident, "col_d", asList("a")),
-            RowGranularity.DOC, DataTypes.STRING, null, Reference.IndexType.NOT_ANALYZED, true);
+            RowGranularity.DOC, DataTypes.STRING, Reference.IndexType.NOT_ANALYZED, true);
 
         List<Reference> columns = ImmutableList.of(
             newReference(ident, "id", DataTypes.LONG),

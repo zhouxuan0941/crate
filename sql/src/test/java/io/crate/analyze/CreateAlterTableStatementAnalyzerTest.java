@@ -34,7 +34,7 @@ import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.FulltextAnalyzerResolver;
 import io.crate.metadata.IndexMappings;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
+import io.crate.types.ColumnPolicy;
 import io.crate.sql.parser.ParsingException;
 import io.crate.sql.parser.SqlParser;
 import io.crate.test.integration.CrateDummyClusterServiceUnitTest;

@@ -32,7 +32,7 @@ import io.crate.data.Row;
 import io.crate.metadata.settings.CrateTableSettings;
 import io.crate.metadata.settings.SettingsApplier;
 import io.crate.metadata.settings.SettingsAppliers;
-import io.crate.metadata.table.ColumnPolicy;
+import io.crate.types.ColumnPolicy;
 import io.crate.sql.tree.ArrayLiteral;
 import io.crate.sql.tree.Expression;
 import io.crate.sql.tree.GenericProperties;

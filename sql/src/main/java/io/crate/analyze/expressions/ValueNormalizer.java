@@ -34,9 +34,9 @@ import io.crate.exceptions.ConversionException;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
 import io.crate.metadata.doc.DocTableInfo;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.TableInfo;
 import io.crate.types.ArrayType;
+import io.crate.types.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import io.crate.types.ObjectType;
@@ -76,7 +76,7 @@ public class ValueNormalizer {
             return literal;
         }
         try {
-            if (targetType == DataTypes.OBJECT) {
+            if (targetType instanceof ObjectType) {
                 //noinspection unchecked
                 normalizeObjectValue((Map) value, reference, tableInfo);
             } else if (isObjectArray(targetType)) {
@@ -113,7 +113,7 @@ public class ValueNormalizer {
             ColumnIdent nestedIdent = ColumnIdent.getChildSafe(info.ident().columnIdent(), entry.getKey());
             Reference nestedInfo = tableInfo.getReference(nestedIdent);
             if (nestedInfo == null) {
-                if (info.columnPolicy() == ColumnPolicy.IGNORED) {
+                if (info.valueType() instanceof ObjectType && ((ObjectType) info.valueType()).columnPolicy() == ColumnPolicy.IGNORED) {
                     continue;
                 }
                 DynamicReference dynamicReference = null;
@@ -135,7 +135,7 @@ public class ValueNormalizer {
                     continue;
                 }
             }
-            if (nestedInfo.valueType() == DataTypes.OBJECT && entry.getValue() instanceof Map) {
+            if (nestedInfo.valueType() instanceof ObjectType && entry.getValue() instanceof Map) {
                 normalizeObjectValue((Map<String, Object>) entry.getValue(), nestedInfo, tableInfo);
             } else if (isObjectArray(nestedInfo.valueType()) && entry.getValue() instanceof Object[]) {
                 normalizeObjectArrayValue((Object[]) entry.getValue(), nestedInfo, tableInfo);

@@ -31,7 +31,6 @@ import io.crate.metadata.Reference;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocTableInfo;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.TestingTableInfo;
 import io.crate.sql.tree.QualifiedName;
 import io.crate.test.integration.CrateUnitTest;
@@ -116,7 +115,7 @@ public class LuceneQueryBuilderTest extends CrateUnitTest {
     public void prepare() throws Exception {
         DocTableInfo users = TestingTableInfo.builder(new TableIdent(Schemas.DOC_SCHEMA_NAME, "users"), null)
             .add("name", DataTypes.STRING)
-            .add("x", DataTypes.INTEGER, null, ColumnPolicy.DYNAMIC, Reference.IndexType.NOT_ANALYZED, false, false)
+            .add("x", DataTypes.INTEGER, null, Reference.IndexType.NOT_ANALYZED, false, false)
             .add("d", DataTypes.DOUBLE)
             .add("d_array", new ArrayType(DataTypes.DOUBLE))
             .add("y_array", new ArrayType(DataTypes.LONG))

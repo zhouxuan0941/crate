@@ -35,7 +35,6 @@ import io.crate.metadata.Routing;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.TransactionContext;
 import io.crate.metadata.doc.DocSchemaInfo;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.TestingTableInfo;
 import io.crate.operation.operator.any.AnyEqOperator;
 import io.crate.operation.operator.any.AnyLikeOperator;
@@ -44,6 +43,7 @@ import io.crate.testing.SQLExecutor;
 import io.crate.types.ArrayType;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.apache.lucene.util.BytesRef;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -124,7 +124,7 @@ public class WhereClauseAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                 .add("id", DataTypes.INTEGER, null)
                 .add("name", DataTypes.STRING, null)
                 .add("date", DataTypes.TIMESTAMP, null, true)
-                .add("obj", DataTypes.OBJECT, null, ColumnPolicy.IGNORED)
+                .add("obj", ObjectType.IGNORED, null)
                 .addPartitions(
                     new PartitionName("parted", Arrays.asList(new BytesRef("1395874800000"))).asIndexName(),
                     new PartitionName("parted", Arrays.asList(new BytesRef("1395961200000"))).asIndexName(),
@@ -138,7 +138,7 @@ public class WhereClauseAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                 .add("id", DataTypes.INTEGER, null)
                 .add("name", DataTypes.STRING, null)
                 .add("date", DataTypes.TIMESTAMP, null, true)
-                .add("obj", DataTypes.OBJECT, null, ColumnPolicy.IGNORED)
+                .add("obj", ObjectType.IGNORED, null)
                 .addPartitions(
                     new PartitionName("parted_pk", Arrays.asList(new BytesRef("1395874800000"))).asIndexName(),
                     new PartitionName("parted_pk", Arrays.asList(new BytesRef("1395961200000"))).asIndexName(),
@@ -159,7 +159,7 @@ public class WhereClauseAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                 .add("name", DataTypes.STRING, null)
                 .add("details", DataTypes.OBJECT, null)
                 .add("awesome", DataTypes.BOOLEAN, null)
-                .add("friends", new ArrayType(DataTypes.OBJECT), null, ColumnPolicy.DYNAMIC)
+                .add("friends", new ArrayType(DataTypes.OBJECT), null)
                 .addPrimaryKey("id")
                 .addPrimaryKey("name")
                 .clusteredBy("id")
@@ -181,7 +181,7 @@ public class WhereClauseAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                 .add("name", DataTypes.STRING, null)
                 .add("details", DataTypes.OBJECT, null)
                 .add("awesome", DataTypes.BOOLEAN, null)
-                .add("friends", new ArrayType(DataTypes.OBJECT), null, ColumnPolicy.DYNAMIC)
+                .add("friends", new ArrayType(DataTypes.OBJECT), null)
                 .clusteredBy("id")
                 .build());
     }

@@ -30,10 +30,10 @@ import io.crate.metadata.Routing;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocTableInfo;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.TestingTableInfo;
 import io.crate.types.ArrayType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.service.ClusterService;
 
@@ -82,11 +82,11 @@ public final class TableDefinitions {
         .add("text", DataTypes.STRING, null, Reference.IndexType.ANALYZED)
         .add("no_index", DataTypes.STRING, null, Reference.IndexType.NO)
         .add("details", DataTypes.OBJECT, null)
-        .add("address", DataTypes.OBJECT, null, ColumnPolicy.STRICT)
+        .add("address", ObjectType.STRICT, null)
         .add("postcode", DataTypes.STRING, Collections.singletonList("address"))
         .add("awesome", DataTypes.BOOLEAN, null)
         .add("counters", new ArrayType(DataTypes.LONG), null)
-        .add("friends", new ArrayType(DataTypes.OBJECT), null, ColumnPolicy.DYNAMIC)
+        .add("friends", new ArrayType(DataTypes.OBJECT), null)
         .add("friends", DataTypes.LONG, Arrays.asList("id"))
         .add("friends", new ArrayType(DataTypes.STRING), Arrays.asList("groups"))
         .add("tags", new ArrayType(DataTypes.STRING), null)
@@ -106,7 +106,7 @@ public final class TableDefinitions {
         .add("name", DataTypes.STRING, null)
         .add("details", DataTypes.OBJECT, null)
         .add("awesome", DataTypes.BOOLEAN, null)
-        .add("friends", new ArrayType(DataTypes.OBJECT), null, ColumnPolicy.DYNAMIC)
+        .add("friends", new ArrayType(DataTypes.OBJECT), null)
         .addPrimaryKey("id")
         .addPrimaryKey("name")
         .clusteredBy("id")
@@ -117,7 +117,7 @@ public final class TableDefinitions {
         .add("name", DataTypes.STRING, null)
         .add("details", DataTypes.OBJECT, null)
         .add("awesome", DataTypes.BOOLEAN, null)
-        .add("friends", new ArrayType(DataTypes.OBJECT), null, ColumnPolicy.DYNAMIC)
+        .add("friends", new ArrayType(DataTypes.OBJECT), null)
         .clusteredBy("id")
         .build();
     static final TableIdent USER_TABLE_REFRESH_INTERVAL_BY_ONLY = new TableIdent(Schemas.DOC_SCHEMA_NAME, "user_refresh_interval");
@@ -129,7 +129,7 @@ public final class TableDefinitions {
     static final TableIdent NESTED_PK_TABLE_IDENT = new TableIdent(Schemas.DOC_SCHEMA_NAME, "nested_pk");
     public static final DocTableInfo NESTED_PK_TABLE_INFO = TestingTableInfo.builder(NESTED_PK_TABLE_IDENT, SHARD_ROUTING)
         .add("id", DataTypes.LONG, null)
-        .add("o", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("o", DataTypes.OBJECT, null)
         .add("o", DataTypes.BYTE, Arrays.asList("b"))
         .addPrimaryKey("id")
         .addPrimaryKey("o.b")
@@ -141,7 +141,7 @@ public final class TableDefinitions {
         .add("id", DataTypes.INTEGER, null)
         .add("name", DataTypes.STRING, null)
         .add("date", DataTypes.TIMESTAMP, null, true)
-        .add("obj", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("obj", DataTypes.OBJECT, null)
         // add 3 partitions/simulate already done inserts
         .addPartitions(
             new PartitionName("parted", Arrays.asList(new BytesRef("1395874800000"))).asIndexName(),
@@ -163,7 +163,7 @@ public final class TableDefinitions {
         .add("id", DataTypes.INTEGER, null)
         .add("name", DataTypes.STRING, null)
         .add("date", DataTypes.TIMESTAMP, null, true)
-        .add("obj", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("obj", DataTypes.OBJECT, null)
         // add 3 partitions/simulate already done inserts
         .addPartitions(
             new PartitionName("parted", Arrays.asList(new BytesRef("1395874800000"))).asIndexName(),
@@ -179,7 +179,7 @@ public final class TableDefinitions {
         .add("id", DataTypes.INTEGER, null)
         .add("date", DataTypes.TIMESTAMP, null, true)
         .add("num", DataTypes.LONG, null)
-        .add("obj", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("obj", DataTypes.OBJECT, null)
         .add("obj", DataTypes.STRING, Arrays.asList("name"), true)
         // add 3 partitions/simulate already done inserts
         .addPartitions(
@@ -192,7 +192,7 @@ public final class TableDefinitions {
         TEST_NESTED_PARTITIONED_TABLE_IDENT, new Routing(ImmutableMap.<String, Map<String, List<Integer>>>of()))
         .add("id", DataTypes.INTEGER, null)
         .add("date", DataTypes.TIMESTAMP, null, true)
-        .add("obj", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("obj", DataTypes.OBJECT, null)
         .add("obj", DataTypes.STRING, Arrays.asList("name"), true)
         // add 3 partitions/simulate already done inserts
         .addPartitions(
@@ -212,9 +212,9 @@ public final class TableDefinitions {
     public static final TableIdent DEEPLY_NESTED_TABLE_IDENT = new TableIdent(Schemas.DOC_SCHEMA_NAME, "deeply_nested");
     public static final DocTableInfo DEEPLY_NESTED_TABLE_INFO = new TestingTableInfo.Builder(
         DEEPLY_NESTED_TABLE_IDENT, new Routing(ImmutableMap.<String, Map<String, List<Integer>>>of()))
-        .add("details", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("details", DataTypes.OBJECT, null)
         .add("details", DataTypes.BOOLEAN, Arrays.asList("awesome"))
-        .add("details", DataTypes.OBJECT, Arrays.asList("stuff"), ColumnPolicy.DYNAMIC)
+        .add("details", DataTypes.OBJECT, Arrays.asList("stuff"))
         .add("details", DataTypes.STRING, Arrays.asList("stuff", "name"))
         .add("details", new ArrayType(DataTypes.OBJECT), Arrays.asList("arguments"))
         .add("details", DataTypes.DOUBLE, Arrays.asList("arguments", "quality"))
@@ -228,7 +228,7 @@ public final class TableDefinitions {
     public static final TableIdent IGNORED_NESTED_TABLE_IDENT = new TableIdent(Schemas.DOC_SCHEMA_NAME, "ignored_nested");
     public static final DocTableInfo IGNORED_NESTED_TABLE_INFO = new TestingTableInfo.Builder(
         IGNORED_NESTED_TABLE_IDENT, new Routing(ImmutableMap.<String, Map<String, List<Integer>>>of()))
-        .add("details", DataTypes.OBJECT, null, ColumnPolicy.IGNORED)
+        .add("details", ObjectType.IGNORED, null)
         .build();
 
     public static final TableIdent TEST_DOC_LOCATIONS_TABLE_IDENT = new TableIdent(Schemas.DOC_SCHEMA_NAME, "locations");

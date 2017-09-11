@@ -35,10 +35,18 @@ import java.util.Map;
 
 public class ObjectType extends DataType<Map<String, Object>> implements Streamer<Map<String, Object>> {
 
-    public static final ObjectType INSTANCE = new ObjectType();
+    public static final ObjectType DYNAMIC = new ObjectType(ColumnPolicy.DYNAMIC);
+    public static final ObjectType STRICT = new ObjectType(ColumnPolicy.STRICT);
+    public static final ObjectType IGNORED = new ObjectType(ColumnPolicy.IGNORED);
     public static final int ID = 12;
 
-    private ObjectType() {
+    private ColumnPolicy columnPolicy = ColumnPolicy.DYNAMIC;
+
+    public ObjectType(ColumnPolicy columnPolicy) {
+        this.columnPolicy = columnPolicy;
+    }
+
+    public ObjectType() {
     }
 
     @Override
@@ -80,6 +88,18 @@ public class ObjectType extends DataType<Map<String, Object>> implements Streame
         return MapComparator.compareMaps(val1, val2);
     }
 
+    @Override
+    public void readFrom(StreamInput in) throws IOException {
+        super.readFrom(in);
+        columnPolicy = ColumnPolicy.fromStream(in);
+    }
+
+    @Override
+    public void writeTo(StreamOutput out) throws IOException {
+        super.writeTo(out);
+        ColumnPolicy.toStream(columnPolicy, out);
+    }
+
     // TODO: require type info from each child and then use typed streamer for contents of the map
     // ?
 
@@ -92,5 +112,9 @@ public class ObjectType extends DataType<Map<String, Object>> implements Streame
     @Override
     public void writeValueTo(StreamOutput out, Object v) throws IOException {
         out.writeGenericValue(v);
+    }
+
+    public ColumnPolicy columnPolicy() {
+        return columnPolicy;
     }
 }

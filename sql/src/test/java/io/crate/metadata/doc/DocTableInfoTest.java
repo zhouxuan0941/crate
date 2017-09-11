@@ -11,9 +11,9 @@ import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.Operation;
 import io.crate.test.integration.CrateUnitTest;
+import io.crate.types.ColumnPolicy;
 import io.crate.types.DataTypes;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
@@ -79,7 +79,6 @@ public class DocTableInfoTest extends CrateUnitTest {
             foobarIdent,
             RowGranularity.DOC,
             DataTypes.OBJECT,
-            ColumnPolicy.STRICT,
             Reference.IndexType.NOT_ANALYZED,
             true
         );

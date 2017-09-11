@@ -67,7 +67,7 @@ public final class DataTypes {
     public static final LongType LONG = LongType.INSTANCE;
     public static final TimestampType TIMESTAMP = TimestampType.INSTANCE;
 
-    public static final ObjectType OBJECT = ObjectType.INSTANCE;
+    public static final ObjectType OBJECT = ObjectType.DYNAMIC;
 
     public static final GeoPointType GEO_POINT = GeoPointType.INSTANCE;
     public static final GeoShapeType GEO_SHAPE = GeoShapeType.INSTANCE;
@@ -113,7 +113,7 @@ public final class DataTypes {
         .put(IntegerType.ID, () -> INTEGER)
         .put(LongType.ID, () -> LONG)
         .put(TimestampType.ID, () -> TIMESTAMP)
-        .put(ObjectType.ID, () -> OBJECT)
+        .put(ObjectType.ID, ObjectType::new)
         .put(GeoPointType.ID, () -> GEO_POINT)
         .put(GeoShapeType.ID, () -> GEO_SHAPE)
         .put(ArrayType.ID, ArrayType::new)

@@ -6,7 +6,6 @@ import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 
@@ -59,7 +58,7 @@ public class DocSysColumns {
         .build();
 
     private static Reference newInfo(TableIdent table, ColumnIdent column, DataType dataType) {
-        return new Reference(new ReferenceIdent(table, column), RowGranularity.DOC, dataType, ColumnPolicy.STRICT,
+        return new Reference(new ReferenceIdent(table, column), RowGranularity.DOC, dataType,
             Reference.IndexType.NOT_ANALYZED, false);
     }
 

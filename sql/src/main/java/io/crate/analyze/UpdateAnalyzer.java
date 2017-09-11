@@ -55,7 +55,6 @@ import io.crate.sql.tree.LongLiteral;
 import io.crate.sql.tree.SubscriptExpression;
 import io.crate.sql.tree.Update;
 import io.crate.types.ArrayType;
-import io.crate.types.DataTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +67,7 @@ public class UpdateAnalyzer {
 
     private static final UnsupportedFeatureException VERSION_SEARCH_EX = new UnsupportedFeatureException(
         VERSION_SEARCH_EX_MSG);
-    private static final Predicate<Reference> IS_OBJECT_ARRAY =
-        input -> input != null
-        && input.valueType().id() == ArrayType.ID
-        && ((ArrayType) input.valueType()).innerType().equals(DataTypes.OBJECT);
+    private static final Predicate<Reference> IS_OBJECT_ARRAY = ref -> ArrayType.isObjectArray(ref.valueType());
     private static final UpdateSubscriptValidator UPDATE_SUBSCRIPT_VALIDATOR = new UpdateSubscriptValidator();
 
     private final Functions functions;

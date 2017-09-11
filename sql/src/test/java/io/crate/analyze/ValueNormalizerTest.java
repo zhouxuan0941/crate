@@ -36,11 +36,11 @@ import io.crate.metadata.Routing;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.TableInfo;
 import io.crate.metadata.table.TestingTableInfo;
 import io.crate.test.integration.CrateUnitTest;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.apache.lucene.util.BytesRef;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -65,14 +65,14 @@ public class ValueNormalizerTest extends CrateUnitTest {
         .add("id", DataTypes.LONG, null)
         .add("name", DataTypes.STRING, null)
         .add("d", DataTypes.DOUBLE, null)
-        .add("dyn_empty", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
-        .add("dyn", DataTypes.OBJECT, null, ColumnPolicy.DYNAMIC)
+        .add("dyn_empty", DataTypes.OBJECT, null)
+        .add("dyn", DataTypes.OBJECT, null)
         .add("dyn", DataTypes.DOUBLE, ImmutableList.of("d"))
-        .add("dyn", DataTypes.OBJECT, ImmutableList.of("inner_strict"), ColumnPolicy.STRICT)
+        .add("dyn", ObjectType.STRICT, ImmutableList.of("inner_strict"))
         .add("dyn", DataTypes.DOUBLE, ImmutableList.of("inner_strict", "double"))
-        .add("strict", DataTypes.OBJECT, null, ColumnPolicy.STRICT)
+        .add("strict", ObjectType.STRICT, null)
         .add("strict", DataTypes.DOUBLE, ImmutableList.of("inner_d"))
-        .add("ignored", DataTypes.OBJECT, null, ColumnPolicy.IGNORED)
+        .add("ignored", ObjectType.IGNORED, null)
         .addPrimaryKey("id")
         .clusteredBy("id")
         .build();

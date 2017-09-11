@@ -45,7 +45,9 @@ import io.crate.sql.tree.ObjectColumnType;
 import io.crate.sql.tree.PrimaryKeyColumnConstraint;
 import io.crate.sql.tree.PrimaryKeyConstraint;
 import io.crate.sql.tree.TableElement;
+import io.crate.types.ArrayType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.elasticsearch.common.settings.Settings;
 
 import javax.annotation.Nullable;
@@ -144,10 +146,11 @@ public class TableElementsAnalyzer {
                     if (context.tableInfo != null) {
                         Reference parentRef = context.tableInfo.getReference(parent.ident());
                         if (parentRef != null) {
-                            if (parentRef.valueType().equals(DataTypes.OBJECT_ARRAY)) {
+                            if (ArrayType.isObjectArray(parentRef.valueType())) {
                                 parent.collectionType("array");
                             } else {
-                                parent.objectType(String.valueOf(parentRef.columnPolicy().mappingValue()));
+                                Object mappingValue = ((ObjectType) parentRef.valueType()).columnPolicy().mappingValue();
+                                parent.objectType(String.valueOf(mappingValue));
                             }
                         }
                     }

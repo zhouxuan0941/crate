@@ -33,7 +33,6 @@ import io.crate.metadata.RowContextCollectorExpression;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.expressions.RowCollectExpressionFactory;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.ColumnRegistrar;
 import io.crate.metadata.table.StaticTableInfo;
 import io.crate.monitor.ExtendedFsStats;
@@ -476,8 +475,7 @@ public class SysNodesTableInfo extends StaticTableInfo {
         return new Reference(
             new ReferenceIdent(tableIdent, SYS_COL_IDENT),
             RowGranularity.NODE,
-            ObjectType.INSTANCE,
-            ColumnPolicy.STRICT,
+            ObjectType.DYNAMIC,
             Reference.IndexType.NOT_ANALYZED,
             true
         );

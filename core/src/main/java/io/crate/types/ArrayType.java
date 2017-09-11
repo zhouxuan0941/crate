@@ -78,4 +78,8 @@ public class ArrayType extends CollectionType {
     public CollectionType newInstance(DataType innerType) {
         return new ArrayType(innerType);
     }
+
+    public static boolean isObjectArray(DataType type) {
+        return type instanceof ArrayType && ((ArrayType) type).innerType instanceof ObjectType;
+    }
 }

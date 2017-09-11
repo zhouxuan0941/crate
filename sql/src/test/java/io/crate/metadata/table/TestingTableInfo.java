@@ -46,6 +46,7 @@ import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.sql.parser.SqlParser;
 import io.crate.sql.tree.Expression;
+import io.crate.types.ColumnPolicy;
 import io.crate.types.DataType;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
@@ -190,25 +191,19 @@ public class TestingTableInfo extends DocTableInfo {
         }
 
         public Builder add(String column, DataType type, List<String> path) {
-            return add(column, type, path, ColumnPolicy.DYNAMIC);
-        }
-
-        public Builder add(String column, DataType type, List<String> path, ColumnPolicy columnPolicy) {
-            return add(column, type, path, columnPolicy, Reference.IndexType.NOT_ANALYZED, false, true);
+            return add(column, type, path, Reference.IndexType.NOT_ANALYZED, false, true);
         }
 
         public Builder add(String column, DataType type, List<String> path, Reference.IndexType indexType) {
-            return add(column, type, path, ColumnPolicy.DYNAMIC, indexType, false, true);
+            return add(column, type, path, indexType, false, true);
         }
 
         public Builder add(String column, DataType type, List<String> path,
                            boolean partitionBy) {
-            return add(column, type, path, ColumnPolicy.DYNAMIC,
-                Reference.IndexType.NOT_ANALYZED, partitionBy, true);
+            return add(column, type, path, Reference.IndexType.NOT_ANALYZED, partitionBy, true);
         }
 
-        public Builder add(String column, DataType type, List<String> path,
-                           ColumnPolicy columnPolicy, Reference.IndexType indexType,
+        public Builder add(String column, DataType type, List<String> path, Reference.IndexType indexType,
                            boolean partitionBy,
                            boolean nullable) {
             RowGranularity rowGranularity = RowGranularity.DOC;
@@ -216,7 +211,7 @@ public class TestingTableInfo extends DocTableInfo {
                 rowGranularity = RowGranularity.PARTITION;
             }
             Reference info = new Reference(new ReferenceIdent(ident, column, path),
-                rowGranularity, type, columnPolicy, indexType, nullable);
+                rowGranularity, type, indexType, nullable);
             if (info.ident().isColumn()) {
                 columns.add(info);
             }
@@ -239,7 +234,7 @@ public class TestingTableInfo extends DocTableInfo {
                 rowGranularity = RowGranularity.PARTITION;
             }
             GeneratedReference info = new GeneratedReference(new ReferenceIdent(ident, column),
-                rowGranularity, type, ColumnPolicy.DYNAMIC, Reference.IndexType.NOT_ANALYZED, expression, nullable);
+                rowGranularity, type, Reference.IndexType.NOT_ANALYZED, expression, nullable);
 
             generatedColumns.add(info);
             if (info.ident().isColumn()) {

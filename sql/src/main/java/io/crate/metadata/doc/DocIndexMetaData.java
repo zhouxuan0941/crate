@@ -49,13 +49,14 @@ import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.Operation;
 import io.crate.sql.parser.SqlParser;
 import io.crate.sql.tree.Expression;
 import io.crate.types.ArrayType;
+import io.crate.types.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
@@ -196,25 +197,24 @@ public class DocIndexMetaData {
     }
 
     private void addPartitioned(ColumnIdent column, DataType type, boolean isNotNull) {
-        add(column, type, ColumnPolicy.DYNAMIC, Reference.IndexType.NOT_ANALYZED, true, isNotNull);
+        add(column, type, Reference.IndexType.NOT_ANALYZED, true, isNotNull);
     }
 
     private void add(ColumnIdent column, DataType type, Reference.IndexType indexType, boolean isNotNull) {
-        add(column, type, ColumnPolicy.DYNAMIC, indexType, false, isNotNull);
+        add(column, type, indexType, false, isNotNull);
     }
 
     private void add(ColumnIdent column,
                      DataType type,
-                     ColumnPolicy columnPolicy,
                      Reference.IndexType indexType,
                      boolean partitioned,
                      boolean isNotNull) {
         Reference info;
         String generatedExpression = generatedColumns.get(column.fqn());
         if (generatedExpression == null) {
-            info = newInfo(column, type, columnPolicy, indexType, isNotNull);
+            info = newInfo(column, type, indexType, isNotNull);
         } else {
-            info = newGeneratedColumnInfo(column, type, columnPolicy, indexType, generatedExpression, isNotNull);
+            info = newGeneratedColumnInfo(column, type, indexType, generatedExpression, isNotNull);
         }
 
         // don't add it if there is a partitioned equivalent of this column
@@ -253,12 +253,11 @@ public class DocIndexMetaData {
 
     private GeneratedReference newGeneratedColumnInfo(ColumnIdent column,
                                                       DataType type,
-                                                      ColumnPolicy columnPolicy,
                                                       Reference.IndexType indexType,
                                                       String generatedExpression,
                                                       boolean isNotNull) {
         return new GeneratedReference(
-            refIdent(column), granularity(column), type, columnPolicy, indexType, generatedExpression, isNotNull);
+            refIdent(column), granularity(column), type, indexType, generatedExpression, isNotNull);
     }
 
     private RowGranularity granularity(ColumnIdent column) {
@@ -270,10 +269,9 @@ public class DocIndexMetaData {
 
     private Reference newInfo(ColumnIdent column,
                               DataType type,
-                              ColumnPolicy columnPolicy,
                               Reference.IndexType indexType,
                               boolean nullable) {
-        return new Reference(refIdent(column), granularity(column), type, columnPolicy, indexType, nullable);
+        return new Reference(refIdent(column), granularity(column), type, indexType, nullable);
     }
 
     /**
@@ -283,25 +281,28 @@ public class DocIndexMetaData {
      * @return dataType of the column with columnProperties
      */
     static DataType getColumnDataType(Map<String, Object> columnProperties) {
-        DataType type;
         String typeName = (String) columnProperties.get("type");
-
         if (typeName == null) {
             if (columnProperties.containsKey("properties")) {
-                type = DataTypes.OBJECT;
-            } else {
-                return DataTypes.NOT_SUPPORTED;
+                ColumnPolicy columnPolicy = ColumnPolicy.of(columnProperties.get("dynamic"));
+                return new ObjectType(columnPolicy);
             }
-        } else if (typeName.equalsIgnoreCase("array")) {
-
-            Map<String, Object> innerProperties = Maps.getNested(columnProperties, "inner");
-            DataType innerType = getColumnDataType(innerProperties);
-            type = new ArrayType(innerType);
-        } else {
-            typeName = typeName.toLowerCase(Locale.ENGLISH);
-            type = MoreObjects.firstNonNull(DataTypes.ofMappingName(typeName), DataTypes.NOT_SUPPORTED);
+            return DataTypes.NOT_SUPPORTED;
         }
-        return type;
+        typeName = typeName.toLowerCase(Locale.ENGLISH);
+        switch (typeName) {
+            case "array":
+                Map<String, Object> innerProperties = Maps.getNested(columnProperties, "inner");
+                DataType innerType = getColumnDataType(innerProperties);
+                return new ArrayType(innerType);
+
+            case "object":
+                ColumnPolicy columnPolicy = ColumnPolicy.of(columnProperties.get("dynamic"));
+                return new ObjectType(columnPolicy);
+
+            default:
+                return MoreObjects.firstNonNull(DataTypes.ofMappingName(typeName), DataTypes.NOT_SUPPORTED);
+        }
     }
 
     /**
@@ -389,12 +390,10 @@ public class DocIndexMetaData {
                 Integer treeLevels = (Integer) columnProperties.get("tree_levels");
                 Double distanceErrorPct = (Double) columnProperties.get("distance_error_pct");
                 addGeoReference(newIdent, geoTree, precision, treeLevels, distanceErrorPct);
-            } else if (columnDataType == DataTypes.OBJECT
+            } else if (columnDataType.id() == ObjectType.ID
                        || (columnDataType.id() == ArrayType.ID
-                           && ((ArrayType) columnDataType).innerType() == DataTypes.OBJECT)) {
-                ColumnPolicy columnPolicy =
-                    ColumnPolicy.of(columnProperties.get("dynamic"));
-                add(newIdent, columnDataType, columnPolicy, Reference.IndexType.NO, false, nullable);
+                           && ((ArrayType) columnDataType).innerType() instanceof ObjectType)) {
+                add(newIdent, columnDataType, Reference.IndexType.NO, false, nullable);
 
                 if (columnProperties.get("properties") != null) {
                     // walk nested
@@ -408,7 +407,7 @@ public class DocIndexMetaData {
                     for (String copyToColumn : copyToColumns) {
                         ColumnIdent targetIdent = ColumnIdent.fromPath(copyToColumn);
                         IndexReference.Builder builder = getOrCreateIndexBuilder(targetIdent);
-                        builder.addColumn(newInfo(newIdent, columnDataType, ColumnPolicy.DYNAMIC, columnIndexType, false));
+                        builder.addColumn(newInfo(newIdent, columnDataType, columnIndexType, false));
                     }
                 }
                 // is it an index?
@@ -681,9 +680,9 @@ public class DocIndexMetaData {
             DataType columnDataType = getColumnDataType(columnProperties);
             ColumnIdent newIdent = childIdent(columnIdent, columnEntry.getKey());
             columnProperties = furtherColumnProperties(columnProperties);
-            if (columnDataType == DataTypes.OBJECT
+            if (columnDataType instanceof ObjectType
                 || (columnDataType.id() == ArrayType.ID
-                    && ((ArrayType) columnDataType).innerType() == DataTypes.OBJECT)) {
+                    && ((ArrayType) columnDataType).innerType() instanceof ObjectType)) {
                 if (columnProperties.get("properties") != null) {
                     builder.putAll(getAnalyzers(newIdent, (Map<String, Object>) columnProperties.get("properties")));
                 }

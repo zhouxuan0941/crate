@@ -21,11 +21,11 @@
 
 package io.crate.metadata;
 
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.test.integration.CrateUnitTest;
 import io.crate.types.ArrayType;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import org.elasticsearch.common.io.stream.BytesStreamOutput;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.junit.Test;
@@ -51,8 +51,7 @@ public class ReferenceTest extends CrateUnitTest {
         ReferenceIdent referenceIdent = new ReferenceIdent(tableIdent, "object_column");
         Reference reference = new Reference(referenceIdent,
             RowGranularity.DOC,
-            new ArrayType(DataTypes.OBJECT),
-            ColumnPolicy.STRICT,
+            new ArrayType(ObjectType.STRICT),
             Reference.IndexType.ANALYZED, false);
 
         BytesStreamOutput out = new BytesStreamOutput();

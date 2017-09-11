@@ -32,7 +32,6 @@ import io.crate.metadata.RowContextCollectorExpression;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.expressions.RowCollectExpressionFactory;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.operation.reference.information.ColumnContext;
 import io.crate.types.ByteType;
 import io.crate.types.DataType;
@@ -224,7 +223,7 @@ public class InformationColumnsTableInfo extends InformationTableInfo {
         .put(LongType.ID, 64).map();
 
     private static Reference info(ColumnIdent columnIdent, DataType dataType, Boolean nullable) {
-        return new Reference(new ReferenceIdent(IDENT, columnIdent), RowGranularity.DOC, dataType, ColumnPolicy.DYNAMIC, Reference.IndexType.NOT_ANALYZED, nullable);
+        return new Reference(new ReferenceIdent(IDENT, columnIdent), RowGranularity.DOC, dataType, Reference.IndexType.NOT_ANALYZED, nullable);
     }
 
     InformationColumnsTableInfo(ClusterService clusterService) {

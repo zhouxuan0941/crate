@@ -35,7 +35,7 @@ import io.crate.metadata.blob.BlobTableInfo;
 import io.crate.metadata.doc.DocIndexMetaData;
 import io.crate.metadata.doc.DocTableInfo;
 import io.crate.metadata.expressions.RowCollectExpressionFactory;
-import io.crate.metadata.table.ColumnPolicy;
+import io.crate.types.ColumnPolicy;
 import io.crate.metadata.table.ShardedTable;
 import io.crate.metadata.table.TableInfo;
 import io.crate.operation.reference.information.TablesSettingsExpression;

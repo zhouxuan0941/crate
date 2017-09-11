@@ -24,7 +24,6 @@ package io.crate.analyze.symbol;
 import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -38,11 +37,7 @@ public class DynamicReference extends Reference {
     }
 
     public DynamicReference(ReferenceIdent ident, RowGranularity granularity) {
-        super(ident, granularity, DataTypes.UNDEFINED);
-    }
-
-    public DynamicReference(ReferenceIdent ident, RowGranularity granularity, ColumnPolicy columnPolicy) {
-        super(ident, granularity, DataTypes.UNDEFINED, columnPolicy, IndexType.NOT_ANALYZED, true);
+        super(ident, granularity, DataTypes.UNDEFINED, IndexType.NOT_ANALYZED, true);
     }
 
     @Override

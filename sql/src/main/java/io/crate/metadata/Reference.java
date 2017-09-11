@@ -27,7 +27,6 @@ import com.google.common.base.Objects;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.symbol.SymbolType;
 import io.crate.analyze.symbol.SymbolVisitor;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -70,7 +69,6 @@ public class Reference extends Symbol {
 
     protected DataType type;
     private ReferenceIdent ident;
-    private ColumnPolicy columnPolicy = ColumnPolicy.DYNAMIC;
     private RowGranularity granularity;
     private IndexType indexType = IndexType.NOT_ANALYZED;
     private boolean nullable = true;
@@ -80,31 +78,24 @@ public class Reference extends Symbol {
         type = DataTypes.fromStream(in);
         granularity = RowGranularity.fromStream(in);
 
-        columnPolicy = ColumnPolicy.values()[in.readVInt()];
         indexType = IndexType.values()[in.readVInt()];
         nullable = in.readBoolean();
-    }
-
-    public Reference() {
-
     }
 
     public Reference(ReferenceIdent ident,
                      RowGranularity granularity,
                      DataType type) {
-        this(ident, granularity, type, ColumnPolicy.DYNAMIC, IndexType.NOT_ANALYZED, true);
+        this(ident, granularity, type, IndexType.NOT_ANALYZED, true);
     }
 
     public Reference(ReferenceIdent ident,
                      RowGranularity granularity,
                      DataType type,
-                     ColumnPolicy columnPolicy,
                      IndexType indexType,
                      boolean nullable) {
         this.ident = ident;
         this.type = type;
         this.granularity = granularity;
-        this.columnPolicy = columnPolicy;
         this.indexType = indexType;
         this.nullable = nullable;
     }
@@ -113,7 +104,7 @@ public class Reference extends Symbol {
      * Returns a cloned Reference with the given ident
      */
     public Reference getRelocated(ReferenceIdent newIdent) {
-        return new Reference(newIdent, granularity, type, columnPolicy, indexType, nullable);
+        return new Reference(newIdent, granularity, type, indexType, nullable);
     }
 
     @Override
@@ -140,10 +131,6 @@ public class Reference extends Symbol {
         return granularity;
     }
 
-    public ColumnPolicy columnPolicy() {
-        return columnPolicy;
-    }
-
     public IndexType indexType() {
         return indexType;
     }
@@ -161,9 +148,6 @@ public class Reference extends Symbol {
 
         if (granularity != that.granularity) return false;
         if (ident != null ? !ident.equals(that.ident) : that.ident != null) return false;
-        if (columnPolicy.ordinal() != that.columnPolicy.ordinal()) {
-            return false;
-        }
         if (indexType.ordinal() != that.indexType.ordinal()) {
             return false;
         }
@@ -174,7 +158,7 @@ public class Reference extends Symbol {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(granularity, ident, type, columnPolicy, indexType);
+        int result = Objects.hashCode(granularity, ident, type, indexType);
         return 31 * result + (nullable ? 1 : 0);
     }
 
@@ -189,9 +173,6 @@ public class Reference extends Symbol {
             .add("ident", ident)
             .add("granularity", granularity)
             .add("type", type);
-        if (type.equals(DataTypes.OBJECT)) {
-            helper.add("column policy", columnPolicy.name());
-        }
         helper.add("index type", indexType.name());
         helper.add("nullable", nullable);
         return helper.toString();
@@ -203,7 +184,6 @@ public class Reference extends Symbol {
         DataTypes.toStream(type, out);
         RowGranularity.toStream(granularity, out);
 
-        out.writeVInt(columnPolicy.ordinal());
         out.writeVInt(indexType.ordinal());
         out.writeBoolean(nullable);
     }

@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.crate.blob.v2.BlobIndicesService;
 import io.crate.metadata.settings.CrateTableSettings;
-import io.crate.metadata.table.ColumnPolicy;
+import io.crate.types.ColumnPolicy;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.routing.UnassignedInfo;
 import org.elasticsearch.cluster.routing.allocation.decider.EnableAllocationDecider;

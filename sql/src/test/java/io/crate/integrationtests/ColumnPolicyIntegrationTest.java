@@ -26,7 +26,7 @@ import io.crate.action.sql.SQLActionException;
 import io.crate.metadata.PartitionName;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
-import io.crate.metadata.table.ColumnPolicy;
+import io.crate.types.ColumnPolicy;
 import io.crate.testing.TestingHelpers;
 import io.crate.testing.UseJdbc;
 import org.apache.lucene.util.BytesRef;

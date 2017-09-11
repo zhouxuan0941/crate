@@ -117,6 +117,7 @@ import io.crate.types.ArrayType;
 import io.crate.types.CollectionType;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 import io.crate.types.SetType;
 import io.crate.types.SingleColumnTableType;
 import io.crate.types.UndefinedType;
@@ -601,7 +602,7 @@ public class ExpressionAnalyzer {
             }
 
             DataType rightInnerType = ((CollectionType) arraySymbolType).innerType();
-            if (rightInnerType.equals(DataTypes.OBJECT)) {
+            if (rightInnerType instanceof ObjectType) {
                 throw new IllegalArgumentException("ANY on object arrays is not supported");
             }
 

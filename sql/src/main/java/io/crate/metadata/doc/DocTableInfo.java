@@ -41,11 +41,12 @@ import io.crate.metadata.Routing;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.sys.TableColumn;
-import io.crate.metadata.table.ColumnPolicy;
 import io.crate.metadata.table.Operation;
 import io.crate.metadata.table.ShardedTable;
 import io.crate.metadata.table.StoredTable;
 import io.crate.metadata.table.TableInfo;
+import io.crate.types.ColumnPolicy;
+import io.crate.types.ObjectType;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
@@ -459,7 +460,6 @@ public class DocTableInfo implements TableInfo, ShardedTable, StoredTable {
 
     @Nullable
     public DynamicReference getDynamic(ColumnIdent ident, boolean forWrite) {
-        boolean parentIsIgnored = false;
         ColumnPolicy parentPolicy = columnPolicy();
         if (!ident.isColumn()) {
             // see if parent is strict object
@@ -473,9 +473,8 @@ public class DocTableInfo implements TableInfo, ShardedTable, StoredTable {
                 }
                 parentIdent = parentIdent.getParent();
             }
-
-            if (parentInfo != null) {
-                parentPolicy = parentInfo.columnPolicy();
+            if (parentInfo != null && parentInfo.valueType() instanceof ObjectType) {
+                parentPolicy = ((ObjectType) parentInfo.valueType()).columnPolicy();
             }
         }
 
@@ -487,13 +486,8 @@ public class DocTableInfo implements TableInfo, ShardedTable, StoredTable {
                 if (forWrite) throw new ColumnUnknownException(ident.sqlFqn(), ident());
                 return null;
             case IGNORED:
-                parentIsIgnored = true;
-                break;
             default:
                 break;
-        }
-        if (parentIsIgnored) {
-            return new DynamicReference(new ReferenceIdent(ident(), ident), rowGranularity(), ColumnPolicy.IGNORED);
         }
         return new DynamicReference(new ReferenceIdent(ident(), ident), rowGranularity());
     }

@@ -32,6 +32,7 @@ import io.crate.metadata.FunctionInfo;
 import io.crate.metadata.Signature;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import io.crate.types.ObjectType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -144,7 +145,7 @@ public class EqOperator extends CmpOperator {
             if (DataTypes.isCollectionType(leftType) && DataTypes.isCollectionType(rightType)) {
                 return new ArrayEqOperator(info);
             }
-            if (leftType.equals(DataTypes.OBJECT) && rightType.equals(DataTypes.OBJECT)) {
+            if (leftType instanceof ObjectType && rightType instanceof ObjectType) {
                 return new ObjectEqOperator(info);
             }
             return new EqOperator(info);
