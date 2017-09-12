@@ -24,6 +24,7 @@ package io.crate.analyze.symbol;
 import io.crate.analyze.QuerySpec;
 import io.crate.analyze.relations.AnalyzedRelation;
 import io.crate.metadata.Path;
+import io.crate.sql.tree.QualifiedName;
 import io.crate.types.DataType;
 import org.elasticsearch.common.io.stream.StreamOutput;
 
@@ -75,8 +76,13 @@ public class Field extends Symbol implements Path {
         return path;
     }
 
+    @Deprecated
     public AnalyzedRelation relation() {
         return relation;
+    }
+
+    public QualifiedName relName() {
+        return relation.getQualifiedName();
     }
 
     @Override

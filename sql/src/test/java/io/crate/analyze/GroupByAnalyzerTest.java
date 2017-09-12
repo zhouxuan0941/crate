@@ -284,9 +284,9 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                     "group by users.name order by 1");
         assertThat(analysis.relation(), instanceOf(QueriedSelectRelation.class));
         assertThat(analysis.relation().querySpec(),
-            isSQL("SELECT io.crate.analyze.MultiSourceSelect.max(id) " +
-                  "GROUP BY io.crate.analyze.MultiSourceSelect.max(id) " +
-                  "ORDER BY io.crate.analyze.MultiSourceSelect.max(id)"));
+            isSQL("SELECT J.doc.users.doc.users_multi_pk.max(id) " +
+                  "GROUP BY J.doc.users.doc.users_multi_pk.max(id) " +
+                  "ORDER BY J.doc.users.doc.users_multi_pk.max(id)"));
         QueriedSelectRelation outerRelation = (QueriedSelectRelation) analysis.relation();
         assertThat(outerRelation.subRelation(), instanceOf(MultiSourceSelect.class));
         assertThat(outerRelation.subRelation().querySpec(),
@@ -300,13 +300,13 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                                                    ") t group by name order by 1");
         assertThat(analysis.relation(), instanceOf(QueriedSelectRelation.class));
         assertThat(analysis.relation().querySpec(),
-            isSQL("SELECT io.crate.analyze.QueriedSelectRelation.max(id) " +
-                  "GROUP BY io.crate.analyze.QueriedSelectRelation.max(id) " +
-                  "ORDER BY io.crate.analyze.QueriedSelectRelation.max(id)"));
+            isSQL("SELECT t.max(id) " +
+                  "GROUP BY t.max(id) " +
+                  "ORDER BY t.max(id)"));
         QueriedSelectRelation outerRelation = (QueriedSelectRelation) analysis.relation();
         assertThat(outerRelation.subRelation(), instanceOf(QueriedSelectRelation.class));
         assertThat(outerRelation.subRelation().querySpec(),
-            isSQL("SELECT max(doc.users.id) GROUP BY doc.users.name"));
+            isSQL("SELECT max(t.id) GROUP BY t.name"));
     }
 
     @Test
@@ -317,7 +317,7 @@ public class GroupByAnalyzerTest extends CrateDummyClusterServiceUnitTest {
                     ") t order by 1 desc");
         assertThat(analysis.relation(), instanceOf(QueriedSelectRelation.class));
         assertThat(analysis.relation().querySpec(),
-            isSQL("SELECT doc.users.id GROUP BY doc.users.id ORDER BY doc.users.id DESC"));
+            isSQL("SELECT t.id GROUP BY t.id ORDER BY t.id DESC"));
         QueriedSelectRelation outerRelation = (QueriedSelectRelation) analysis.relation();
         assertThat(outerRelation.subRelation(), instanceOf(QueriedDocTable.class));
         assertThat(outerRelation.subRelation().querySpec(),

@@ -122,7 +122,7 @@ public class TableIdentsExtractor {
 
         @Override
         public Collection<TableIdent> visitField(Field field, Void context) {
-            return RELATION_TABLE_IDENT_EXTRACTOR.process(field.relation(), context);
+            return Collections.emptyList();
         }
 
         @Override

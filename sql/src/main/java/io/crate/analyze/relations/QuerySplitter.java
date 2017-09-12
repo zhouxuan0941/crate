@@ -111,7 +111,7 @@ public class QuerySplitter {
 
         @Override
         public Void visitField(Field field, Map<Set<QualifiedName>, Symbol> context) {
-            context.put(Collections.singleton(field.relation().getQualifiedName()), field);
+            context.put(Collections.singleton(field.relName()), field);
             return null;
         }
 
@@ -119,7 +119,7 @@ public class QuerySplitter {
         public Void visitMatchPredicate(MatchPredicate matchPredicate, Map<Set<QualifiedName>, Symbol> context) {
             LinkedHashSet<QualifiedName> relationNames = new LinkedHashSet<>();
             for (Field field : matchPredicate.identBoostMap().keySet()) {
-                relationNames.add(field.relation().getQualifiedName());
+                relationNames.add(field.relName());
             }
             context.put(relationNames, matchPredicate);
             return null;

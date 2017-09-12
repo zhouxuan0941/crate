@@ -72,7 +72,7 @@ public final class RelationNormalizer {
             relation.subRelation(normalizedSubRelation);
             if (subRelation != normalizedSubRelation) {
                 relation.querySpec().replace(FieldReplacer.bind(f -> {
-                    if (f.relation().equals(subRelation)) {
+                    if (f.relName().equals(subRelation.getQualifiedName())) {
                         return normalizedSubRelation.getField(f.path(), Operation.READ);
                     }
                     return f;

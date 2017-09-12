@@ -409,13 +409,13 @@ public class ManyTableConsumer implements Consumer {
              *     twoTableJoin.outputs: [ [join.t1.t2].t1.x,  [join.t1.t2].t2.x, t3.x ]
              */
             if (it.hasNext()) { // The outer left join becomes the root {@link TwoTableJoin}
-                final AnalyzedRelation left = leftRelation;
-                final AnalyzedRelation right = rightRelation;
+                final QualifiedName lhs = leftRelation.getQualifiedName();
+                final QualifiedName rhs = rightRelation.getQualifiedName();
 
                 Function<? super Symbol, ? extends Symbol> replaceFunction = FieldReplacer.bind(f -> {
-                    if (f.relation().equals(left) || f.relation().equals(right)) {
+                    if (f.relName().equals(lhs) || f.relName().equals(rhs)) {
                         // path is prefixed with relationName so that they are still unique
-                        ColumnIdent path = new ColumnIdent(f.relation().getQualifiedName().toString(), f.path().outputName());
+                        ColumnIdent path = new ColumnIdent(f.relName().toString(), f.path().outputName());
                         Field field = join.getField(path, Operation.READ);
                         assert field != null : "must be able to resolve field \"" + path + "\" from " + join.getQualifiedName();
                         return field;
@@ -479,7 +479,7 @@ public class ManyTableConsumer implements Consumer {
                                                 @Nullable OrderBy orderBy) {
         final LinkedHashSet<Symbol> outputs = new LinkedHashSet<>(currentOutputs);
         java.util.function.Consumer<Field> maybeAddFieldToOutputs = f -> {
-            QualifiedName relName = f.relation().getQualifiedName();
+            QualifiedName relName = f.relName();
             if (relName.equals(leftName) || relName.equals(rightName)) {
                 outputs.add(f);
             }
@@ -649,14 +649,14 @@ public class ManyTableConsumer implements Consumer {
 
         @Override
         public Void visitField(Field field, Set<QualifiedName> context) {
-            context.add(field.relation().getQualifiedName());
+            context.add(field.relName());
             return null;
         }
 
         @Override
         public Void visitMatchPredicate(MatchPredicate matchPredicate, Set<QualifiedName> context) {
             for (Field field : matchPredicate.identBoostMap().keySet()) {
-                context.add(field.relation().getQualifiedName());
+                context.add(field.relName());
             }
             return null;
         }

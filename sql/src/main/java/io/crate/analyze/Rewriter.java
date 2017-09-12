@@ -147,7 +147,7 @@ public class Rewriter {
 
     private static Function<Field, Symbol> fieldToNullLiteralIfRelationMatches(QualifiedName relationName) {
         return field -> {
-            if (field.relation().getQualifiedName().equals(relationName)) {
+            if (field.relName().equals(relationName)) {
                 return Literal.NULL;
             }
             return field;
@@ -242,7 +242,7 @@ public class Rewriter {
             if (input == null) {
                 return null;
             }
-            if (!input.relation().equals(outerRelation)) {
+            if (!input.relName().equals(outerRelation.getQualifiedName())) {
                 return input;
             }
 

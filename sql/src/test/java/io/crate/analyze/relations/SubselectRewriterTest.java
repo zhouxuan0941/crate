@@ -123,7 +123,7 @@ public class SubselectRewriterTest extends CrateDummyClusterServiceUnitTest {
         assertThat(relation, instanceOf(QueriedSelectRelation.class));
         QueriedSelectRelation outerRelation = (QueriedSelectRelation) relation;
         assertThat(outerRelation.querySpec(),
-            isSQL("SELECT doc.t1.a, doc.t1.x, doc.t1.i ORDER BY doc.t1.x"));
+            isSQL("SELECT ttt.a, ttt.x, ttt.i ORDER BY ttt.x"));
         assertThat(((Field) outerRelation.querySpec().outputs().get(0)).relation(), sameInstance(outerRelation.subRelation()));
         assertThat(outerRelation.subRelation(), instanceOf(QueriedDocTable.class));
         assertThat(outerRelation.subRelation().querySpec(),
@@ -152,7 +152,7 @@ public class SubselectRewriterTest extends CrateDummyClusterServiceUnitTest {
         assertThat(relation, instanceOf(QueriedSelectRelation.class));
         QueriedSelectRelation outerRelation = (QueriedSelectRelation) relation;
         assertThat(outerRelation.querySpec(),
-            isSQL("SELECT doc.t1.a, doc.t1.x, doc.t1.i ORDER BY doc.t1.a DESC LIMIT 5"));
+            isSQL("SELECT ttt.a, ttt.x, ttt.i ORDER BY ttt.a DESC LIMIT 5"));
         assertThat(((Field) outerRelation.querySpec().outputs().get(0)).relation(), sameInstance(outerRelation.subRelation()));
         assertThat(outerRelation.subRelation(), instanceOf(QueriedDocTable.class));
         assertThat(outerRelation.subRelation().querySpec(),
@@ -169,7 +169,7 @@ public class SubselectRewriterTest extends CrateDummyClusterServiceUnitTest {
         assertThat(relation, instanceOf(QueriedSelectRelation.class));
         QueriedSelectRelation outerRelation = (QueriedSelectRelation) relation;
         assertThat(outerRelation.querySpec(),
-                   isSQL("SELECT doc.t1.a, doc.t1.x ORDER BY doc.t1.a"));
+                   isSQL("SELECT t.a, t.x ORDER BY t.a"));
         assertThat(((Field) outerRelation.querySpec().outputs().get(0)).relation(), sameInstance(outerRelation.subRelation()));
         assertThat(outerRelation.subRelation(), instanceOf(QueriedDocTable.class));
         assertThat(outerRelation.subRelation().querySpec(),

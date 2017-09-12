@@ -22,7 +22,6 @@
 
 package io.crate.analyze.symbol.format;
 
-import io.crate.analyze.relations.RelationPrinter;
 import io.crate.analyze.symbol.Aggregation;
 import io.crate.analyze.symbol.DynamicReference;
 import io.crate.analyze.symbol.FetchReference;
@@ -276,7 +275,8 @@ public class SymbolPrinter {
             }
 
             if (context.isFullQualified()) {
-                context.builder.append(RelationPrinter.INSTANCE.process(field.relation(), null))
+                context.builder
+                    .append(field.relName())
                     .append(DOT);
             }
             if (field.path() instanceof ColumnIdent) {

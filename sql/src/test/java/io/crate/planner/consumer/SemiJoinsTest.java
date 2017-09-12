@@ -106,7 +106,7 @@ public class SemiJoinsTest extends CrateDummyClusterServiceUnitTest {
             semiJoin.querySpec().where(),
             isSQL("WhereClause{MATCH_ALL=true}"));
 
-        assertThat(semiJoin.joinPairs().get(0).condition(), isSQL("(doc.t1.a = .empty_row.'foo')"));
+        assertThat(semiJoin.joinPairs().get(0).condition(), isSQL("(doc.t1.a = S0..empty_row.'foo')"));
     }
 
     @Test

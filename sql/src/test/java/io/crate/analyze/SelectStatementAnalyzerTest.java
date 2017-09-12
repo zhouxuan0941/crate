@@ -731,9 +731,9 @@ public class SelectStatementAnalyzerTest extends CrateDummyClusterServiceUnitTes
         assertThat(relation.querySpec().where().query(), isSQL("null"));
 
         assertThat(relation.joinPairs().get(0).condition(),
-            isSQL("(doc.users.id = doc.users_multi_pk.id)"));
+            isSQL("(u1.id = u2.id)"));
         assertThat(relation.joinPairs().get(1).condition(),
-            isSQL("(doc.users_multi_pk.id = doc.users_clustered_by_only.id)"));
+            isSQL("(u2.id = u3.id)"));
     }
 
     @Test
@@ -816,7 +816,7 @@ public class SelectStatementAnalyzerTest extends CrateDummyClusterServiceUnitTes
 
         MultiSourceSelect relation = (MultiSourceSelect) analysis.relation();
         assertThat(relation.requiredForMerge(), isSQL(
-            "doc.users_multi_pk.id, concat(doc.users.name, doc.users_multi_pk.name)"));
+            "u2.id, concat(u1.name, u2.name)"));
     }
 
     @Test

@@ -59,13 +59,13 @@ public final class RelationSplitter {
 
     private final QuerySpec querySpec;
     private final Set<Symbol> requiredForMerge = new LinkedHashSet<>();
-    private final Map<AnalyzedRelation, QuerySpec> specs;
+    private final Map<QualifiedName, QuerySpec> specs;
     private final Map<QualifiedName, AnalyzedRelation> relations;
     private final List<JoinPair> joinPairs;
     private final List<Symbol> joinConditions;
     private final Set<QualifiedName> relationPartOfJoinConditions;
 
-    private AnalyzedRelation firstRel;
+    private QualifiedName firstRel;
     private Set<Field> canBeFetched;
     private boolean orderByMoved = false;
 
@@ -77,9 +77,9 @@ public final class RelationSplitter {
         this.relations = new HashMap<>(relations.size());
         for (AnalyzedRelation relation : relations) {
             if (firstRel == null) {
-                firstRel = relation;
+                firstRel = relation.getQualifiedName();
             }
-            specs.put(relation, new QuerySpec());
+            specs.put(relation.getQualifiedName(), new QuerySpec());
             this.relations.put(relation.getQualifiedName(), relation);
         }
         this.joinPairs = joinPairs;
@@ -108,7 +108,7 @@ public final class RelationSplitter {
     }
 
     public QuerySpec getSpec(AnalyzedRelation relation) {
-        return specs.get(relation);
+        return specs.get(relation.getQualifiedName());
     }
 
     public void process() {
@@ -118,13 +118,13 @@ public final class RelationSplitter {
     }
 
     private QuerySpec getSpec(QualifiedName relationName) {
-        return specs.get(relations.get(relationName));
+        return specs.get(relationName);
     }
 
     private void processOutputs() {
-        SetMultimap<AnalyzedRelation, Symbol> fieldsByRelation = Multimaps.newSetMultimap(
-            new IdentityHashMap<AnalyzedRelation, Collection<Symbol>>(specs.size()), LinkedHashSet::new);
-        Consumer<Field> addFieldToMap = f -> fieldsByRelation.put(f.relation(), f);
+        SetMultimap<QualifiedName, Symbol> fieldsByRelation = Multimaps.newSetMultimap(
+            new IdentityHashMap<QualifiedName, Collection<Symbol>>(specs.size()), LinkedHashSet::new);
+        Consumer<Field> addFieldToMap = f -> fieldsByRelation.put(f.relName(), f);
 
         Optional<List<Symbol>> groupBy = querySpec.groupBy();
         if (groupBy.isPresent()) {
@@ -152,8 +152,8 @@ public final class RelationSplitter {
         if (limit.isPresent() &&  !groupBy.isPresent() && !querySpec.hasAggregates() && !filterNeeded
             && !querySpec.orderBy().isPresent()) {
             Optional<Symbol> limitAndOffset = Limits.mergeAdd(limit, querySpec.offset());
-            for (AnalyzedRelation rel : Sets.difference(specs.keySet(), fieldsByRelation.keySet())) {
-                if (!relationPartOfJoinConditions.contains(rel.getQualifiedName())) {
+            for (QualifiedName rel : Sets.difference(specs.keySet(), fieldsByRelation.keySet())) {
+                if (!relationPartOfJoinConditions.contains(rel)) {
                     QuerySpec spec = specs.get(rel);
                     // If it's a sub-select it might already have a limit
                     if (!spec.limit().isPresent()) {
@@ -164,7 +164,7 @@ public final class RelationSplitter {
         }
 
         // add all order by symbols to context outputs
-        for (Map.Entry<AnalyzedRelation, QuerySpec> entry : specs.entrySet()) {
+        for (Map.Entry<QualifiedName, QuerySpec> entry : specs.entrySet()) {
             QuerySpec querySpec = entry.getValue();
             if (querySpec.orderBy().isPresent()) {
                 FieldsVisitor.visitFields(querySpec.orderBy().get().orderBySymbols(), addFieldToMap);
@@ -183,7 +183,7 @@ public final class RelationSplitter {
         }
 
         // generate the outputs of the subSpecs
-        for (Map.Entry<AnalyzedRelation, QuerySpec> entry : specs.entrySet()) {
+        for (Map.Entry<QualifiedName, QuerySpec> entry : specs.entrySet()) {
             Collection<Symbol> fields = fieldsByRelation.get(entry.getKey());
             assert entry.getValue().outputs() == null : "entry.getValue().outputs() must not be null";
             entry.getValue().outputs(new ArrayList<>(fields));
@@ -273,14 +273,14 @@ public final class RelationSplitter {
             return;
         }
         OrderBy orderBy = optOrderBy.get();
-        Set<AnalyzedRelation> relations = Collections.newSetFromMap(new IdentityHashMap<AnalyzedRelation, Boolean>());
-        Consumer<Field> gatherRelations = f -> relations.add(f.relation());
+        Set<QualifiedName> relations = Collections.newSetFromMap(new IdentityHashMap<QualifiedName, Boolean>());
+        Consumer<Field> gatherRelations = f -> relations.add(f.relName());
 
         for (Symbol orderExpr : orderBy.orderBySymbols()) {
             FieldsVisitor.visitFields(orderExpr, gatherRelations);
         }
         if (relations.size() == 1 && joinPairs.stream().noneMatch(p -> p.joinType().isOuter())) {
-            AnalyzedRelation relationInOrderBy = relations.iterator().next();
+            QualifiedName relationInOrderBy = relations.iterator().next();
             QuerySpec spec = getSpec(relationInOrderBy);
             // If it's a sub-select it might already have an ordering
             if (firstRel == relationInOrderBy &&

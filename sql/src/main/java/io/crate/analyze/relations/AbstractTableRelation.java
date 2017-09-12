@@ -214,7 +214,7 @@ public abstract class AbstractTableRelation<T extends TableInfo> implements Anal
     @Override
     @Nullable
     public Reference resolveField(Field field) {
-        if (field.relation().equals(this)) {
+        if (field.relName().equals(qualifiedName)) {
             return allocatedFields.get(field.path());
         }
         return null;

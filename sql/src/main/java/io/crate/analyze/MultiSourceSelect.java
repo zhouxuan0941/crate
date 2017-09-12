@@ -117,7 +117,7 @@ public class MultiSourceSelect implements QueriedRelation {
 
 
     private static Field mapFieldToNewRelation(Field f, AnalyzedRelation oldRelation, QueriedRelation newRelation) {
-        if (f.relation().equals(oldRelation)) {
+        if (f.relName().equals(oldRelation.getQualifiedName())) {
             Field field = newRelation.getField(f.path(), Operation.READ);
             assert field != null : "Must be able to resolve field from injected relation: " + f;
             return field;

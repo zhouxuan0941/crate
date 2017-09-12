@@ -123,7 +123,7 @@ class MultiSourceFetchPushDown {
 
             DocTableRelation rel = ((QueriedDocTable) relation).tableRelation();
             DocTableInfo tableInfo = rel.tableInfo();
-            FetchFields canBeFetched = filterByRelation(statement.canBeFetched(), relation, rel);
+            FetchFields canBeFetched = filterByRelation(statement.canBeFetched(), relation.getQualifiedName(), rel);
             if (!canBeFetched.isEmpty()) {
 
                 Field fetchIdColumn = rel.getField(DocSysColumns.FETCHID);
@@ -184,10 +184,10 @@ class MultiSourceFetchPushDown {
         }
     }
 
-    private static FetchFields filterByRelation(Set<Field> fields, AnalyzedRelation rel, DocTableRelation tableRelation) {
+    private static FetchFields filterByRelation(Set<Field> fields, QualifiedName rel, DocTableRelation tableRelation) {
         FetchFields fetchFields = new FetchFields(tableRelation);
         for (Field field : fields) {
-            if (field.relation().equals(rel)) {
+            if (field.relName().equals(rel)) {
                 fetchFields.add(field);
             }
         }

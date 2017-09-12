@@ -32,6 +32,7 @@ import io.crate.analyze.symbol.Field;
 import io.crate.analyze.symbol.Symbol;
 import io.crate.metadata.Path;
 import io.crate.metadata.doc.DocSysColumns;
+import io.crate.sql.tree.QualifiedName;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,7 +41,7 @@ import java.util.Set;
 
 public class FetchFieldExtractor {
 
-    public static Set<Field> process(List<Symbol> symbols, Multimap<AnalyzedRelation, Symbol> subOutputs) {
+    public static Set<Field> process(List<Symbol> symbols, Multimap<QualifiedName, Symbol> subOutputs) {
         HashSet<Field> canBeFetched = new HashSet<>();
         Context ctx = new Context(subOutputs, canBeFetched);
         for (Symbol symbol : symbols) {
@@ -50,11 +51,11 @@ public class FetchFieldExtractor {
     }
 
     private static class Context {
-        private final Multimap<AnalyzedRelation, Symbol> outputs;
+        private final Multimap<QualifiedName, Symbol> outputs;
         private final Collection<Field> canBeFetched;
         private final Collection<Symbol> skipSymbols;
 
-        private Context(Multimap<AnalyzedRelation, Symbol> outputs, Collection<Field> canBeFetched) {
+        private Context(Multimap<QualifiedName, Symbol> outputs, Collection<Field> canBeFetched) {
             this.canBeFetched = canBeFetched;
             this.skipSymbols = outputs.values();
             this.outputs = outputs;
@@ -80,7 +81,7 @@ public class FetchFieldExtractor {
                 return true;
             } else {
                 // if it is not fetchable, the field needs to be in the outputs of the according relation
-                context.outputs.put(field.relation(), field);
+                context.outputs.put(field.relName(), field);
                 return false;
             }
         }
@@ -89,7 +90,7 @@ public class FetchFieldExtractor {
     private static class IsFetchableVisitor extends AnalyzedRelationVisitor<Field, Boolean> {
 
         private static final IsFetchableVisitor INSTANCE = new IsFetchableVisitor();
-        private static final Set<Path> NOT_FETCHABLE = ImmutableSet.<Path>of(DocSysColumns.SCORE, DocSysColumns.FETCHID);
+        private static final Set<Path> NOT_FETCHABLE = ImmutableSet.of(DocSysColumns.SCORE, DocSysColumns.FETCHID);
 
         public static Boolean isFetchable(Field field) {
             return INSTANCE.process(field.relation(), field);
