@@ -45,7 +45,7 @@ def retry_sql(client, statement):
     wait_time = 0
     sleep_duration = 0.01
     last_error = None
-    while wait_time < 10.5:
+    while wait_time < 20.0:
         try:
             return client.sql(statement)
         except ProgrammingError as e:
