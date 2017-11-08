@@ -30,7 +30,9 @@ import java.util.List;
 
 public interface FieldProvider<T extends Symbol> {
 
-    T resolveField(QualifiedName qualifiedName, Operation operation);
+    default T resolveField(QualifiedName qualifiedName, Operation operation) {
+        return resolveField(qualifiedName, null, operation);
+    }
 
     T resolveField(QualifiedName qualifiedName, @Nullable List<String> path, Operation operation);
 }

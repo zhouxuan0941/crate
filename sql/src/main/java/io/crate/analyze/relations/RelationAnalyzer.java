@@ -46,6 +46,7 @@ import io.crate.analyze.symbol.format.SymbolPrinter;
 import io.crate.analyze.validator.GroupBySymbolValidator;
 import io.crate.analyze.validator.HavingSymbolValidator;
 import io.crate.analyze.validator.SemanticSortValidator;
+import io.crate.collections.Lists2;
 import io.crate.exceptions.AmbiguousColumnAliasException;
 import io.crate.exceptions.ColumnUnknownException;
 import io.crate.exceptions.RelationUnknownException;
@@ -139,8 +140,13 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
 
     @Override
     protected AnalyzedRelation visitQuery(Query node, StatementAnalysisContext context) {
-        return process(node.getQueryBody(), context);
+        AnalyzedRelation queryBody = process(node.getQueryBody(), context);
+        if (node.getOrderBy().isEmpty() && !node.getLimit().isPresent() && !node.getOffset().isPresent()) {
+            return queryBody;
+        }
+        throw new UnsupportedOperationException("NYI");
     }
+
 
     @Override
     protected AnalyzedRelation visitUnion(Union node, StatementAnalysisContext context) {
@@ -159,7 +165,18 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
 
     @Override
     public AnalyzedRelation visitValues(Values values, StatementAnalysisContext context) {
-        return super.visitValues(values, context);
+        ExpressionAnalyzer exprAnalyzer = new ExpressionAnalyzer(
+            functions,
+            context.transactionContext(),
+            context.convertParamFunction(),
+            (qName, path, operation) -> {
+                throw new UnsupportedOperationException("Cannot have columns inside VALUES");
+            },
+            null
+        );
+        ExpressionAnalysisContext exprCtx = new ExpressionAnalysisContext();
+        List<Symbol> rows = Lists2.copyAndReplace(values.rows(), e -> exprAnalyzer.convert(e, exprCtx));
+        return new AnalyzedValuesRelation(rows);
     }
 
     @Override
