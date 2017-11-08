@@ -78,6 +78,7 @@ import io.crate.sql.tree.Table;
 import io.crate.sql.tree.TableFunction;
 import io.crate.sql.tree.TableSubquery;
 import io.crate.sql.tree.Union;
+import io.crate.sql.tree.Values;
 import io.crate.sql.tree.With;
 import io.crate.sql.tree.WithQuery;
 
@@ -714,6 +715,15 @@ public final class SqlFormatter {
             }
             builder.append(quoteIdentifierIfNeeded(node.name()));
 
+            return null;
+        }
+
+        @Override
+        public Void visitValues(Values values, Integer context) {
+            builder.append("VALUES ");
+            builder.append(values.rows().stream()
+                .map(ExpressionFormatter::formatStandaloneExpression)
+                .collect(COMMA_JOINER));
             return null;
         }
 

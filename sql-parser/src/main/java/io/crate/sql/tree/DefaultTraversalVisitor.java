@@ -21,6 +21,8 @@
 
 package io.crate.sql.tree;
 
+import java.util.List;
+
 public abstract class DefaultTraversalVisitor<R, C>
     extends AstVisitor<R, C> {
     @Override
@@ -388,6 +390,24 @@ public abstract class DefaultTraversalVisitor<R, C>
         }
         process(node.value(), context);
 
+        return null;
+    }
+
+    @Override
+    public R visitValues(Values values, C context) {
+        List<Expression> rows = values.rows();
+        for (int i = 0; i < rows.size(); i++) {
+            process(rows.get(i), context);
+        }
+        return null;
+    }
+
+    @Override
+    public R visitRow(Row row, C context) {
+        List<Expression> expressions = row.rows();
+        for (int i = 0; i < expressions.size(); i++) {
+            process(expressions.get(i), context);
+        }
         return null;
     }
 }

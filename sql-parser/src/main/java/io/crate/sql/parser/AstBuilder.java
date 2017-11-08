@@ -136,6 +136,7 @@ import io.crate.sql.tree.RerouteOption;
 import io.crate.sql.tree.ResetStatement;
 import io.crate.sql.tree.RestoreSnapshot;
 import io.crate.sql.tree.RevokePrivilege;
+import io.crate.sql.tree.Row;
 import io.crate.sql.tree.SearchedCaseExpression;
 import io.crate.sql.tree.Select;
 import io.crate.sql.tree.SelectItem;
@@ -163,6 +164,7 @@ import io.crate.sql.tree.Tokenizer;
 import io.crate.sql.tree.TryCast;
 import io.crate.sql.tree.Union;
 import io.crate.sql.tree.Update;
+import io.crate.sql.tree.Values;
 import io.crate.sql.tree.ValuesList;
 import io.crate.sql.tree.WhenClause;
 import io.crate.sql.tree.With;
@@ -846,7 +848,7 @@ class AstBuilder extends SqlBaseBaseVisitor<Node> {
     }
 
     @Override
-    public Node visitQuerySpec(SqlBaseParser.QuerySpecContext context) {
+    public Node visitQuerySpecification(SqlBaseParser.QuerySpecificationContext context) {
         List<SelectItem> selectItems = visit(context.selectItem(), SelectItem.class);
 
         List<Relation> relations = null;
@@ -863,6 +865,11 @@ class AstBuilder extends SqlBaseBaseVisitor<Node> {
             ImmutableList.of(),
             Optional.empty(),
             Optional.empty());
+    }
+
+    @Override
+    public Node visitInlineTable(SqlBaseParser.InlineTableContext ctx) {
+        return new Values(visit(ctx.expr(), Expression.class));
     }
 
     @Override
@@ -1024,6 +1031,11 @@ class AstBuilder extends SqlBaseBaseVisitor<Node> {
     @Override
     public Node visitSubqueryRelation(SqlBaseParser.SubqueryRelationContext context) {
         return new TableSubquery((Query) visit(context.query()));
+    }
+
+    @Override
+    public Node visitSubquery(SqlBaseParser.SubqueryContext ctx) {
+        return new TableSubquery((Query) visit(ctx.queryNoWith()));
     }
 
     @Override
@@ -1420,6 +1432,11 @@ class AstBuilder extends SqlBaseBaseVisitor<Node> {
             getIdentText(ctx.source_ident),
             getQualifiedName(ctx.table_ident),
             visitIfPresent(ctx.where(), Expression.class));
+    }
+
+    @Override
+    public Node visitRowConstructor(SqlBaseParser.RowConstructorContext ctx) {
+        return new Row(visit(ctx.expr(), Expression.class));
     }
 
     // Data types

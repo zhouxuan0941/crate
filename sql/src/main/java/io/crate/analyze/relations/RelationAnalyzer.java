@@ -656,7 +656,7 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
 
     @Override
     protected AnalyzedRelation visitTableSubquery(TableSubquery node, StatementAnalysisContext context) {
-        if (!context.currentRelationContext().isAliasedRelation()) {
+        if (context.withinRelation() && !context.currentRelationContext().isAliasedRelation()) {
             throw new UnsupportedOperationException("subquery in FROM must have an alias");
         }
         return super.visitTableSubquery(node, context);

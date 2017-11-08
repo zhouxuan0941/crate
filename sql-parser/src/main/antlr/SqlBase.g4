@@ -103,9 +103,16 @@ queryNoWith:
     ;
 
 queryTerm
-    : querySpec                                                                      #queryTermDefault
-    | first=querySpec operator=(INTERSECT | EXCEPT) second=querySpec                 #setOperation
+    : queryPrimary                                                                   #queryTermDefault
+    | first=queryTerm operator=(INTERSECT | EXCEPT) second=queryTerm                 #setOperation
     | left=queryTerm operator=UNION setQuant? right=queryTerm                        #setOperation
+    ;
+
+queryPrimary
+    : querySpecification                                                             #queryPrimaryDefault
+    | TABLE qname                                                                    #tableIdent
+    | VALUES expr (',' expr)*                                                        #inlineTable
+    | '(' queryNoWith ')'                                                            #subquery
     ;
 
 setQuant
@@ -117,7 +124,7 @@ sortItem
     : expr ordering=(ASC | DESC)? (NULLS nullOrdering=(FIRST | LAST))?
     ;
 
-querySpec
+querySpecification
     : SELECT setQuant? selectItem (',' selectItem)*
       (FROM relation (',' relation)*)?
       where?
@@ -229,12 +236,14 @@ valueExpression
 
 primaryExpression
     : parameterOrLiteral                                                             #defaultParamOrLiteral
-    | qname '(' ASTERISK ')'                                                         #functionCall
     | ident                                                                          #columnReference
-    | qname '(' (setQuant? expr (',' expr)*)? ')'                                    #functionCall
     | subqueryExpression                                                             #subqueryExpressionDefault
     // This case handles a simple parenthesized expression.
     | '(' expr ')'                                                                   #nestedExpression
+    | '(' expr (',' expr)+ ')'                                                       #rowConstructor
+    | ROW '(' expr (',' expr)+ ')'                                                   #rowConstructor
+    | qname '(' ASTERISK ')'                                                         #functionCall
+    | qname '(' (setQuant? expr (',' expr)*)? ')'                                    #functionCall
     // This is an extension to ANSI SQL, which considers EXISTS to be a <boolean expression>
     | EXISTS '(' query ')'                                                           #exists
     | value=primaryExpression '[' index=valueExpression ']'                          #subscript

@@ -560,4 +560,12 @@ public abstract class AstVisitor<R, C> {
     public R visitDropIngestRule(DropIngestRule node, C context) {
         return visitStatement(node, context);
     }
+
+    public R visitValues(Values values, C context) {
+        return visitQueryBody(values, context);
+    }
+
+    public R visitRow(Row row, C context) {
+        return visitExpression(row, context);
+    }
 }

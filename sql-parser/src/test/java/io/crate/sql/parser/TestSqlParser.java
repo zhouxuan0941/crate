@@ -24,7 +24,19 @@ package io.crate.sql.parser;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import io.crate.sql.tree.*;
+import io.crate.sql.tree.CurrentTime;
+import io.crate.sql.tree.DateLiteral;
+import io.crate.sql.tree.DoubleLiteral;
+import io.crate.sql.tree.Expression;
+import io.crate.sql.tree.FunctionCall;
+import io.crate.sql.tree.Node;
+import io.crate.sql.tree.ParameterExpression;
+import io.crate.sql.tree.QualifiedName;
+import io.crate.sql.tree.Query;
+import io.crate.sql.tree.QuerySpecification;
+import io.crate.sql.tree.Statement;
+import io.crate.sql.tree.TimeLiteral;
+import io.crate.sql.tree.TimestampLiteral;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -134,14 +146,14 @@ public class TestSqlParser {
     @Test
     public void testTokenizeErrorMiddleOfLine() {
         expectedException.expect(ParsingException.class);
-        expectedException.expectMessage("line 1:25: no viable alternative at input 'select * from foo where @'");
+        expectedException.expectMessage("line 1:25: no viable alternative at input '@'");
         SqlParser.createStatement("select * from foo where @what");
     }
 
     @Test
     public void testTokenizeErrorIncompleteToken() {
         expectedException.expect(ParsingException.class);
-        expectedException.expectMessage("line 1:15: no viable alternative at input 'select * from ''");
+        expectedException.expectMessage("line 1:15: extraneous input ''' ");
         SqlParser.createStatement("select * from 'oops");
     }
 
@@ -155,21 +167,21 @@ public class TestSqlParser {
     @Test
     public void testParseErrorMiddleOfLine() {
         expectedException.expect(ParsingException.class);
-        expectedException.expectMessage("line 3:7: no viable alternative at input 'select *\\nfrom x\\nwhere from'");
+        expectedException.expectMessage("line 3:7: no viable alternative at input 'from'");
         SqlParser.createStatement("select *\nfrom x\nwhere from");
     }
 
     @Test
     public void testParseErrorEndOfInput() {
         expectedException.expect(ParsingException.class);
-        expectedException.expectMessage("line 1:14: no viable alternative at input 'select * from'");
+        expectedException.expectMessage("line 1:14: no viable alternative at input '<EOF>'");
         SqlParser.createStatement("select * from");
     }
 
     @Test
     public void testParseErrorEndOfInputWhitespace() {
         expectedException.expect(ParsingException.class);
-        expectedException.expectMessage("line 1:16: no viable alternative at input 'select * from  '");
+        expectedException.expectMessage("line 1:16: no viable alternative at input '<EOF>'");
         SqlParser.createStatement("select * from  ");
     }
 
@@ -242,8 +254,8 @@ public class TestSqlParser {
             SqlParser.createStatement("select *\nfrom x\nwhere from");
             fail("expected exception");
         } catch (ParsingException e) {
-            assertEquals(e.getMessage(), "line 3:7: no viable alternative at input 'select *\\nfrom x\\nwhere from'");
-            assertEquals(e.getErrorMessage(), "no viable alternative at input 'select *\\nfrom x\\nwhere from'");
+            assertEquals(e.getMessage(), "line 3:7: no viable alternative at input 'from'");
+            assertEquals(e.getErrorMessage(), "no viable alternative at input 'from'");
             assertEquals(e.getLineNumber(), 3);
             assertEquals(e.getColumnNumber(), 7);
         }

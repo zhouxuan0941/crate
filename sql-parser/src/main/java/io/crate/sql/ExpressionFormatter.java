@@ -63,6 +63,7 @@ import io.crate.sql.tree.ObjectColumnType;
 import io.crate.sql.tree.ObjectLiteral;
 import io.crate.sql.tree.ParameterExpression;
 import io.crate.sql.tree.QualifiedNameReference;
+import io.crate.sql.tree.Row;
 import io.crate.sql.tree.SearchedCaseExpression;
 import io.crate.sql.tree.SimpleCaseExpression;
 import io.crate.sql.tree.StringLiteral;
@@ -144,6 +145,11 @@ public final class ExpressionFormatter {
 
             builder.append(left + " " + type + " ANY(" + array + ")");
             return builder.toString();
+        }
+
+        @Override
+        public String visitRow(Row row, Void context) {
+            return "ROW (" + joinExpressions(row.rows()) + ')';
         }
 
         @Override

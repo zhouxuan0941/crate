@@ -78,6 +78,10 @@ public class StatementAnalysisContext {
         }
     }
 
+    boolean withinRelation() {
+        return lastRelationContextQueue.isEmpty() == false;
+    }
+
     RelationAnalysisContext currentRelationContext() {
         assert lastRelationContextQueue.size() > 0 : "relation context must be created using startRelation() first";
         return lastRelationContextQueue.get(lastRelationContextQueue.size() - 1);
