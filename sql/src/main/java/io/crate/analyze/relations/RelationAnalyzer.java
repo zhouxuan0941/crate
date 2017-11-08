@@ -85,6 +85,7 @@ import io.crate.sql.tree.Table;
 import io.crate.sql.tree.TableFunction;
 import io.crate.sql.tree.TableSubquery;
 import io.crate.sql.tree.Union;
+import io.crate.sql.tree.Values;
 import io.crate.types.DataTypes;
 import org.elasticsearch.common.util.set.Sets;
 
@@ -154,6 +155,11 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
     @Override
     protected AnalyzedRelation visitExcept(Except node, StatementAnalysisContext context) {
         throw new UnsupportedFeatureException("EXCEPT is not supported");
+    }
+
+    @Override
+    public AnalyzedRelation visitValues(Values values, StatementAnalysisContext context) {
+        return super.visitValues(values, context);
     }
 
     @Override
