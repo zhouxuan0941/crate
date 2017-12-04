@@ -337,4 +337,11 @@ public class EqualityExtractorTest extends CrateUnitTest {
         List<List<Symbol>> matches = analyzeExactX(query);
         assertThat(matches, nullValue());
     }
+
+    @Test
+    public void testPKExtractionWithNot() throws Exception {
+        Symbol query = query("not (x = ?)");
+        List<List<Symbol>> matches = analyzeExactX(query);
+        assertThat(matches, nullValue());
+    }
 }
