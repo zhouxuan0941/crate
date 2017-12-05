@@ -40,6 +40,7 @@ import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.Singleton;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.util.BigArrays;
 import org.elasticsearch.threadpool.ThreadPool;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -75,7 +76,8 @@ public class DependencyCarrier {
                              NodeJobsCounter nodeJobsCounter,
                              SystemCollectSource systemCollectSource,
                              DCLStatementDispatcher dclStatementDispatcher,
-                             TransportDropTableAction transportDropTableAction) {
+                             TransportDropTableAction transportDropTableAction,
+                             BigArrays bigArrays) {
         this.settings = settings;
         this.transportActionProvider = transportActionProvider;
         this.phasesTaskFactory = phasesTaskFactory;
@@ -98,7 +100,8 @@ public class DependencyCarrier {
             new InputFactory(functions),
             normalizer,
             systemCollectSource::getRowUpdater,
-            systemCollectSource::tableDefinition
+            systemCollectSource::tableDefinition,
+            bigArrays
         );
     }
 

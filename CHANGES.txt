@@ -39,6 +39,9 @@ Breaking Changes
 Changes
 =======
 
+- Added ``hyperloglog_distinct`` aggregation function. This is an
+  enterprise-only feature.
+
 - Added support to change the password of existing users using ``ALTER USER``.
 
 - Added support for disabling the column store per ``STRING`` column on table
