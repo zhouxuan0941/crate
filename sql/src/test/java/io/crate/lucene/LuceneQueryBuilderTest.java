@@ -63,11 +63,9 @@ import org.elasticsearch.index.mapper.ArrayTypeParser;
 import org.elasticsearch.index.mapper.Mapper;
 import org.elasticsearch.index.mapper.MapperService;
 import org.elasticsearch.index.query.QueryShardContext;
-import org.elasticsearch.index.similarity.SimilarityService;
 import org.elasticsearch.indices.IndicesModule;
 import org.elasticsearch.indices.analysis.AnalysisModule;
 import org.elasticsearch.plugins.MapperPlugin;
-import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.test.IndexSettingsModule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -177,8 +175,6 @@ public abstract class LuceneQueryBuilderTest extends CrateUnitTest {
             new BitsetFilterCache(idxSettings, mock(BitsetFilterCache.Listener.class)),
             indexFieldDataService,
             mapperService,
-            new SimilarityService(idxSettings, Collections.emptyMap()),
-            mock(ScriptService.class),
             xContentRegistry(),
             mock(Client.class),
             mock(IndexReader.class),
@@ -198,7 +194,6 @@ public abstract class LuceneQueryBuilderTest extends CrateUnitTest {
             indexSettings,
             indexAnalyzers,
             xContentRegistry(),
-            new SimilarityService(indexSettings, Collections.emptyMap()),
             indicesModule.getMapperRegistry(),
             () -> null
         );

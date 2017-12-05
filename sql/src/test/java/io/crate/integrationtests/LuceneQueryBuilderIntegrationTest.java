@@ -24,7 +24,6 @@ package io.crate.integrationtests;
 import io.crate.testing.DataTypeTesting;
 import io.crate.types.DataType;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.search.SearchModule;
 import org.elasticsearch.test.ESIntegTestCase;
 import org.junit.Test;
 
@@ -45,7 +44,7 @@ public class LuceneQueryBuilderIntegrationTest extends SQLTransportIntegrationTe
     protected Settings nodeSettings(int nodeOrdinal) {
         return Settings.builder()
                        .put(super.nodeSettings(nodeOrdinal))
-                       .put(SearchModule.INDICES_MAX_CLAUSE_COUNT_SETTING.getKey(), NUMBER_OF_BOOLEAN_CLAUSES)
+                       //.put(SearchModule.INDICES_MAX_CLAUSE_COUNT_SETTING.getKey(), NUMBER_OF_BOOLEAN_CLAUSES)
                        .build();
     }
 

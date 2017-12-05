@@ -25,7 +25,6 @@ package io.crate.integrationtests;
 import io.crate.planner.projection.AbstractIndexWriterProjection;
 import io.crate.testing.SQLBulkResponse;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -39,7 +38,9 @@ public class DeleteIntegrationTest extends SQLTransportIntegrationTest {
         String fqn = getFqn("test");
         createIndex(fqn);
         ensureYellow();
+        /*
         client().prepareIndex(fqn, "default", "id1").setSource("{}", XContentType.JSON).execute().actionGet();
+        */
         refresh();
         execute("delete from test");
         assertEquals(1, response.rowCount());
@@ -60,9 +61,11 @@ public class DeleteIntegrationTest extends SQLTransportIntegrationTest {
         String fqn = getFqn("test");
         createIndex(fqn);
         ensureYellow();
+        /*
         client().prepareIndex(fqn, "default", "id1").setSource("{}", XContentType.JSON).execute().actionGet();
         client().prepareIndex(fqn, "default", "id2").setSource("{}", XContentType.JSON).execute().actionGet();
         client().prepareIndex(fqn, "default", "id3").setSource("{}", XContentType.JSON).execute().actionGet();
+        */
         refresh();
         execute("delete from test where \"_id\" = 'id1'");
         assertEquals(1, response.rowCount());

@@ -28,8 +28,6 @@ import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.compress.CompressedXContent;
 import org.elasticsearch.common.settings.Settings;
@@ -50,8 +48,6 @@ import org.elasticsearch.index.mapper.Mapping;
 import org.elasticsearch.index.mapper.ObjectArrayMapper;
 import org.elasticsearch.index.mapper.ParseContext;
 import org.elasticsearch.index.mapper.ParsedDocument;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.indices.IndicesService;
 import org.elasticsearch.test.ESIntegTestCase;
 import org.hamcrest.Matchers;
@@ -359,12 +355,14 @@ public class ArrayMapperTest extends SQLTransportIntegrationTest {
             .string();
         // @formatter:on
         DocumentMapper mapper = mapper(INDEX, TYPE, mapping);
+        /*
         IndexResponse response = client()
             .prepareIndex(INDEX, "type")
             .setId("123")
             .setSource("{\"array_field\":[0.0, 99.9, -100.5678]}", XContentType.JSON)
             .execute().actionGet();
         assertThat(response.getVersion(), is(1L));
+        */
 
         client().admin().indices().prepareRefresh(INDEX).execute().actionGet();
 
@@ -395,6 +393,7 @@ public class ArrayMapperTest extends SQLTransportIntegrationTest {
             .endObject().endObject().endObject()
             .string();
         mapper(INDEX, TYPE, mapping);
+        /*
         IndexResponse response = client()
             .prepareIndex(INDEX, "type")
             .setId("123")
@@ -412,8 +411,10 @@ public class ArrayMapperTest extends SQLTransportIntegrationTest {
             searchResponse.getHits().getAt(0).getSource()),
             is("array_field:[0.0, 99.9, -100.5678]"));
 
+
         Object values = searchResponse.getHits().getAt(0).getSource().get("array_field");
         assertThat((List<Double>) values, Matchers.hasItems(0.0D, 99.9D, -100.5678D));
+        */
     }
 
     @Test
@@ -441,6 +442,7 @@ public class ArrayMapperTest extends SQLTransportIntegrationTest {
         assertThat(doc.docs().get(0).get("array_field"), is(nullValue())); // no lucene field generated
 
         // insert
+        /*
         IndexResponse response = client()
             .prepareIndex(INDEX, "type", "123")
             .setSource("{\"array_field\":[]}", XContentType.JSON)
@@ -458,6 +460,7 @@ public class ArrayMapperTest extends SQLTransportIntegrationTest {
             searchResponse.getHits().getAt(0).getSource()),
             is("array_field:[]"));
         assertThat(searchResponse.getHits().getAt(0).getFields().containsKey("array_field"), is(false));
+        */
     }
 
     @Test

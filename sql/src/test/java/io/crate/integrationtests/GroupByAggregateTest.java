@@ -21,7 +21,6 @@
 
 package io.crate.integrationtests;
 
-import io.crate.Constants;
 import io.crate.action.sql.SQLActionException;
 import io.crate.data.ArrayBucket;
 import io.crate.operation.Paging;
@@ -31,8 +30,6 @@ import org.elasticsearch.test.ESIntegTestCase;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
 
 import static com.carrotsearch.randomizedtesting.RandomizedTest.randomAsciiOfLength;
 import static io.crate.testing.TestingHelpers.printedTable;
@@ -879,6 +876,7 @@ public class GroupByAggregateTest extends SQLTransportIntegrationTest {
     public void testGroupByMultiValueField() throws Exception {
         this.setup.groupBySetup();
         // inserting multiple values not supported anymore
+        /*
         client().prepareIndex(getFqn("characters"), Constants.DEFAULT_MAPPING_TYPE).setSource(new HashMap<String, Object>() {{
             put("race", new String[]{"Android"});
             put("gender", new String[]{"male", "robot"});
@@ -889,6 +887,7 @@ public class GroupByAggregateTest extends SQLTransportIntegrationTest {
             put("gender", new String[]{"male", "robot"});
             put("name", "Marvin3");
         }}).execute().actionGet();
+        */
         execute("refresh table characters");
 
         expectedException.expect(SQLActionException.class);

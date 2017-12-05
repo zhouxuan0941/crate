@@ -32,7 +32,6 @@ import java.util.Map;
 
 import static com.carrotsearch.randomizedtesting.RandomizedTest.$;
 import static com.carrotsearch.randomizedtesting.RandomizedTest.$$;
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
@@ -91,6 +90,7 @@ public class GeoShapeIntegrationTest extends SQLTransportIntegrationTest {
     public void testIndexWithES() throws Exception {
         execute("create table test (shape geo_shape)");
         ensureYellow();
+        /*
         client().prepareIndex(getFqn("test"), "default", "test").setSource(jsonBuilder().startObject()
             .startObject("shape")
             .field("type", "polygon")
@@ -102,6 +102,7 @@ public class GeoShapeIntegrationTest extends SQLTransportIntegrationTest {
             .endArray().endArray()
             .endObject()
             .endObject()).execute().actionGet();
+            */
         execute("refresh table test");
         execute("select shape from test");
         assertThat(response.rowCount(), is(1L));

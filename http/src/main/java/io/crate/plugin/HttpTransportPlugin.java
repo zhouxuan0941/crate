@@ -45,9 +45,7 @@ import org.elasticsearch.plugins.NetworkPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestHandler;
-import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.threadpool.ThreadPool;
-import org.elasticsearch.watcher.ResourceWatcherService;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -85,8 +83,6 @@ public class HttpTransportPlugin extends Plugin implements NetworkPlugin, Action
     public Collection<Object> createComponents(Client client,
                                                ClusterService clusterService,
                                                ThreadPool threadPool,
-                                               ResourceWatcherService resourceWatcherService,
-                                               ScriptService scriptService,
                                                NamedXContentRegistry xContentRegistry) {
         // pipelineRegistry is returned here so that it's bound in guice and can be injected in other places
         return Collections.singletonList(pipelineRegistry);
