@@ -613,8 +613,10 @@ public class ExpressionAnalyzer {
             Symbol leftSymbol = process(node.getLeft(), context);
             Symbol arraySymbol = process(node.getRight(), context);
 
+            if (arraySymbol.valueType().equals(DataTypes.UNDEFINED)) {
+                arraySymbol = cast(arraySymbol, new ArrayType(leftSymbol.valueType()));
+            }
             DataType arraySymbolType = arraySymbol.valueType();
-
             if (!DataTypes.isCollectionType(arraySymbolType)) {
                 throw new IllegalArgumentException(
                     SymbolFormatter.format("invalid array expression: '%s'", arraySymbol));
@@ -638,18 +640,21 @@ public class ExpressionAnalyzer {
             if (node.getEscape() != null) {
                 throw new UnsupportedOperationException("ESCAPE is not supported.");
             }
-            Symbol rightSymbol = process(node.getValue(), context);
+            Symbol arraySymbol = process(node.getValue(), context);
             Symbol leftSymbol = process(node.getPattern(), context);
-            DataType rightType = rightSymbol.valueType();
 
+            if (arraySymbol.valueType().equals(DataTypes.UNDEFINED)) {
+                arraySymbol = cast(arraySymbol, new ArrayType(leftSymbol.valueType()));
+            }
+            DataType rightType = arraySymbol.valueType();
             if (!DataTypes.isCollectionType(rightType)) {
                 throw new IllegalArgumentException(
-                    SymbolFormatter.format("invalid array expression: '%s'", rightSymbol));
+                    SymbolFormatter.format("invalid array expression: '%s'", arraySymbol));
             }
 
             String operatorName = node.inverse() ? AnyNotLikeOperator.NAME : AnyLikeOperator.NAME;
 
-            ImmutableList<Symbol> arguments = ImmutableList.of(leftSymbol, rightSymbol);
+            ImmutableList<Symbol> arguments = ImmutableList.of(leftSymbol, arraySymbol);
 
             return allocateFunction(
                 operatorName,
