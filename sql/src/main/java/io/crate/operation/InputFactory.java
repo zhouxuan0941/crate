@@ -34,9 +34,12 @@ import io.crate.metadata.FunctionImplementation;
 import io.crate.metadata.Functions;
 import io.crate.metadata.Reference;
 import io.crate.operation.aggregation.AggregationFunction;
+import io.crate.operation.collect.BytesRefCopyInputCollectExpression;
 import io.crate.operation.collect.CollectExpression;
 import io.crate.operation.collect.InputCollectExpression;
 import io.crate.operation.reference.ReferenceResolver;
+import io.crate.types.DataType;
+import io.crate.types.StringType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -200,11 +203,15 @@ public class InputFactory {
             int index = inputColumn.index();
             InputCollectExpression inputCollectExpression = inputCollectExpressions.get(index);
             if (inputCollectExpression == null) {
-                inputCollectExpression = new InputCollectExpression(index);
+                inputCollectExpression = createInputCollectExpression(index, inputColumn.valueType());
                 inputCollectExpressions.put(index, inputCollectExpression);
                 expressions.add(inputCollectExpression);
             }
             return inputCollectExpression;
+        }
+
+        InputCollectExpression createInputCollectExpression(int index, DataType dataType) {
+            return new InputCollectExpression(index);
         }
     }
 
@@ -231,6 +238,15 @@ public class InputFactory {
             // can't generate an input from an aggregation.
             // since they cannot/shouldn't be nested this should be okay.
             return null;
+        }
+
+        @Override
+        InputCollectExpression createInputCollectExpression(int index, DataType dataType) {
+            if (dataType.id() == StringType.ID) {
+                // ensure that bytes are copied when used as grouping keys
+                return new BytesRefCopyInputCollectExpression(index);
+            }
+            return super.createInputCollectExpression(index, dataType);
         }
     }
 
