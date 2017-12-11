@@ -23,11 +23,17 @@ package io.crate.operation.collect;
 
 import io.crate.action.job.SharedShardContext;
 import io.crate.action.sql.query.LuceneSortGenerator;
+import io.crate.analyze.symbol.Aggregation;
+import io.crate.analyze.symbol.InputColumn;
+import io.crate.analyze.symbol.Symbol;
 import io.crate.analyze.symbol.Symbols;
+import io.crate.data.InMemoryBatchIterator;
+import io.crate.data.Row1;
 import io.crate.executor.transport.TransportActionProvider;
 import io.crate.lucene.FieldTypeLookup;
 import io.crate.lucene.LuceneQueryBuilder;
 import io.crate.metadata.Functions;
+import io.crate.metadata.Reference;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.doc.DocSysColumns;
 import io.crate.metadata.shard.ShardReferenceResolver;
@@ -42,17 +48,33 @@ import io.crate.operation.reference.doc.lucene.CollectorContext;
 import io.crate.operation.reference.doc.lucene.LuceneCollectorExpression;
 import io.crate.operation.reference.doc.lucene.LuceneReferenceResolver;
 import io.crate.planner.node.dql.RoutedCollectPhase;
+import io.crate.planner.projection.AggregationProjection;
+import io.crate.planner.projection.Projection;
+import io.crate.types.DataTypes;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.RandomAccessOrds;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.LeafCollector;
+import org.apache.lucene.search.Query;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.logging.Loggers;
+import org.elasticsearch.common.lucene.search.Queries;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.util.BigArrays;
 import org.elasticsearch.index.IndexService;
 import org.elasticsearch.index.engine.Engine;
+import org.elasticsearch.index.fielddata.AtomicOrdinalsFieldData;
+import org.elasticsearch.index.fielddata.IndexFieldData;
 import org.elasticsearch.index.shard.IndexShard;
 import org.elasticsearch.index.shard.ShardId;
+import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregator;
+import org.elasticsearch.search.aggregations.metrics.cardinality.HyperLogLogPlusPlus;
 import org.elasticsearch.threadpool.ThreadPool;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class LuceneShardCollectorProvider extends ShardCollectorProvider {
@@ -120,6 +142,84 @@ public class LuceneShardCollectorProvider extends ShardCollectorProvider {
             searcher.close();
             throw t;
         }
+    }
+
+    @Override
+    protected CrateCollector.Builder tryOptimizeAggregation(RoutedCollectPhase collectPhase,
+                                                            JobCollectContext jobCollectContext) {
+        Projection projection = collectPhase.projections().get(0);
+        assert projection instanceof AggregationProjection : "first projection must be an aggregation projection";
+
+        // TODO: we'd probably have to have some kind of registry or whatever
+
+        List<Aggregation> aggregations = ((AggregationProjection) projection).aggregations();
+        if (aggregations.size() > 1) {
+            return null;
+        }
+        Aggregation aggregation = aggregations.get(0);
+        List<Symbol> inputs = aggregation.inputs();
+        if (inputs.size() > 1) {
+            return null;
+        }
+        InputColumn inputColumn = (InputColumn) inputs.get(0);
+        Reference ref = (Reference) collectPhase.toCollect().get(inputColumn.index());
+        if (!ref.valueType().equals(DataTypes.STRING)) {
+            return null;
+        }
+        String fqn = ref.column().fqn();
+
+        ShardId shardId = indexShard.shardId();
+        IndexFieldData<?> indexFieldData = indexShard.indexFieldDataService().getForField(indexShard.mapperService().fullName(fqn));
+        SharedShardContext sharedShardContext = jobCollectContext.sharedShardContexts().getOrCreateContext(shardId);
+        Engine.Searcher searcher = sharedShardContext.acquireSearcher();
+        IndexSearcher indexSearcher = searcher.searcher();
+        // TODO: generate actual query
+        Query query = Queries.newMatchAllQuery();
+
+        return rowConsumer -> new CrateCollector() {
+            @Override
+            public void doCollect() {
+                try {
+                    unsafeCollect();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void unsafeCollect() throws IOException {
+                // TODO: this is likely not correct
+                HyperLogLogPlusPlus counts = new HyperLogLogPlusPlus(4, BigArrays.NON_RECYCLING_INSTANCE, 1);
+                indexSearcher.search(query, new Collector() {
+
+                    CardinalityAggregator.OrdinalsCollector collector = null;
+
+                    @Override
+                    public LeafCollector getLeafCollector(LeafReaderContext context) throws IOException {
+                        if (collector != null) {
+                            try {
+                                collector.postCollect();
+                                collector.close();
+                            } finally {
+                                collector = null;
+                            }
+                        }
+                        RandomAccessOrds ordinalsValues = ((AtomicOrdinalsFieldData) indexFieldData.load(context)).getOrdinalsValues();
+                        collector = new CardinalityAggregator.OrdinalsCollector(counts, ordinalsValues, BigArrays.NON_RECYCLING_INSTANCE);
+                        return collector;
+                    }
+
+                    @Override
+                    public boolean needsScores() {
+                        return false;
+                    }
+                });
+                rowConsumer.accept(InMemoryBatchIterator.of(new Row1(DataTypes.STRING.value(counts.cardinality(0))), null), null);
+            }
+
+            @Override
+            public void kill(Throwable throwable) {
+            }
+        };
     }
 
     @Override
