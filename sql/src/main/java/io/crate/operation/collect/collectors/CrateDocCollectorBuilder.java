@@ -23,8 +23,11 @@
 package io.crate.operation.collect.collectors;
 
 import io.crate.breaker.RamAccountingContext;
-import io.crate.data.RowConsumer;
+import io.crate.data.BatchIterator;
+import io.crate.data.InMemoryBatchIterator;
 import io.crate.data.Input;
+import io.crate.data.Row;
+import io.crate.data.RowConsumer;
 import io.crate.operation.collect.BatchIteratorCollectorBridge;
 import io.crate.operation.collect.CrateCollector;
 import io.crate.operation.reference.doc.lucene.CollectorContext;
@@ -32,8 +35,12 @@ import io.crate.operation.reference.doc.lucene.LuceneCollectorExpression;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static io.crate.data.SentinelRow.SENTINEL;
 
 public class CrateDocCollectorBuilder implements CrateCollector.Builder {
 
@@ -66,6 +73,23 @@ public class CrateDocCollectorBuilder implements CrateCollector.Builder {
 
     @Override
     public CrateCollector build(RowConsumer consumer) {
+        Stream<Row> stream;
+        try {
+            stream = LuceneStream.stream(
+                indexSearcher,
+                query,
+                minScore,
+                doScores,
+                collectorContext,
+                ramAccountingContext,
+                inputs,
+                expressions
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        BatchIterator<Row> batchIterator = InMemoryBatchIterator.of(stream::iterator, SENTINEL);
+        /*
         LuceneBatchIterator batchIterator = new LuceneBatchIterator(
             indexSearcher,
             query,
@@ -76,6 +100,7 @@ public class CrateDocCollectorBuilder implements CrateCollector.Builder {
             inputs,
             expressions
         );
+        */
         return BatchIteratorCollectorBridge.newInstance(batchIterator, consumer);
     }
 }

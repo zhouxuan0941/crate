@@ -138,6 +138,9 @@ public class SumAggregation<T extends Number> extends AggregationFunction<T, T> 
         if (!inputType.equals(DataTypes.LONG)) {
             return null;
         }
+        if (true) {
+            return null;
+        }
         return (readerContext, columnName) -> {
             try {
                 return new DirectCollector() {
