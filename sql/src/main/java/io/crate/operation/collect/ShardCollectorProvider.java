@@ -39,6 +39,7 @@ import io.crate.operation.projectors.ProjectionToProjectorVisitor;
 import io.crate.operation.projectors.ProjectorFactory;
 import io.crate.operation.reference.ReferenceResolver;
 import io.crate.planner.node.dql.RoutedCollectPhase;
+import io.crate.planner.projection.AggregationProjection;
 import io.crate.planner.projection.Projection;
 import io.crate.planner.projection.Projections;
 import org.elasticsearch.cluster.service.ClusterService;
@@ -121,7 +122,19 @@ public abstract class ShardCollectorProvider {
         assert collectPhase.orderBy() ==
                null : "getDocCollector shouldn't be called if there is an orderBy on the collectPhase";
         RoutedCollectPhase normalizedCollectNode = collectPhase.normalize(shardNormalizer, null);
+        Collection<? extends Projection> shardProjections = Projections.shardProjections(collectPhase.projections());
 
+        if (shardProjections.size() == 1) {
+            Projection firstProjection = shardProjections.iterator().next();
+            if (firstProjection instanceof AggregationProjection
+                && firstProjection.requiredGranularity() == RowGranularity.SHARD) {
+
+                CrateCollector.Builder builder = getOptimizedAggregateCollector(normalizedCollectNode, jobCollectContext);
+                if (builder != null) {
+                    return builder;
+                }
+            }
+        }
         final CrateCollector.Builder builder;
         if (normalizedCollectNode.whereClause().noMatch()) {
             builder = RowsCollector.emptyBuilder();
@@ -130,7 +143,6 @@ public abstract class ShardCollectorProvider {
             builder = getBuilder(normalizedCollectNode, requiresScroll, jobCollectContext);
         }
 
-        Collection<? extends Projection> shardProjections = Projections.shardProjections(collectPhase.projections());
         if (shardProjections.isEmpty()) {
             return builder;
         } else {
@@ -152,6 +164,12 @@ public abstract class ShardCollectorProvider {
                 }
             };
         }
+    }
+
+    @Nullable
+    protected CrateCollector.Builder getOptimizedAggregateCollector(RoutedCollectPhase collectPhase,
+                                                                    JobCollectContext jobCollectContext) {
+        return null;
     }
 
     protected abstract CrateCollector.Builder getBuilder(RoutedCollectPhase collectPhase,

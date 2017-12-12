@@ -23,6 +23,7 @@ package io.crate.operation.collect;
 
 import io.crate.action.job.SharedShardContext;
 import io.crate.action.sql.query.LuceneSortGenerator;
+import io.crate.analyze.symbol.Aggregation;
 import io.crate.analyze.symbol.Symbols;
 import io.crate.executor.transport.TransportActionProvider;
 import io.crate.lucene.FieldTypeLookup;
@@ -42,6 +43,7 @@ import io.crate.operation.reference.doc.lucene.CollectorContext;
 import io.crate.operation.reference.doc.lucene.LuceneCollectorExpression;
 import io.crate.operation.reference.doc.lucene.LuceneReferenceResolver;
 import io.crate.planner.node.dql.RoutedCollectPhase;
+import io.crate.planner.projection.AggregationProjection;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.logging.Loggers;
@@ -52,6 +54,7 @@ import org.elasticsearch.index.shard.IndexShard;
 import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.threadpool.ThreadPool;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class LuceneShardCollectorProvider extends ShardCollectorProvider {
@@ -175,6 +178,14 @@ public class LuceneShardCollectorProvider extends ShardCollectorProvider {
             ctx.topLevelInputs(),
             ctx.expressions()
         );
+    }
+
+    @Nullable
+    protected CrateCollector.Builder getOptimizedAggregateCollector(AggregationProjection aggregationProjection,
+                                                                    JobCollectContext jobCollectContext) {
+        for (Aggregation aggregation : aggregationProjection.aggregations()) {
+        }
+        return null;
     }
 
     private CollectorContext getCollectorContext(int readerId, InputFactory.Context ctx) {

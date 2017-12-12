@@ -27,17 +27,24 @@ import io.crate.data.Input;
 import io.crate.metadata.FunctionIdent;
 import io.crate.metadata.FunctionInfo;
 import io.crate.operation.aggregation.AggregationFunction;
+import io.crate.operation.aggregation.DirectCollector;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
+import org.apache.lucene.index.DocValues;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.SortedNumericDocValues;
 import org.elasticsearch.common.breaker.CircuitBreakingException;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.Collections;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
 public class SumAggregation<T extends Number> extends AggregationFunction<T, T> {
 
     public static final String NAME = "sum";
+    private final DataType inputType;
 
     public static void register(AggregationImplModule mod) {
 
@@ -71,6 +78,7 @@ public class SumAggregation<T extends Number> extends AggregationFunction<T, T> 
     private SumAggregation(final DataType inputType, final DataType returnType, final BinaryOperator<T> addition) {
         this.addition = addition;
         this.returnType = returnType;
+        this.inputType = inputType;
 
         if (returnType == DataTypes.FLOAT) {
             bytesSize = DataTypes.FLOAT.fixedSize();
@@ -123,5 +131,34 @@ public class SumAggregation<T extends Number> extends AggregationFunction<T, T> 
     @Override
     public FunctionInfo info() {
         return info;
+    }
+
+    @Nullable
+    public BiFunction<LeafReaderContext, String, DirectCollector> getDirectCollectorFactory() {
+        if (!inputType.equals(DataTypes.LONG)) {
+            return null;
+        }
+        return (readerContext, columnName) -> {
+            try {
+                return new DirectCollector() {
+
+                    long sum;
+                    SortedNumericDocValues values = DocValues.getSortedNumeric(readerContext.reader(), columnName);
+
+                    @Override
+                    public void collect(int doc) {
+                        values.setDocument(doc);
+                        sum += values.valueAt(0);
+                    }
+
+                    @Override
+                    public Object postCollect() {
+                        return sum;
+                    }
+                };
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 }

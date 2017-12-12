@@ -75,4 +75,10 @@ public abstract class AggregationFunction<TPartial, TFinal> implements FunctionI
     public abstract TFinal terminatePartial(RamAccountingContext ramAccountingContext, TPartial state);
 
     public abstract DataType partialType();
+
+
+    @Nullable
+    public DirectCollector getDirectCollector() {
+        return null;
+    }
 }
