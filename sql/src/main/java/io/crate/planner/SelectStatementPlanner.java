@@ -30,6 +30,10 @@ import io.crate.analyze.relations.AnalyzedRelationVisitor;
 import io.crate.analyze.relations.OrderedLimitedRelation;
 import io.crate.analyze.relations.QueriedDocTable;
 import io.crate.analyze.relations.QueriedRelation;
+import io.crate.analyze.symbol.Function;
+import io.crate.analyze.symbol.Symbol;
+import io.crate.analyze.symbol.SymbolVisitor;
+import io.crate.metadata.FunctionInfo;
 import io.crate.planner.consumer.FetchMode;
 import io.crate.planner.operators.LogicalPlan;
 import io.crate.planner.operators.LogicalPlanner;
@@ -57,6 +61,38 @@ public class SelectStatementPlanner {
         }
     }
 
+    private static class CollectRequirementMatcher extends SymbolVisitor<Void, Boolean> {
+
+        private static final CollectRequirementMatcher INSTANCE = new CollectRequirementMatcher();
+
+        private CollectRequirementMatcher() {
+        }
+
+        static boolean requiresCollect(Iterable<Symbol> symbols) {
+            for (Symbol s : symbols) {
+                if (INSTANCE.process(s, null)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected Boolean visitSymbol(Symbol symbol, Void context) {
+            return false;
+        }
+
+        @Override
+        public Boolean visitFunction(Function symbol, Void context) {
+            for (Symbol s: symbol.arguments()) {
+                if (process(s, null)) {
+                    return true;
+                }
+            }
+            return symbol.info().hasFeature(FunctionInfo.Feature.COLLECT_PHASE);
+        }
+    }
+
     private static class Visitor extends AnalyzedRelationVisitor<Context, LogicalPlan> {
 
         private final LogicalPlanner logicalPlanner;
@@ -66,7 +102,9 @@ public class SelectStatementPlanner {
         }
 
         private LogicalPlan invokeLogicalPlanner(QueriedRelation relation, Context context) {
-            LogicalPlan logicalPlan = logicalPlanner.plan(relation, context.plannerContext, context.subqueryPlanner, FetchMode.MAYBE_CLEAR);
+            boolean requiresCollect = CollectRequirementMatcher.requiresCollect(relation.querySpec().outputs());
+            FetchMode fetchMode = requiresCollect ? FetchMode.NEVER_CLEAR : FetchMode.MAYBE_CLEAR;
+            LogicalPlan logicalPlan = logicalPlanner.plan(relation, context.plannerContext, context.subqueryPlanner, fetchMode);
             if (logicalPlan == null) {
                 throw new UnsupportedOperationException("Cannot create plan for: " + relation);
             }

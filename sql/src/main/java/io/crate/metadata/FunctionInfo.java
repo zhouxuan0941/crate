@@ -227,6 +227,10 @@ public class FunctionInfo implements Comparable<FunctionInfo>, Streamable {
          * So for f comparisons cannot be replaced.
          */
         COMPARISON_REPLACEMENT,
-        LAZY_ATTRIBUTES
+        LAZY_ATTRIBUTES,
+        /**
+         * Must be executed within COLLECT phase.
+         */
+        COLLECT_PHASE,
     }
 }

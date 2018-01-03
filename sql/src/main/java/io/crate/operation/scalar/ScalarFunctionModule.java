@@ -117,6 +117,7 @@ public class ScalarFunctionModule extends AbstractModule {
         StringCaseFunction.register(this);
 
         ConcatFunction.register(this);
+        CollectScalar.register(this);
 
         LengthFunction.register(this);
         HashFunctions.register(this);
