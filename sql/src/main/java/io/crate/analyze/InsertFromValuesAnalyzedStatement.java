@@ -46,11 +46,13 @@ public class InsertFromValuesAnalyzedStatement extends AbstractInsertAnalyzedSta
     private final List<Integer> bulkIndices = new ArrayList<>();
 
     private final int numBulkResponses;
+    private final boolean ignoreDupKey;
 
     private int numAddedGeneratedColumns = 0;
 
-    public InsertFromValuesAnalyzedStatement(DocTableInfo tableInfo, int numBulkResponses) {
+    public InsertFromValuesAnalyzedStatement(DocTableInfo tableInfo, int numBulkResponses, boolean ignoreDupKey) {
         this.numBulkResponses = numBulkResponses;
+        this.ignoreDupKey = ignoreDupKey;
         super.tableInfo(tableInfo);
         if (tableInfo.isPartitioned()) {
             for (Map<String, String> partitionMap : partitionMaps) {
@@ -165,5 +167,9 @@ public class InsertFromValuesAnalyzedStatement extends AbstractInsertAnalyzedSta
 
     public List<Integer> bulkIndices() {
         return bulkIndices;
+    }
+
+    public boolean isIgnoreDupKey() {
+        return ignoreDupKey;
     }
 }

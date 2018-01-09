@@ -31,12 +31,14 @@ public abstract class Insert extends Statement {
 
     protected final List<Assignment> onDuplicateKeyAssignments;
     protected final List<String> columns;
+    protected final boolean ignoreDupKey;
 
 
-    Insert(Table table, List<String> columns, List<Assignment> onDuplicateKeyAssignments) {
+    Insert(Table table, List<String> columns, List<Assignment> onDuplicateKeyAssignments, boolean ignoreDupKey) {
         this.table = table;
         this.onDuplicateKeyAssignments = onDuplicateKeyAssignments;
         this.columns = columns;
+        this.ignoreDupKey = ignoreDupKey;
     }
 
     public Table table() {
@@ -49,6 +51,10 @@ public abstract class Insert extends Statement {
 
     public List<Assignment> onDuplicateKeyAssignments() {
         return onDuplicateKeyAssignments;
+    }
+
+    public boolean isIgnoreDupKey() {
+        return ignoreDupKey;
     }
 
     @Override

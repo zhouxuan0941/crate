@@ -181,6 +181,16 @@ public class InsertFromSubQueryAnalyzerTest extends CrateDummyClusterServiceUnit
     }
 
     @Test
+    public void testFromQueryWithOnDuplicateKeyIgnore() {
+        InsertFromSubQueryAnalyzedStatement statement =
+            e.analyze("insert into users (id, name) (select id, name from users) " +
+                      "on duplicate key ignore");
+
+        Assert.assertThat(statement.onDuplicateKeyAssignments().size(), is(0));
+        Assert.assertThat(statement.isIgnoreDupKey(), is(true));
+    }
+
+    @Test
     public void testFromQueryWithOnDuplicateKey() throws Exception {
         InsertFromSubQueryAnalyzedStatement statement =
             e.analyze("insert into users (id, name) (select id, name from users) " +

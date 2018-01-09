@@ -65,15 +65,18 @@ public class InsertFromSubQueryAnalyzedStatement implements AnalyzedStatement {
     private final List<Symbol> partitionedBySymbols;
     @Nullable
     private final Symbol clusteredBySymbol;
+    private boolean ignoreDupKey;
 
     public InsertFromSubQueryAnalyzedStatement(QueriedRelation subQueryRelation,
                                                DocTableInfo tableInfo,
                                                List<Reference> targetColumns,
-                                               @Nullable Map<Reference, Symbol> onDuplicateKeyAssignments) {
+                                               @Nullable Map<Reference, Symbol> onDuplicateKeyAssignments,
+                                               boolean ignoreDupKey) {
         this.targetTable = tableInfo;
         this.subQueryRelation = subQueryRelation;
         this.onDuplicateKeyAssignments = onDuplicateKeyAssignments;
         this.targetColumns = targetColumns;
+        this.ignoreDupKey = ignoreDupKey;
         Map<ColumnIdent, Integer> columnPositions = toPositionMap(targetColumns);
 
 
@@ -206,5 +209,9 @@ public class InsertFromSubQueryAnalyzedStatement implements AnalyzedStatement {
     @Nullable
     public Symbol clusteredBySymbol() {
         return clusteredBySymbol;
+    }
+
+    public boolean isIgnoreDupKey() {
+        return ignoreDupKey;
     }
 }

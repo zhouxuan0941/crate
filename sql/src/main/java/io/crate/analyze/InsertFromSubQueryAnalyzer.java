@@ -151,7 +151,8 @@ class InsertFromSubQueryAnalyzer {
             source,
             tableInfo,
             targetColumns,
-            onDuplicateKeyAssignments);
+            onDuplicateKeyAssignments,
+            node.isIgnoreDupKey());
     }
 
     static Collection<Reference> resolveTargetColumns(Collection<String> targetColumnNames,

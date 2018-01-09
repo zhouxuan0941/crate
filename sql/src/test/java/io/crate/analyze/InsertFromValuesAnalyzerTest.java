@@ -912,6 +912,15 @@ public class InsertFromValuesAnalyzerTest extends CrateDummyClusterServiceUnitTe
     }
 
     @Test
+    public void testInsertFromValuesWithOnDuplicateKeyIgnore() {
+        InsertFromValuesAnalyzedStatement statement = e.analyze(
+            "insert into users (id, name, other_id) values (1, 'Arthur', 10) " +
+            "on duplicate key ignore");
+        assertThat(statement.onDuplicateKeyAssignments().size(), is(0));
+        assertThat(statement.isIgnoreDupKey(), is(true));
+    }
+
+    @Test
     public void testInsertFromValuesWithOnDuplicateKey() throws Exception {
         InsertFromValuesAnalyzedStatement statement = e.analyze(
             "insert into users (id, name, other_id) values (1, 'Arthur', 10) " +

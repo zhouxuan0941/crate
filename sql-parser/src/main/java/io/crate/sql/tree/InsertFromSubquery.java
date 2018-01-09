@@ -33,8 +33,9 @@ public class InsertFromSubquery extends Insert {
     public InsertFromSubquery(Table table,
                               Query subQuery,
                               List<String> columns,
-                              List<Assignment> onDuplicateKeyAssignments) {
-        super(table, columns, onDuplicateKeyAssignments);
+                              List<Assignment> onDuplicateKeyAssignments,
+                              boolean ignoreDupKey) {
+        super(table, columns, onDuplicateKeyAssignments, ignoreDupKey);
         this.subQuery = subQuery;
     }
 
@@ -67,6 +68,7 @@ public class InsertFromSubquery extends Insert {
             .add("columns", columns)
             .add("subquery", subQuery)
             .add("assignments", onDuplicateKeyAssignments)
+            .add("ignoreDuplicateKey", ignoreDupKey)
             .toString();
     }
 

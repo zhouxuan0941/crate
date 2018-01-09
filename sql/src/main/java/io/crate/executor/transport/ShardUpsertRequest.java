@@ -252,16 +252,20 @@ public class ShardUpsertRequest extends ShardRequest<ShardUpsertRequest, ShardUp
         @Nullable
         private Object[] insertValues;
 
+        private boolean ignoreDupKey;
+
         public Item(String id,
                     @Nullable Symbol[] updateAssignments,
                     @Nullable Object[] insertValues,
-                    @Nullable Long version) {
+                    @Nullable Long version,
+                    boolean ignoreDupKey) {
             super(id);
             this.updateAssignments = updateAssignments;
             if (version != null) {
                 this.version = version;
             }
             this.insertValues = insertValues;
+            this.ignoreDupKey = ignoreDupKey;
         }
 
         public long version() {
@@ -311,6 +315,10 @@ public class ShardUpsertRequest extends ShardRequest<ShardUpsertRequest, ShardUp
             return insertValues;
         }
 
+        public boolean isIgnoreDupKey() {
+            return ignoreDupKey;
+        }
+
         public Item(StreamInput in, @Nullable Streamer[] insertValueStreamers) throws IOException {
             super(in);
             int assignmentsSize = in.readVInt();
@@ -334,6 +342,7 @@ public class ShardUpsertRequest extends ShardRequest<ShardUpsertRequest, ShardUp
             if (in.readBoolean()) {
                 source = in.readBytesReference();
             }
+            ignoreDupKey = in.readBoolean();
         }
 
         public void writeTo(StreamOutput out, @Nullable Streamer[] insertValueStreamers) throws IOException {
@@ -365,6 +374,7 @@ public class ShardUpsertRequest extends ShardRequest<ShardUpsertRequest, ShardUp
             if (sourceAvailable) {
                 out.writeBytesReference(source);
             }
+            out.writeBoolean(ignoreDupKey);
         }
     }
 

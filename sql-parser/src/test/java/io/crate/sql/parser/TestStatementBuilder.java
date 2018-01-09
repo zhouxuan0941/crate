@@ -724,6 +724,7 @@ public class TestStatementBuilder {
         printStatement("insert into t (a, b) values (1, 2) on duplicate key update a = a + 1, b = 3");
         printStatement("insert into t (a, b) values (1, 2), (3, 4) on duplicate key update a = values (a) + 1, b = 4");
         printStatement("insert into t (a, b) values (1, 2), (3, 4) on duplicate key update a = values (a) + 1, b = values(b) - 2");
+        printStatement("insert into t (a, b) values (1, 2) on duplicate key ignore");
 
         InsertFromValues insert = (InsertFromValues) SqlParser.createStatement(
                 "insert into test_generated_column (id, ts) values (?, ?) on duplicate key update ts = ?");

@@ -38,15 +38,18 @@ public class UpdateProjection extends DMLProjection {
     private String[] assignmentsColumns;
     @Nullable
     private Long requiredVersion;
+    private boolean ignoreDupKey;
 
     public UpdateProjection(Symbol uidSymbol,
                             String[] assignmentsColumns,
                             Symbol[] assignments,
-                            @Nullable Long requiredVersion) {
+                            @Nullable Long requiredVersion,
+                            boolean ignoreDupKey) {
         super(uidSymbol);
         this.assignmentsColumns = assignmentsColumns;
         this.assignments = assignments;
         this.requiredVersion = requiredVersion;
+        this.ignoreDupKey = ignoreDupKey;
     }
 
     public UpdateProjection(StreamInput in) throws IOException {
@@ -65,6 +68,7 @@ public class UpdateProjection extends DMLProjection {
         if (requiredVersion == 0) {
             requiredVersion = null;
         }
+        ignoreDupKey = in.readBoolean();
     }
 
     public String[] assignmentsColumns() {
@@ -78,6 +82,10 @@ public class UpdateProjection extends DMLProjection {
     @Nullable
     public Long requiredVersion() {
         return requiredVersion;
+    }
+
+    public boolean isIgnoreDupKey() {
+        return ignoreDupKey;
     }
 
     @Override
@@ -141,5 +149,6 @@ public class UpdateProjection extends DMLProjection {
         } else {
             out.writeVLong(requiredVersion);
         }
+        out.writeBoolean(ignoreDupKey);
     }
 }

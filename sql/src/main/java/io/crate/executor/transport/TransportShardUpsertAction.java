@@ -248,6 +248,9 @@ public class TransportShardUpsertAction extends TransportShardAction<ShardUpsert
         Exception failure = indexResult.getFailure();
         if (failure != null) {
             if (failure instanceof VersionConflictEngineException) {
+                if (item.isIgnoreDupKey()) {
+                    return null;
+                }
                 if (item.updateAssignments() != null) {
                     if (tryInsertFirst) {
                         // insert failed, document already exists, try update

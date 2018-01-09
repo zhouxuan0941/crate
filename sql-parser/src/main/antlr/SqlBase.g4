@@ -62,7 +62,7 @@ statement
         setGlobalAssignment (',' setGlobalAssignment)*                               #setGlobal
     | KILL (ALL | jobId=parameterOrString)                                           #kill
     | INSERT INTO table ('(' ident (',' ident)* ')')? insertSource
-        (ON DUPLICATE KEY UPDATE assignment (',' assignment)*)?                      #insert
+        (ON DUPLICATE KEY (IGNORE | UPDATE assignment (',' assignment)*))?           #insert
     | RESTORE SNAPSHOT qname (ALL | TABLE tableWithPartitions) withProperties?       #restore
     | COPY tableWithPartition FROM path=expr withProperties?                         #copyFrom
     | COPY tableWithPartition columns? where?
@@ -593,7 +593,7 @@ nonReserved
     : ALIAS | ANALYZER | BERNOULLI | BLOB | CATALOGS | CHAR_FILTERS | CLUSTERED
     | COLUMNS | COPY | CURRENT | DATE | DAY | DISTRIBUTED | DUPLICATE | DYNAMIC | EXPLAIN
     | EXTENDS | FOLLOWING | FORMAT | FULLTEXT | FUNCTIONS | GEO_POINT | GEO_SHAPE | GLOBAL
-    | GRAPHVIZ | HOUR | IGNORED | KEY | KILL | LOGICAL | LOCAL | MATERIALIZED | MINUTE
+    | GRAPHVIZ | HOUR | IGNORE | IGNORED | KEY | KILL | LOGICAL | LOCAL | MATERIALIZED | MINUTE
     | MONTH | OFF | ONLY | OVER | OPTIMIZE | PARTITION | PARTITIONED | PARTITIONS | PLAIN
     | PRECEDING | RANGE | REFRESH | ROW | ROWS | SCHEMAS | SECOND | SESSION
     | SHARDS | SHOW | STORAGE | STRICT | SYSTEM | TABLES | TABLESAMPLE | TEXT | TIME
@@ -777,6 +777,7 @@ DELETE: 'DELETE';
 UPDATE: 'UPDATE';
 KEY: 'KEY';
 DUPLICATE: 'DUPLICATE';
+IGNORE: 'IGNORE';
 SET: 'SET';
 RESET: 'RESET';
 DEFAULT: 'DEFAULT';

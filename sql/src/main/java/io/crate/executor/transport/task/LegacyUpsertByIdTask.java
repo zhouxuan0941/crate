@@ -312,7 +312,8 @@ public class LegacyUpsertByIdTask {
                 requestsByShard.put(shardId, request);
             }
             request.add(i,
-                new ShardUpsertRequest.Item(item.id(), item.updateAssignments(), item.insertValues(), item.version()));
+                new ShardUpsertRequest.Item(
+                    item.id(), item.updateAssignments(), item.insertValues(), item.version(), item.isIgnoreDupKey()));
         }
         return requestsByShard;
     }

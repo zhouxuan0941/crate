@@ -180,7 +180,7 @@ class InsertFromValuesAnalyzer extends AbstractInsertAnalyzer {
             valuesResolver);
 
         InsertFromValuesAnalyzedStatement statement = new InsertFromValuesAnalyzedStatement(
-            tableInfo, analysis.parameterContext().numBulkParams());
+            tableInfo, analysis.parameterContext().numBulkParams(), node.isIgnoreDupKey());
         handleInsertColumns(node, node.maxValuesLength(), statement);
 
         Set<Reference> allReferencedReferences = new HashSet<>();

@@ -59,13 +59,15 @@ public class LegacyUpsertById implements Plan {
         private final Symbol[] updateAssignments;
         @Nullable
         private Object[] insertValues;
+        private boolean ignoreDupKey;
 
         Item(String index,
              String id,
              String routing,
              @Nullable Symbol[] updateAssignments,
              @Nullable Long version,
-             @Nullable Object[] insertValues) {
+             @Nullable Object[] insertValues,
+             boolean ignoreDupKey) {
             this.index = index;
             this.id = id;
             this.routing = routing;
@@ -74,6 +76,7 @@ public class LegacyUpsertById implements Plan {
                 this.version = version;
             }
             this.insertValues = insertValues;
+            this.ignoreDupKey = ignoreDupKey;
         }
 
         public String index() {
@@ -100,6 +103,10 @@ public class LegacyUpsertById implements Plan {
         @Nullable
         public Object[] insertValues() {
             return insertValues;
+        }
+
+        public boolean isIgnoreDupKey() {
+            return ignoreDupKey;
         }
     }
 
@@ -154,8 +161,9 @@ public class LegacyUpsertById implements Plan {
                     String routing,
                     Symbol[] updateAssignments,
                     @Nullable Long version,
-                    @Nullable Object[] insertValues) {
-        items.add(new Item(index, id, routing, updateAssignments, version, insertValues));
+                    @Nullable Object[] insertValues,
+                    boolean ignoreDupKey) {
+        items.add(new Item(index, id, routing, updateAssignments, version, insertValues, ignoreDupKey));
     }
 
     public List<Item> items() {

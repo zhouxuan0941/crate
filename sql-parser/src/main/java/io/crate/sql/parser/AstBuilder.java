@@ -418,18 +418,21 @@ class AstBuilder extends SqlBaseBaseVisitor<Node> {
             throw e;
         }
 
+        boolean ignoreDupKey = context.IGNORE() != null;
         if (context.insertSource().VALUES() != null) {
             return new InsertFromValues(
                 table,
                 visit(context.insertSource().values(), ValuesList.class),
                 columns,
-                visit(context.assignment(), Assignment.class));
+                visit(context.assignment(), Assignment.class),
+                ignoreDupKey);
         }
         return new InsertFromSubquery(
             table,
             (Query) visit(context.insertSource().query()),
             columns,
-            visit(context.assignment(), Assignment.class));
+            visit(context.assignment(), Assignment.class),
+            ignoreDupKey);
     }
 
     @Override
