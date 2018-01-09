@@ -48,7 +48,6 @@ import io.crate.data.BatchIterator;
 import io.crate.data.RowN;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -58,9 +57,7 @@ import java.util.function.Predicate;
 class InnerJoinHashBlockBatchIterator<L, R, C> extends NestedLoopBatchIterator<L, R, C> {
 
     final Predicate<C> joinCondition;
-    final Map<Integer, Integer> bufferHash;
-    final ArrayList<L> buffer;
-    int idx = 0;
+    final Map<Integer, L> buffer;
 
     /**
      * points to the batchIterator which will be used on the next {@link #moveNext()} call
@@ -74,8 +71,7 @@ class InnerJoinHashBlockBatchIterator<L, R, C> extends NestedLoopBatchIterator<L
                                     int leftSize) {
         super(left, right, combiner);
         this.joinCondition = joinCondition;
-        this.buffer = new ArrayList<>(leftSize);
-        this.bufferHash = new HashMap<>(leftSize);
+        this.buffer = new HashMap<>(leftSize);
         this.activeIt = left;
     }
 
@@ -95,18 +91,16 @@ class InnerJoinHashBlockBatchIterator<L, R, C> extends NestedLoopBatchIterator<L
     public boolean moveNext() {
         activeIt = left;
         while (this.left.moveNext()) {
-            this.bufferHash.put(Objects.hash(((RowN)this.left.currentElement()).materialize()), idx);
-            this.buffer.add((L)((RowN)this.left.currentElement()).materialize());
-            idx++;
+            this.buffer.put(Objects.hash(((RowN)this.left.currentElement()).materialize()), (L)((RowN)this.left.currentElement()).materialize());
         }
         if (left.allLoaded()) {
             activeIt = right;
 
             if (right.moveNext()) {
                 int rightHash = Objects.hash(((RowN)this.right.currentElement()).materialize());
-                Integer position = bufferHash.get(rightHash);
-                if (position != null) {
-                    combiner.setLeft((L) new RowN((Object[]) buffer.get(position)));
+                L leftRow = buffer.get(rightHash);
+                if (leftRow != null) {
+                    combiner.setLeft((L) new RowN((Object[]) leftRow));
                     combiner.setRight(right.currentElement());
                     return true;
                 }
