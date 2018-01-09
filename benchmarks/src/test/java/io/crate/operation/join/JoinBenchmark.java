@@ -119,8 +119,8 @@ public class JoinBenchmark {
     @Benchmark
     public void measureBlockHash_rightSmall(Blackhole blackhole) throws Exception {
         Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.hashNL(
-            TestingBatchIterators.range(2500, 7500),
             TestingBatchIterators.range(0, 10000),
+            TestingBatchIterators.range(2500, 7500),
             new CombinedRow(1, 1),
             joinCondition,
             10000
