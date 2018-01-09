@@ -100,6 +100,29 @@ public class NestedLoopBatchIterator<L, R, C> implements BatchIterator<C> {
         return new AntiJoinBatchIterator<>(left, right, combiner, joinCondition);
     }
 
+    public static <L, R, C> BatchIterator<C> plainNL(BatchIterator<L> left,
+                                                     BatchIterator<R> right,
+                                                     ElementCombiner<L, R, C> combiner,
+                                                     Predicate<C> joinCondition) {
+        return new InnerJoinNestedLoopBatchIterator<>(left, right, combiner, joinCondition);
+    }
+
+    public static <L, R, C> BatchIterator<C> blockNL(BatchIterator<L> left,
+                                                     BatchIterator<R> right,
+                                                     ElementCombiner<L, R, C> combiner,
+                                                     Predicate<C> joinCondition,
+                                                     int leftSize) {
+        return new InnerJoinBlockNestedLoopBatchIterator<>(left, right, combiner, joinCondition, leftSize);
+    }
+
+    public static <L, R, C> BatchIterator<C> hashNL(BatchIterator<L> left,
+                                                     BatchIterator<R> right,
+                                                     ElementCombiner<L, R, C> combiner,
+                                                     Predicate<C> joinCondition,
+                                                     int leftSize) {
+        return new InnerJoinHashBlockBatchIterator<>(left, right, combiner, joinCondition, leftSize);
+    }
+
     final ElementCombiner<L, R, C> combiner;
     final BatchIterator<L> left;
     final BatchIterator<R> right;

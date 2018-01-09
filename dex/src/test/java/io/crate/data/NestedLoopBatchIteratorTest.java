@@ -50,6 +50,7 @@ public class NestedLoopBatchIteratorTest {
     private ArrayList<Object[]> fullJoinResult;
     private ArrayList<Object[]> semiJoinResult;
     private ArrayList<Object[]> antiJoinResult;
+    private ArrayList<Object[]> innerJoinResult;
 
     private Predicate<Row> getCol0EqCol1JoinCondition() {
         return row -> Objects.equals(row.get(0), row.get(1));
@@ -94,6 +95,11 @@ public class NestedLoopBatchIteratorTest {
         antiJoinResult.add(new Object[] { 0 });
         antiJoinResult.add(new Object[] { 1 });
         antiJoinResult.add(new Object[] { 4 });
+
+        innerJoinResult = new ArrayList<>();
+        innerJoinResult.add(new Object[] { 2, 2 });
+        innerJoinResult.add(new Object[] { 3, 3 });
+        innerJoinResult.add(new Object[] { 4, 4 });
     }
 
     @Test
@@ -348,5 +354,81 @@ public class NestedLoopBatchIteratorTest {
             new Object[] { 0 },
             new Object[] { 1 },
             new Object[] { 2 }));
+    }
+
+    @Test
+    public void testBlockInnerJoin() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.blockNL(
+            TestingBatchIterators.range(0, 5),
+            TestingBatchIterators.range(2, 6),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition(),
+            5
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
+
+    @Test
+    public void testBlockInnerJoinJoinBatchedSource() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.blockNL(
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(0, 5), 2, 2, null),
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(2, 6), 2, 2, null),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition(),
+            5
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
+
+    @Test
+    public void testNLInnerJoin() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.plainNL(
+            TestingBatchIterators.range(0, 5),
+            TestingBatchIterators.range(2, 6),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition()
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
+
+    @Test
+    public void testInnerInnerJoinBatchedSource() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.plainNL(
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(0, 5), 2, 2, null),
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(2, 6), 2, 2, null),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition()
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
+
+    @Test
+    public void testHashInnerJoin() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.hashNL(
+            TestingBatchIterators.range(0, 5),
+            TestingBatchIterators.range(2, 6),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition(),
+            5
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
+
+    @Test
+    public void testHashInnerInnerJoinBatchedSource() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.hashNL(
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(0, 5), 2, 2, null),
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(2, 6), 2, 2, null),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition(),
+            5
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
     }
 }
