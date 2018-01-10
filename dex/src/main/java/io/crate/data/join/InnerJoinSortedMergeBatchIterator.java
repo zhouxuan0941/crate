@@ -31,8 +31,10 @@ import java.util.function.Predicate;
 
 public class InnerJoinSortedMergeBatchIterator<L, R, C> extends NestedLoopBatchIterator<L, R, C> {
 
-    private static final Predicate<Row> greaterThan = row -> (Integer)row.get(0) < (Integer)row.get(1);
+    private static final Predicate<Row> greaterThan = row -> (Integer) row.get(0) > (Integer) row.get(1);
+    private static final Predicate<Row> lessThan = row -> (Integer) row.get(0) < (Integer) row.get(1);
     final Predicate<C> joinCondition;
+    private boolean isSet = false;
 
     InnerJoinSortedMergeBatchIterator(BatchIterator<L> left,
                                       BatchIterator<R> right,
@@ -61,23 +63,38 @@ public class InnerJoinSortedMergeBatchIterator<L, R, C> extends NestedLoopBatchI
                 return false;
             }
             combiner.setLeft(this.left.currentElement());
+            if (!isSet) {
+                isSet = true;
+                activeIt = right;
+            }
         }
 
-        activeIt = right;
-        while (right.moveNext()) {
+        if (activeIt == right) {
+            if (this.right.moveNext() == false) {
+                return false;
+            }
             combiner.setRight(right.currentElement());
-            if (joinCondition.test(combiner.currentElement())) {
-                return true;
-            }
-            if (greaterThan.test((Row) combiner.currentElement())) {
-                right.moveToStart();
-                if (left.moveNext() == false) {
-                    activeIt = left;
-                    return false;
-                }
-                combiner.setLeft(left.currentElement());
-            }
         }
+
+        while (lessThan.test((Row) combiner.currentElement())) {
+            activeIt = left;
+            if (this.left.moveNext() == false) {
+                return false;
+            }
+            combiner.setLeft(this.left.currentElement());
+        }
+
+        while (greaterThan.test((Row) combiner.currentElement())) {
+            activeIt = right;
+            if (this.right.moveNext() == false) {
+                return false;
+            }
+            combiner.setRight(this.right.currentElement());
+        }
+        if (joinCondition.test(combiner.currentElement())) {
+            return true;
+        }
+
         return false;
     }
 
