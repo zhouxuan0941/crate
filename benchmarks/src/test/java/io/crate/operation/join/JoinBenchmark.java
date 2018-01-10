@@ -47,10 +47,92 @@ import java.util.function.Supplier;
 public class JoinBenchmark {
 
     private static final Predicate<Row> joinCondition = row -> Objects.equals(row.get(0), row.get(1));
+//
+//    @Benchmark
+//    public void measurePlainNL_leftSmall(Blackhole blackhole) throws Exception {
+//        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.plainNL(
+//            TestingBatchIterators.range(2500, 7500),
+//            TestingBatchIterators.range(0, 10000),
+//            new CombinedRow(1, 1),
+//            joinCondition
+//        );
+//        TestingRowConsumer consumer = new TestingRowConsumer();
+//        consumer.accept(it.get(), null);
+//        blackhole.consume(consumer.getResult());
+//    }
+//
+//    @Benchmark
+//    public void measurePlainNL_rightSmall(Blackhole blackhole) throws Exception {
+//        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.plainNL(
+//            TestingBatchIterators.range(0, 10000),
+//            TestingBatchIterators.range(2500, 7500),
+//            new CombinedRow(1, 1),
+//            joinCondition
+//        );
+//        TestingRowConsumer consumer = new TestingRowConsumer();
+//        consumer.accept(it.get(), null);
+//        blackhole.consume(consumer.getResult());
+//    }
+//
+//    @Benchmark
+//    public void measureBlockNL_leftSmall(Blackhole blackhole) throws Exception {
+//        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.blockNL(
+//            TestingBatchIterators.range(2500, 7500),
+//            TestingBatchIterators.range(0, 10000),
+//            new CombinedRow(1, 1),
+//            joinCondition,
+//            5000
+//        );
+//        TestingRowConsumer consumer = new TestingRowConsumer();
+//        consumer.accept(it.get(), null);
+//        blackhole.consume(consumer.getResult());
+//    }
+//
+//    @Benchmark
+//    public void measureBlockNL_rightSmall(Blackhole blackhole) throws Exception {
+//        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.blockNL(
+//            TestingBatchIterators.range(0, 10000),
+//            TestingBatchIterators.range(2500, 7500),
+//            new CombinedRow(1, 1),
+//            joinCondition,
+//            10000
+//        );
+//        TestingRowConsumer consumer = new TestingRowConsumer();
+//        consumer.accept(it.get(), null);
+//        blackhole.consume(consumer.getResult());
+//    }
+//
+//    @Benchmark
+//    public void measureBlockHash_leftSmall(Blackhole blackhole) throws Exception {
+//        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.hashNL(
+//            TestingBatchIterators.range(2500, 7500),
+//            TestingBatchIterators.range(0, 10000),
+//            new CombinedRow(1, 1),
+//            joinCondition,
+//            5000
+//        );
+//        TestingRowConsumer consumer = new TestingRowConsumer();
+//        consumer.accept(it.get(), null);
+//        blackhole.consume(consumer.getResult());
+//    }
+//
+//    @Benchmark
+//    public void measureBlockHash_rightSmall(Blackhole blackhole) throws Exception {
+//        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.hashNL(
+//            TestingBatchIterators.range(0, 10000),
+//            TestingBatchIterators.range(2500, 7500),
+//            new CombinedRow(1, 1),
+//            joinCondition,
+//            10000
+//        );
+//        TestingRowConsumer consumer = new TestingRowConsumer();
+//        consumer.accept(it.get(), null);
+//        blackhole.consume(consumer.getResult());
+//    }
 
     @Benchmark
-    public void measurePlainNL_leftSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.plainNL(
+    public void measureSortedMerge_leftSmall(Blackhole blackhole) throws Exception {
+        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.merge(
             TestingBatchIterators.range(2500, 7500),
             TestingBatchIterators.range(0, 10000),
             new CombinedRow(1, 1),
@@ -62,68 +144,12 @@ public class JoinBenchmark {
     }
 
     @Benchmark
-    public void measurePlainNL_rightSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.plainNL(
+    public void measureSortedMerge_rightSmall(Blackhole blackhole) throws Exception {
+        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.merge(
             TestingBatchIterators.range(0, 10000),
             TestingBatchIterators.range(2500, 7500),
             new CombinedRow(1, 1),
             joinCondition
-        );
-        TestingRowConsumer consumer = new TestingRowConsumer();
-        consumer.accept(it.get(), null);
-        blackhole.consume(consumer.getResult());
-    }
-
-    @Benchmark
-    public void measureBlockNL_leftSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.blockNL(
-            TestingBatchIterators.range(2500, 7500),
-            TestingBatchIterators.range(0, 10000),
-            new CombinedRow(1, 1),
-            joinCondition,
-            5000
-        );
-        TestingRowConsumer consumer = new TestingRowConsumer();
-        consumer.accept(it.get(), null);
-        blackhole.consume(consumer.getResult());
-    }
-
-    @Benchmark
-    public void measureBlockNL_rightSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.blockNL(
-            TestingBatchIterators.range(0, 10000),
-            TestingBatchIterators.range(2500, 7500),
-            new CombinedRow(1, 1),
-            joinCondition,
-            10000
-        );
-        TestingRowConsumer consumer = new TestingRowConsumer();
-        consumer.accept(it.get(), null);
-        blackhole.consume(consumer.getResult());
-    }
-
-    @Benchmark
-    public void measureBlockHash_leftSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.hashNL(
-            TestingBatchIterators.range(2500, 7500),
-            TestingBatchIterators.range(0, 10000),
-            new CombinedRow(1, 1),
-            joinCondition,
-            5000
-        );
-        TestingRowConsumer consumer = new TestingRowConsumer();
-        consumer.accept(it.get(), null);
-        blackhole.consume(consumer.getResult());
-    }
-
-    @Benchmark
-    public void measureBlockHash_rightSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.hashNL(
-            TestingBatchIterators.range(0, 10000),
-            TestingBatchIterators.range(2500, 7500),
-            new CombinedRow(1, 1),
-            joinCondition,
-            10000
         );
         TestingRowConsumer consumer = new TestingRowConsumer();
         consumer.accept(it.get(), null);

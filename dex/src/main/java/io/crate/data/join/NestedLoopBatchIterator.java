@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 
 /**
  * NestedLoop BatchIterator implementations
- *
+ * <p>
  * - {@link #crossJoin(BatchIterator, BatchIterator, ElementCombiner)}
  * - {@link #leftJoin(BatchIterator, BatchIterator, ElementCombiner, Predicate)}
  * - {@link #rightJoin(BatchIterator, BatchIterator, ElementCombiner, Predicate)}
@@ -116,11 +116,18 @@ public class NestedLoopBatchIterator<L, R, C> implements BatchIterator<C> {
     }
 
     public static <L, R, C> BatchIterator<C> hashNL(BatchIterator<L> left,
-                                                     BatchIterator<R> right,
-                                                     ElementCombiner<L, R, C> combiner,
-                                                     Predicate<C> joinCondition,
-                                                     int leftSize) {
+                                                    BatchIterator<R> right,
+                                                    ElementCombiner<L, R, C> combiner,
+                                                    Predicate<C> joinCondition,
+                                                    int leftSize) {
         return new InnerJoinHashBlockBatchIterator<>(left, right, combiner, joinCondition, leftSize);
+    }
+
+    public static <L, R, C> BatchIterator<C> merge(BatchIterator<L> left,
+                                                   BatchIterator<R> right,
+                                                   ElementCombiner<L, R, C> combiner,
+                                                   Predicate<C> joinCondition) {
+        return new InnerJoinSortedMergeBatchIterator<>(left, right, combiner, joinCondition);
     }
 
     final ElementCombiner<L, R, C> combiner;

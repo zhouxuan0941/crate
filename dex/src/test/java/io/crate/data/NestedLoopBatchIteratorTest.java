@@ -431,4 +431,28 @@ public class NestedLoopBatchIteratorTest {
         BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
         tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
     }
+
+    @Test
+    public void testMergeInnerJoin() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.merge(
+            TestingBatchIterators.range(0, 5),
+            TestingBatchIterators.range(2, 6),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition()
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
+
+    @Test
+    public void testMergeInnerInnerJoinBatchedSource() throws Exception {
+        Supplier<BatchIterator<Row>> batchIteratorSupplier = () -> NestedLoopBatchIterator.merge(
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(0, 5), 2, 2, null),
+            new BatchSimulatingIterator<>(TestingBatchIterators.range(2, 6), 2, 2, null),
+            new CombinedRow(1, 1),
+            getCol0EqCol1JoinCondition()
+        );
+        BatchIteratorTester tester = new BatchIteratorTester(batchIteratorSupplier);
+        tester.verifyResultAndEdgeCaseBehaviour(innerJoinResult);
+    }
 }
