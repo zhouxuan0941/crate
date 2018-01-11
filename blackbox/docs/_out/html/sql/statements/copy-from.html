@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>COPY FROM &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../../index.html" />
+    <link rel="up" title="SQL Statements" href="index.html" />
+    <link rel="next" title="COPY TO" href="copy-to.html" />
+    <link rel="prev" title="ALTER USER" href="alter-user.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/index.html">General Use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../general/ddl/index.html">Data Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">SQL Syntax</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">SQL Statements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="copy-from">
+<span id="id1"></span><h1><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code><a class="headerlink" href="#copy-from" title="Permalink to this headline">¶</a></h1>
+<p>Copy data from files into a table.</p>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#synopsis" id="id2">Synopsis</a></li>
+<li><a class="reference internal" href="#description" id="id3">Description</a><ul>
+<li><a class="reference internal" href="#type-casts-and-constraints" id="id4">Type Casts and Constraints</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#uri" id="id5">URI</a><ul>
+<li><a class="reference internal" href="#supported-schemes" id="id6">Supported Schemes</a><ul>
+<li><a class="reference internal" href="#file" id="id7"><code class="docutils literal"><span class="pre">file</span></code></a></li>
+<li><a class="reference internal" href="#s3" id="id8"><code class="docutils literal"><span class="pre">s3</span></code></a></li>
+<li><a class="reference internal" href="#http-https-and-jar-java-url-protocols" id="id9"><code class="docutils literal"><span class="pre">http</span></code>, <code class="docutils literal"><span class="pre">https</span></code>, and <code class="docutils literal"><span class="pre">jar</span></code> (Java URL protocols)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#parameters" id="id10">Parameters</a></li>
+<li><a class="reference internal" href="#clauses" id="id11">Clauses</a><ul>
+<li><a class="reference internal" href="#partition" id="id12"><code class="docutils literal"><span class="pre">PARTITION</span></code></a></li>
+<li><a class="reference internal" href="#with" id="id13"><code class="docutils literal"><span class="pre">WITH</span></code></a><ul>
+<li><a class="reference internal" href="#options" id="id14">Options</a><ul>
+<li><a class="reference internal" href="#bulk-size" id="id15"><code class="docutils literal"><span class="pre">bulk_size</span></code></a></li>
+<li><a class="reference internal" href="#shared" id="id16"><code class="docutils literal"><span class="pre">shared</span></code></a></li>
+<li><a class="reference internal" href="#node-filters" id="id17"><code class="docutils literal"><span class="pre">node_filters</span></code></a></li>
+<li><a class="reference internal" href="#num-readers" id="id18"><code class="docutils literal"><span class="pre">num_readers</span></code></a></li>
+<li><a class="reference internal" href="#compression" id="id19"><code class="docutils literal"><span class="pre">compression</span></code></a></li>
+<li><a class="reference internal" href="#overwrite-duplicates" id="id20"><code class="docutils literal"><span class="pre">overwrite_duplicates</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="synopsis">
+<h2><a class="toc-backref" href="#id2">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">COPY</span> <span class="n">table_ident</span> <span class="p">[</span> <span class="k">PARTITION</span> <span class="p">(</span><span class="n">partition_column</span> <span class="o">=</span> <span class="k">value</span> <span class="p">[</span> <span class="p">,</span> <span class="mf">...</span> <span class="p">])</span> <span class="p">]</span>
+<span class="k">FROM</span> <span class="n">uri</span> <span class="p">[</span> <span class="k">WITH</span> <span class="p">(</span> <span class="k">option</span> <span class="o">=</span> <span class="k">value</span> <span class="p">[,</span> <span class="mf">...</span><span class="p">]</span> <span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>where <cite>option</cite> can be one of:</p>
+<ul class="simple">
+<li><cite>bulk_size</cite> <em>integer</em></li>
+<li><cite>shared</cite> <em>boolean</em></li>
+<li><cite>num_readers</cite> <em>integer</em></li>
+<li><cite>compression</cite> <em>string</em></li>
+<li><cite>overwrite_duplicates</cite> <em>boolean</em></li>
+</ul>
+</div>
+<div class="section" id="description">
+<h2><a class="toc-backref" href="#id3">Description</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code> copies data from a URI to the specified table as a raw data
+import.</p>
+<p>The nodes in the cluster will attempt to read the files available at the URI
+and import the data. These files have to be UTF-8 encoded and contain a single
+JSON object per line. Any keys in the object will be added as columns,
+regardless of the previously defined table. Empty lines are simply sikpped.</p>
+<p>Example JSON data:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s s-Name">&quot;id&quot;</span><span class="p">:</span> <span class="mf">1</span><span class="p">,</span> <span class="s s-Name">&quot;quote&quot;</span><span class="p">:</span> <span class="s s-Name">&quot;Don&#39;t panic&quot;</span><span class="p">}</span>
+<span class="p">{</span><span class="s s-Name">&quot;id&quot;</span><span class="p">:</span> <span class="mf">2</span><span class="p">,</span> <span class="s s-Name">&quot;quote&quot;</span><span class="p">:</span> <span class="s s-Name">&quot;Ford, you&#39;re turning into a penguin. Stop it.&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>See also: <a class="reference internal" href="../../general/dml.html#importing-data"><span class="std std-ref">Import and Export</span></a>.</p>
+<div class="section" id="type-casts-and-constraints">
+<h3><a class="toc-backref" href="#id4">Type Casts and Constraints</a><a class="headerlink" href="#type-casts-and-constraints" title="Permalink to this headline">¶</a></h3>
+<p>CrateDB does not check if the column&#8217;s data types match the types from the
+import file. It does not cast the types but will always import the data as in
+the source file. Furthermore CrateDB will only check for primary key duplicates
+but not for other <a class="reference internal" href="../general/constraints.html#column-constraints"><span class="std std-ref">Column Constraints</span></a> like <code class="docutils literal"><span class="pre">NOT</span> <span class="pre">NULL</span></code>.</p>
+<p>For example a <a class="reference external" href="http://en.wikipedia.org/wiki/Well-known_text">WKT</a> string cannot be imported into a column of <code class="docutils literal"><span class="pre">geo_shape</span></code>
+or <code class="docutils literal"><span class="pre">geo_point</span></code> type, since there is no implict cast to the <a class="reference external" href="http://geojson.org/">GeoJSON</a> format.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In case the <code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code> statement fails, the log output on the node will
+provide an error message. Any data that has been imported until then has
+been written to the table and should be deleted before restarting the
+import.</p>
+</div>
+</div>
+</div>
+<div class="section" id="uri">
+<h2><a class="toc-backref" href="#id5">URI</a><a class="headerlink" href="#uri" title="Permalink to this headline">¶</a></h2>
+<p>A string literal or array of string literals containing URIs. Each URI must be
+formatted according to the <a class="reference external" href="https://en.wikipedia.org/wiki/URI_scheme">URI Scheme</a>.</p>
+<p>In case the URI scheme is missing the value is assumed to be a file path and
+will be converted to a <code class="docutils literal"><span class="pre">file://</span></code> URI implicitly.</p>
+<p>For example:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>/tmp folder/file.json
+</pre></div>
+</div>
+<p>Is converted to:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>&#39;file:///tmp%20folder/file.json&#39;
+</pre></div>
+</div>
+<div class="section" id="supported-schemes">
+<h3><a class="toc-backref" href="#id6">Supported Schemes</a><a class="headerlink" href="#supported-schemes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="file">
+<h4><a class="toc-backref" href="#id7"><code class="docutils literal"><span class="pre">file</span></code></a><a class="headerlink" href="#file" title="Permalink to this headline">¶</a></h4>
+<p>The provided (absolute) path should point to files available <em>on at least one
+node</em> with read access to the CrateDB process (with its default user &#8216;crate&#8217;)
+there.</p>
+<p>By default each node will attempt to read the files specified. In case the URI
+points to a shared folder (where other CrateDB nodes also have access) the
+<code class="docutils literal"><span class="pre">shared</span></code> option must be set to true in order to avoid importing duplicates.</p>
+</div>
+<div class="section" id="s3">
+<span id="copy-from-s3"></span><h4><a class="toc-backref" href="#id8"><code class="docutils literal"><span class="pre">s3</span></code></a><a class="headerlink" href="#s3" title="Permalink to this headline">¶</a></h4>
+<p>Can be used to access buckets on the Amazon AWS S3 Service:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>s3://[&lt;accesskey&gt;:&lt;secretkey&gt;@]&lt;bucketname&gt;/&lt;path&gt;
+</pre></div>
+</div>
+<p>If <code class="docutils literal"><span class="pre">accesskey</span></code> and <code class="docutils literal"><span class="pre">secretkey</span></code> are ommited, CrateDB attempts to load the
+credentials from the environment or Java settings.</p>
+<p>Environment Variables - <code class="docutils literal"><span class="pre">AWS_ACCESS_KEY_ID</span></code> and <code class="docutils literal"><span class="pre">AWS_SECRET_KEY</span></code></p>
+<p>Java System Properties - <code class="docutils literal"><span class="pre">aws.accessKeyId</span></code> and <code class="docutils literal"><span class="pre">aws.secretKey</span></code></p>
+<p>If no credentials are set the s3 client will operate in anonymous mode, see
+<a class="reference external" href="http://docs.aws.amazon.com/AmazonS3/latest/dev/AuthUsingAcctOrUserCredJava.html">AWS Java Documentation</a>.</p>
+<p>Using the &#8216;s3://&#8217; URI scheme sets the <code class="docutils literal"><span class="pre">shared</span></code> option implicitly.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A <code class="docutils literal"><span class="pre">secretkey</span></code> provided by Amazon Web Services can contain characters such
+as &#8216;/&#8217;, &#8216;+&#8217; or &#8216;=&#8217;. These characters must be <a class="reference external" href="https://en.wikipedia.org/wiki/Percent-encoding">URL encoded</a>. For a detailed
+explanation read the official <a class="reference external" href="http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html">AWS documentation</a>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Versions prior to 0.51.x use HTTP for connections to S3. Since 0.51.x these
+connections are using the HTTPS protocol. Please make sure you update your
+firewall rules to allow outgoing connections on port <code class="docutils literal"><span class="pre">443</span></code>.</p>
+</div>
+</div>
+<div class="section" id="http-https-and-jar-java-url-protocols">
+<h4><a class="toc-backref" href="#id9"><code class="docutils literal"><span class="pre">http</span></code>, <code class="docutils literal"><span class="pre">https</span></code>, and <code class="docutils literal"><span class="pre">jar</span></code> (Java URL protocols)</a><a class="headerlink" href="#http-https-and-jar-java-url-protocols" title="Permalink to this headline">¶</a></h4>
+<p>In addition to the schemes above, CrateDB supports all protocols supported by
+the <a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/net/URL.html">URL</a> implementation of its JVM (typically <code class="docutils literal"><span class="pre">http</span></code>, <code class="docutils literal"><span class="pre">https</span></code>, <code class="docutils literal"><span class="pre">ftp</span></code>,
+and <code class="docutils literal"><span class="pre">jar</span></code>). Please refer to the documentation of the JVM vendor for an
+accurate list of supported protocols.</p>
+<p>These schemes <em>do not</em> support wildcard expansion.</p>
+</div>
+</div>
+</div>
+<div class="section" id="parameters">
+<h2><a class="toc-backref" href="#id10">Parameters</a><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">table_ident:</th><td class="field-body">The name (optionally schema-qualified) of an existing table where
+the data should be put.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">uri:</th><td class="field-body">An expression which evaluates to a URI as defined in <a class="reference external" href="http://www.ietf.org/rfc/rfc2396.txt">RFC2396</a>. The
+supported schemes are listed above. The last part of the path may also
+contain <code class="docutils literal"><span class="pre">*</span></code> wildcards to match multiple files.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="clauses">
+<h2><a class="toc-backref" href="#id11">Clauses</a><a class="headerlink" href="#clauses" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="partition">
+<h3><a class="toc-backref" href="#id12"><code class="docutils literal"><span class="pre">PARTITION</span></code></a><a class="headerlink" href="#partition" title="Permalink to this headline">¶</a></h3>
+<p>For partitioned tables this clause can be used to import data into the
+specified partition. This clause takes one or more partition columns and for
+each column a value.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="k">PARTITION</span> <span class="p">(</span> <span class="n">partition_column</span> <span class="o">=</span> <span class="k">value</span> <span class="p">[</span> <span class="p">,</span> <span class="mf">...</span> <span class="p">]</span> <span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">partition_column:</th><td class="field-body">The name of the column by which the table is partitioned.
+All partition columns that were part of the
+<a class="reference internal" href="create-table.html#partitioned-by-clause"><span class="std std-ref">PARTITIONED BY</span></a> of the <a class="reference internal" href="create-table.html#ref-create-table"><span class="std std-ref">CREATE TABLE</span></a>
+statement must be specified.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">value:</th><td class="field-body">The column&#8217;s value.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Partitioned tables do not store the value for the partition column in each
+row, hence every row will be imported into the specified partition
+regardless of the value provided for the partition columns.</p>
+</div>
+</div>
+<div class="section" id="with">
+<h3><a class="toc-backref" href="#id13"><code class="docutils literal"><span class="pre">WITH</span></code></a><a class="headerlink" href="#with" title="Permalink to this headline">¶</a></h3>
+<p>The optional <code class="docutils literal"><span class="pre">WITH</span></code> clause can specify options for the COPY FROM statement.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="k">WITH</span> <span class="p">(</span> <span class="k">option</span> <span class="o">=</span> <span class="k">value</span> <span class="p">[,</span> <span class="mf">...</span><span class="p">]</span> <span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="options">
+<h4><a class="toc-backref" href="#id14">Options</a><a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="bulk-size">
+<h5><a class="toc-backref" href="#id15"><code class="docutils literal"><span class="pre">bulk_size</span></code></a><a class="headerlink" href="#bulk-size" title="Permalink to this headline">¶</a></h5>
+<p>CrateDB will process the lines it reads from the <code class="docutils literal"><span class="pre">path</span></code> in bulks. This option
+specifies the size of one batch. The provided value must be greater than 0, the
+default value is 10000.</p>
+</div>
+<div class="section" id="shared">
+<h5><a class="toc-backref" href="#id16"><code class="docutils literal"><span class="pre">shared</span></code></a><a class="headerlink" href="#shared" title="Permalink to this headline">¶</a></h5>
+<p>This option should be set to true if the URI&#8217;s location is accessible by more
+than one CrateDB node to prevent them from importing the same file.</p>
+<p>The default value depends on the scheme of each URI.</p>
+<p>If an array of URIs is passed to <code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code> this option will overwrite the
+default for <em>all</em> URIs.</p>
+</div>
+<div class="section" id="node-filters">
+<h5><a class="toc-backref" href="#id17"><code class="docutils literal"><span class="pre">node_filters</span></code></a><a class="headerlink" href="#node-filters" title="Permalink to this headline">¶</a></h5>
+<p>A filter expression to select the nodes to run the <em>read</em> operation.</p>
+<p>It&#8217;s an object in the form of:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="k">name</span> <span class="o">=</span> <span class="s1">&#39;&lt;node_name_regex&gt;&#39;</span><span class="p">,</span>
+    <span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;node_id_regex&gt;&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Only one of the keys is required.</p>
+<p>The <code class="docutils literal"><span class="pre">name</span></code> regular expression is applied on the <code class="docutils literal"><span class="pre">name</span></code> of all execution
+nodes, whereas the <code class="docutils literal"><span class="pre">id</span></code> regex is applied on the <code class="docutils literal"><span class="pre">node</span> <span class="pre">id</span></code>.</p>
+<p>If both keys are set, <em>both</em> regular expressions have to match for a node to be
+included.</p>
+<p>If the <code class="docutils literal"><span class="pre">shared</span></code> option if false, a strict node filter might exclude nodes
+with access to the data leading to a partial import.</p>
+<p>To verify which nodes match the filter, run the statement with
+<a class="reference internal" href="explain.html"><span class="doc">EXPLAIN</span></a>.</p>
+</div>
+<div class="section" id="num-readers">
+<h5><a class="toc-backref" href="#id18"><code class="docutils literal"><span class="pre">num_readers</span></code></a><a class="headerlink" href="#num-readers" title="Permalink to this headline">¶</a></h5>
+<p>The number of nodes that will read the resources specified in the URI. Defaults
+to the number of nodes available in the cluster. If the option is set to a
+number greater than the number of available nodes it will still use each node
+only once to do the import. However, the value must be an integer greater than
+0.</p>
+<p>If <code class="docutils literal"><span class="pre">shared</span></code> is set to false this option has to be used with caution. It might
+exclude the wrong nodes, causing COPY FROM to read no files or only a subset of
+the files.</p>
+</div>
+<div class="section" id="compression">
+<h5><a class="toc-backref" href="#id19"><code class="docutils literal"><span class="pre">compression</span></code></a><a class="headerlink" href="#compression" title="Permalink to this headline">¶</a></h5>
+<p>The default value is <code class="docutils literal"><span class="pre">null</span></code>, set to <code class="docutils literal"><span class="pre">gzip</span></code> to read gzipped files.</p>
+</div>
+<div class="section" id="overwrite-duplicates">
+<h5><a class="toc-backref" href="#id20"><code class="docutils literal"><span class="pre">overwrite_duplicates</span></code></a><a class="headerlink" href="#overwrite-duplicates" title="Permalink to this headline">¶</a></h5>
+<p>Default: false</p>
+<p><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code> by default won&#8217;t overwrite rows if a document with the same
+primary key already exists. Set to true to overwrite duplicate rows.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>

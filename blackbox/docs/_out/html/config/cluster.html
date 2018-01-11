@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Cluster Wide Settings &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../index.html" />
+    <link rel="up" title="Configuration" href="index.html" />
+    <link rel="next" title="Session Setting Parameters" href="session.html" />
+    <link rel="prev" title="Node Specific Settings" href="node.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Configuration</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General Use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../general/ddl/index.html">Data Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/ddl/alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../general/information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../general/information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../general/information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="cluster-wide-settings">
+<span id="conf-cluster-settings"></span><h1>Cluster Wide Settings<a class="headerlink" href="#cluster-wide-settings" title="Permalink to this headline">¶</a></h1>
+<p>All current applied cluster settings can be read by querying the
+<a class="reference internal" href="../admin/system-information.html#sys-cluster-settings"><span class="std std-ref">sys.cluster.settings</span></a> column. Most
+cluster settings can be <a class="reference internal" href="../admin/runtime-config.html#administration-runtime-config"><span class="std std-ref">changed at runtime</span></a>. This is documented at each setting.</p>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#non-runtime-cluster-wide-settings" id="id2">Non-Runtime Cluster Wide Settings</a></li>
+<li><a class="reference internal" href="#collecting-stats" id="id3">Collecting Stats</a></li>
+<li><a class="reference internal" href="#usage-data-collector" id="id4">Usage Data Collector</a></li>
+<li><a class="reference internal" href="#graceful-stop" id="id5">Graceful Stop</a></li>
+<li><a class="reference internal" href="#bulk-operations" id="id6">Bulk Operations</a></li>
+<li><a class="reference internal" href="#discovery" id="id7">Discovery</a><ul>
+<li><a class="reference internal" href="#unicast-host-discovery" id="id8">Unicast Host Discovery</a><ul>
+<li><a class="reference internal" href="#discovery-via-dns" id="id9">Discovery via DNS</a></li>
+<li><a class="reference internal" href="#discovery-on-amazon-ec2" id="id10">Discovery on Amazon EC2</a></li>
+<li><a class="reference internal" href="#discovery-on-microsoft-azure" id="id11">Discovery on Microsoft Azure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#routing-allocation" id="id12">Routing Allocation</a><ul>
+<li><a class="reference internal" href="#awareness" id="id13">Awareness</a></li>
+<li><a class="reference internal" href="#balanced-shards" id="id14">Balanced Shards</a></li>
+<li><a class="reference internal" href="#cluster-wide-allocation-filtering" id="id15">Cluster-Wide Allocation Filtering</a></li>
+<li><a class="reference internal" href="#disk-based-shard-allocation" id="id16">Disk-based Shard Allocation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#recovery" id="id17">Recovery</a></li>
+<li><a class="reference internal" href="#store-level-throttling" id="id18">Store Level Throttling</a></li>
+<li><a class="reference internal" href="#query-circuit-breaker" id="id19">Query Circuit Breaker</a></li>
+<li><a class="reference internal" href="#field-data-circuit-breaker" id="id20">Field Data Circuit Breaker</a></li>
+<li><a class="reference internal" href="#request-circuit-breaker" id="id21">Request Circuit Breaker</a></li>
+<li><a class="reference internal" href="#thread-pools" id="id22">Thread Pools</a><ul>
+<li><a class="reference internal" href="#settings-for-fixed-thread-pools" id="id23">Settings for fixed thread pools</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#metadata" id="id24">Metadata</a><ul>
+<li><a class="reference internal" href="#metadata-gateway" id="id25">Metadata Gateway</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="non-runtime-cluster-wide-settings">
+<span id="applying-cluster-settings"></span><h2><a class="toc-backref" href="#id2">Non-Runtime Cluster Wide Settings</a><a class="headerlink" href="#non-runtime-cluster-wide-settings" title="Permalink to this headline">¶</a></h2>
+<p>Cluster wide settings which cannot be changed at runtime need to be specified
+in the configuration of each node in the cluster.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Cluster settings specified via node configurations are required to be
+exactly the same on every node in the cluster for proper operation of the
+cluster.</p>
+</div>
+</div>
+<div class="section" id="collecting-stats">
+<span id="conf-collecting-stats"></span><h2><a class="toc-backref" href="#id3">Collecting Stats</a><a class="headerlink" href="#collecting-stats" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="stats-enabled">
+<dt><strong>stats.enabled</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>    <code class="docutils literal"><span class="pre">false</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>A boolean indicating whether or not to collect statistical information about
+the cluster.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Enabling the collection of statistical information incurs a performance
+penalty, as details about every job and operation across the cluster will
+cause data to be inserted into the corresponding system tables.</p>
+</div>
+</dd>
+</dl>
+<dl class="docutils" id="stats-jobs-log-size">
+<dt><strong>stats.jobs_log_size</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">10000</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>The maximum number of job records kept to be kept in the <a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.jobs_log</span></a> table on each node.</p>
+<p>A job record corresponds to a single SQL statement to be executed on the
+cluster. These records are used for performance analytics. A larger job log
+produces more comprehensive stats, but uses more RAM.</p>
+<p>Older job records are deleted as newer records are added, once the limit is
+reached.</p>
+<p class="last">Setting this value to <code class="docutils literal"><span class="pre">0</span></code> disables collecting job information.</p>
+</dd>
+</dl>
+<dl class="docutils" id="stats-jobs-log-expiration">
+<dt><strong>stats.jobs_log_expiration</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">0s</span></code> (disabled)</div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>The job record expiry time in seconds.</p>
+<p>Job records in the <a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.jobs_log</span></a> table are periodically
+cleared if they are older than the expiry time. This setting overrides
+<a class="reference internal" href="#stats-jobs-log-size"><span class="std std-ref">stats.jobs_log_size</span></a>.</p>
+<p>If the value is set to <code class="docutils literal"><span class="pre">0</span></code>, time based log entry eviction is disabled.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If both the <a class="reference internal" href="#stats-operations-log-size"><span class="std std-ref">stats.operations_log_size</span></a>
+and
+<a class="reference internal" href="#stats-operations-log-expiration"><span class="std std-ref">stats.operations_log_expiration</span></a>
+settings are disabled, jobs will not be recorded.</p>
+</div>
+</dd>
+</dl>
+<dl class="docutils" id="stats-operations-log-size">
+<dt><strong>stats.operations_log_size</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">10000</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>The maximum number of operations records to be kept in the
+<a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.operations_log</span></a> table on each node.</p>
+<p>A job consists of one or more individual operations. Operations records are
+used for performance analytics. A larger operations log produces more
+comprehensive stats, but uses more RAM.</p>
+<p>Older operations records are deleted as newer records are added, once the
+limit is reached.</p>
+<p class="last">Setting this value to <code class="docutils literal"><span class="pre">0</span></code> disables collecting operations information.</p>
+</dd>
+</dl>
+<dl class="docutils" id="stats-operations-log-expiration">
+<dt><strong>stats.operations_log_expiration</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">0s</span></code> (disabled)</div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>Entries of <a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.operations_log</span></a> are cleared by a periodically
+job when they are older than the specified expire time. This setting
+overrides <a class="reference internal" href="#stats-operations-log-size"><span class="std std-ref">stats.operations_log_size</span></a>. If
+the value is set to <code class="docutils literal"><span class="pre">0</span></code> the time based log entry eviction is disabled.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If both setttings <a class="reference internal" href="#stats-operations-log-size"><span class="std std-ref">stats.operations_log_size</span></a> and <a class="reference internal" href="#stats-operations-log-expiration"><span class="std std-ref">stats.operations_log_expiration</span></a> are disabled, no job information will be
+collected.</p>
+</div>
+</dd>
+</dl>
+<dl class="docutils" id="stats-service-interval">
+<dt><strong>stats.service.interval</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>    <code class="docutils literal"><span class="pre">1h</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>Defines the refresh interval to refresh tables statistics used to produce
+optimal query execution plans.</p>
+<p>This field expects a time value either as a long or double or alternatively
+as a string literal with a time suffix (<code class="docutils literal"><span class="pre">ms</span></code>, <code class="docutils literal"><span class="pre">s</span></code>, <code class="docutils literal"><span class="pre">m</span></code>, <code class="docutils literal"><span class="pre">h</span></code>, <code class="docutils literal"><span class="pre">d</span></code>,
+<code class="docutils literal"><span class="pre">w</span></code>).</p>
+<p>If the value provided is <code class="docutils literal"><span class="pre">0</span></code> then the refresh is disabled.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Using a very small value can cause a high load on the cluster.</p>
+</div>
+</dd>
+</dl>
+<p id="stats-breaker-log">Settings that control the behaviour of the the stats circuit breaker. There are
+two breakers in place, one for the jobs log and one for the operations log. For
+each of them the breaker limit can be set.</p>
+<dl class="docutils" id="stats-breaker-log-jobs-limit">
+<dt><strong>stats.breaker.log.jobs.limit</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>    <code class="docutils literal"><span class="pre">5%</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>The maximum memory that can be used from <a class="reference internal" href="environment.html#crate-heap-size"><span class="std std-ref">CRATE_HEAP_SIZE</span></a> for the
+<a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.jobs_log</span></a> table on each node.</p>
+<p class="last">When this memory limit is reached the job log circuit breaker logs an error
+message and clears the <a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.jobs_log</span></a> table completely.</p>
+</dd>
+</dl>
+<dl class="docutils" id="stats-breaker-log-operations-limit">
+<dt><strong>stats.breaker.log.operations.limit</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>    <code class="docutils literal"><span class="pre">5%</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>The maximum memory that can be used from <a class="reference internal" href="environment.html#crate-heap-size"><span class="std std-ref">CRATE_HEAP_SIZE</span></a> for the
+<a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.operations_log</span></a> table on each node.</p>
+<p class="last">When this memory limit is reached the operations log circuit breaker logs an
+error message and clears the <a class="reference internal" href="../admin/system-information.html#sys-logs"><span class="std std-ref">sys.operations_log</span></a> table
+completely.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="usage-data-collector">
+<span id="conf-usage-data-collector"></span><h2><a class="toc-backref" href="#id4">Usage Data Collector</a><a class="headerlink" href="#usage-data-collector" title="Permalink to this headline">¶</a></h2>
+<p>The settings of the Usage Data Collector are read-only and cannot be set during
+runtime. Please refer to <a class="reference internal" href="../admin/udc.html#usage-data-collector"><span class="std std-ref">Usage Data Collector</span></a> to get further information
+about its usage.</p>
+<dl class="docutils" id="udc-enabled">
+<dt><strong>udc.enabled</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">true</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p><code class="docutils literal"><span class="pre">true</span></code>: Enables the Usage Data Collector.</p>
+<p class="last"><code class="docutils literal"><span class="pre">false</span></code>: Disables the Usage Data Collector.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-udc-initial-delay">
+<dt><strong>udc.initial_delay</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">10m</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>The delay for first ping after start-up.</p>
+<p class="last">This field expects a time value either as a long or double or alternatively
+as a string literal with a time suffix (<code class="docutils literal"><span class="pre">ms</span></code>, <code class="docutils literal"><span class="pre">s</span></code>, <code class="docutils literal"><span class="pre">m</span></code>, <code class="docutils literal"><span class="pre">h</span></code>, <code class="docutils literal"><span class="pre">d</span></code>,
+<code class="docutils literal"><span class="pre">w</span></code>).</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-udc-interval">
+<dt><strong>udc.interval</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">24h</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>The interval a UDC ping is sent.</p>
+<p class="last">This field expects a time value either as a long or double or alternatively
+as a string literal with a time suffix (<code class="docutils literal"><span class="pre">ms</span></code>, <code class="docutils literal"><span class="pre">s</span></code>, <code class="docutils literal"><span class="pre">m</span></code>, <code class="docutils literal"><span class="pre">h</span></code>, <code class="docutils literal"><span class="pre">d</span></code>,
+<code class="docutils literal"><span class="pre">w</span></code>).</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-udc-url">
+<dt><strong>udc.url</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">https://udc.crate.io</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The URL the ping is sent to.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="graceful-stop">
+<span id="conf-graceful-stop"></span><h2><a class="toc-backref" href="#id5">Graceful Stop</a><a class="headerlink" href="#graceful-stop" title="Permalink to this headline">¶</a></h2>
+<p>By default, when the CrateDB process stops it simply shuts down, possibly
+making some shards unavailable which leads to a <em>red</em> cluster state and lets
+some queries fail that required the now unavailable shards. In order to
+<em>safely</em> shutdown a CrateDB node, the graceful stop procedure can be used.</p>
+<p>The following cluster settings can be used to change the shutdown behaviour of
+nodes of the cluster:</p>
+<dl class="docutils" id="cluster-graceful-stop-min-availability">
+<dt><strong>cluster.graceful_stop.min_availability</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">primaries</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+<div class="line"><em>Allowed Values:</em>   <code class="docutils literal"><span class="pre">none</span> <span class="pre">|</span> <span class="pre">primaries</span> <span class="pre">|</span> <span class="pre">full</span></code></div>
+</div>
+<p><code class="docutils literal"><span class="pre">none</span></code>: No minimum data availability is required. The node may shut down
+even if records are missing after shutdown.</p>
+<p><code class="docutils literal"><span class="pre">primaries</span></code>: At least all primary shards need to be availabe after the node
+has shut down. Replicas may be missing.</p>
+<p><code class="docutils literal"><span class="pre">full</span></code>: All records and all replicas need to be available after the node
+has shut down. Data availability is full.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This option is ignored if there is only 1 node in a cluster!</p>
+</div>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-graceful-stop-reallocate">
+<dt><strong>cluster.graceful_stop.reallocate</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">true</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p><code class="docutils literal"><span class="pre">true</span></code>: The <code class="docutils literal"><span class="pre">graceful</span> <span class="pre">stop</span></code> command allows shards to be reallocated
+before shutting down the node in order to ensure minimum data availability
+set with <code class="docutils literal"><span class="pre">min_availability</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">false</span></code>: The <code class="docutils literal"><span class="pre">graceful</span> <span class="pre">stop</span></code> command will fail if the cluster would need
+to reallocate shards in order to ensure the minimum data availability set
+with <code class="docutils literal"><span class="pre">min_availability</span></code>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Make sure you have enough nodes and enough disk space for the
+reallocation.</p>
+</div>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-graceful-stop-timeout">
+<dt><strong>cluster.graceful_stop.timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">2h</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p>Defines the maximum waiting time in milliseconds for the reallocation process
+to finish. The <code class="docutils literal"><span class="pre">force</span></code> setting will define the behaviour when the shutdown
+process runs into this timeout.</p>
+<p class="last">The timeout expects a time value either as a long or double or alternatively
+as a string literal with a time suffix (<code class="docutils literal"><span class="pre">ms</span></code>, <code class="docutils literal"><span class="pre">s</span></code>, <code class="docutils literal"><span class="pre">m</span></code>, <code class="docutils literal"><span class="pre">h</span></code>, <code class="docutils literal"><span class="pre">d</span></code>,
+<code class="docutils literal"><span class="pre">w</span></code>).</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-graceful-stop-force">
+<dt><strong>cluster.graceful_stop.force</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">false</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines whether <code class="docutils literal"><span class="pre">graceful</span> <span class="pre">stop</span></code> should force stopping of the node if it
+runs into the timeout which is specified with the
+<a class="reference internal" href="#cluster-graceful-stop-timeout">cluster.graceful_stop.timeout</a> setting.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="bulk-operations">
+<span id="conf-bulk-operations"></span><h2><a class="toc-backref" href="#id6">Bulk Operations</a><a class="headerlink" href="#bulk-operations" title="Permalink to this headline">¶</a></h2>
+<p>SQL DML Statements involving a huge amount of rows like <a class="reference internal" href="../sql/statements/copy-from.html#copy-from"><span class="std std-ref">COPY FROM</span></a>,
+<a class="reference internal" href="../sql/statements/insert.html#ref-insert"><span class="std std-ref">INSERT</span></a> or <a class="reference internal" href="../sql/statements/update.html#ref-update"><span class="std std-ref">UPDATE</span></a> can take an enormous amount of time and
+resources. The following settings change the behaviour of those queries.</p>
+<dl class="docutils" id="bulk-request-timeout">
+<dt><strong>bulk.request_timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em> <code class="docutils literal"><span class="pre">1m</span></code></div>
+<div class="line"><em>Runtime:</em> <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the timeout of internal shard-based requests involved in the
+execution of SQL DML Statements over a huge amount of rows.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="discovery">
+<span id="conf-discovery"></span><h2><a class="toc-backref" href="#id7">Discovery</a><a class="headerlink" href="#discovery" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="discovery-zen-minimum-master-nodes">
+<dt><strong>discovery.zen.minimum_master_nodes</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">1</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Set to ensure a node sees N other master eligible nodes to be considered
+operational within the cluster. It&#8217;s recommended to set it to a higher value
+than 1 when running more than 2 nodes in the cluster.</p>
+</dd>
+</dl>
+<dl class="docutils" id="discovery-zen-ping-timeout">
+<dt><strong>discovery.zen.ping_timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">3s</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Set the time to wait for ping responses from other nodes when discovering.
+Set this option to a higher value on a slow or congested network to minimize
+discovery failures.</p>
+</dd>
+</dl>
+<dl class="docutils" id="discovery-zen-publish-timeout">
+<dt><strong>discovery.zen.publish_timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">30s</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Time a node is waiting for responses from other nodes to a published cluster
+state.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Multicast used to be an option for node discovery, but was deprecated in
+CrateDB 1.0.3 and removed in CrateDB 1.1.</p>
+</div>
+<div class="section" id="unicast-host-discovery">
+<span id="conf-host-discovery"></span><h3><a class="toc-backref" href="#id8">Unicast Host Discovery</a><a class="headerlink" href="#unicast-host-discovery" title="Permalink to this headline">¶</a></h3>
+<p>CrateDB has built-in support for several different mechanisms of node
+discovery. The simplest mechanism is to specify a list of hosts in the
+configuration file.</p>
+<dl class="docutils">
+<dt><strong>discovery.zen.ping.unicast.hosts</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">not</span> <span class="pre">set</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+</dd>
+</dl>
+<p>Currently there are two other discovery types: via DNS and via EC2 API.</p>
+<p>When a node starts up with one of these discovery types enabled, it performs a
+lookup using the settings for the specified mechanism listed below. The hosts
+and ports retrieved from the mechanism will be used to generate a list of
+unicast hosts for node discovery.</p>
+<p>The same lookup is also performed by all nodes in a cluster whenever the master
+is re-elected (see <cite>Cluster Meta Data</cite>).</p>
+<dl class="docutils">
+<dt><strong>discovery.type</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">not</span> <span class="pre">set</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">no</span></code></div>
+<div class="line"><em>Allowed Values:</em>  <code class="docutils literal"><span class="pre">zen</span></code>, <code class="docutils literal"><span class="pre">ec2</span></code></div>
+</div>
+</dd>
+<dt><strong>discovery.zen.hosts_provider</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">not</span> <span class="pre">set</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">no</span></code></div>
+<div class="line"><em>Allowed Values:</em> <code class="docutils literal"><span class="pre">srv</span></code>, <code class="docutils literal"><span class="pre">azure</span></code></div>
+</div>
+</dd>
+</dl>
+<p>See also: <a class="reference internal" href="#discovery">Discovery</a>.</p>
+<div class="section" id="discovery-via-dns">
+<span id="conf-dns-discovery"></span><h4><a class="toc-backref" href="#id9">Discovery via DNS</a><a class="headerlink" href="#discovery-via-dns" title="Permalink to this headline">¶</a></h4>
+<p>Crate has built-in support for discovery via DNS. To enable DNS discovery the
+<code class="docutils literal"><span class="pre">discovery.zen.hosts_provider</span></code> setting needs to be set to <code class="docutils literal"><span class="pre">srv</span></code>.</p>
+<p>The order of the unicast hosts is defined by the priority, weight and name of
+each host defined in the SRV record. For example:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>_crate._srv.example.com. <span class="m">3600</span> IN SRV <span class="m">2</span> <span class="m">20</span> <span class="m">4300</span> crate1.example.com.
+_crate._srv.example.com. <span class="m">3600</span> IN SRV <span class="m">1</span> <span class="m">10</span> <span class="m">4300</span> crate2.example.com.
+_crate._srv.example.com. <span class="m">3600</span> IN SRV <span class="m">2</span> <span class="m">10</span> <span class="m">4300</span> crate3.example.com.
+</pre></div>
+</div>
+<p>would result in a list of discovery nodes ordered like:</p>
+<div class="highlight-sh"><div class="highlight"><pre><span></span>crate2.example.com:4300, crate3.example.com:4300, crate1.example.com:4300
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>discovery.srv.query</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The DNS query that is used to look up SRV records, usually in the format
+<code class="docutils literal"><span class="pre">_service._protocol.fqdn</span></code> If not set, the service discovery will not be
+able to look up any SRV records.</p>
+</dd>
+<dt><strong>discovery.srv.resolver</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>The hostname or IP of the DNS server used to resolve DNS records. If this is
+not set, or the specified hostname/IP is not resolvable, the default (system)
+resolver is used.</p>
+<p class="last">Optionally a custom port can be specified using the format <code class="docutils literal"><span class="pre">hostname:port</span></code>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="discovery-on-amazon-ec2">
+<span id="conf-ec2-discovery"></span><h4><a class="toc-backref" href="#id10">Discovery on Amazon EC2</a><a class="headerlink" href="#discovery-on-amazon-ec2" title="Permalink to this headline">¶</a></h4>
+<p>CrateDB has built-in support for discovery via the EC2 API. To enable EC2
+discovery the <code class="docutils literal"><span class="pre">discovery.type</span></code> setting needs to be set to <code class="docutils literal"><span class="pre">ec2</span></code>.</p>
+<dl class="docutils">
+<dt><strong>cloud.aws.access_key</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The access key ID to identify the API calls.</p>
+</dd>
+<dt><strong>cloud.aws.secret_key</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The secret key to identify the API calls.</p>
+</dd>
+</dl>
+<p>Note that the AWS credentials can also be provided by environment variables
+<code class="docutils literal"><span class="pre">AWS_ACCESS_KEY_ID</span></code> and <code class="docutils literal"><span class="pre">AWS_SECRET_KEY</span></code> or via system properties
+<code class="docutils literal"><span class="pre">aws.accessKeyId</span></code> and <code class="docutils literal"><span class="pre">aws.secretKey</span></code>.</p>
+<p>Following settings control the discovery:</p>
+<dl class="docutils" id="discovery-ec2-groups">
+<dt><strong>discovery.ec2.groups</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">A list of security groups; either by ID or name. Only instances with the
+given group will be used for unicast host discovery.</p>
+</dd>
+<dt><strong>discovery.ec2.any_group</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">true</span></code></div>
+</div>
+<p class="last">Defines whether all (<code class="docutils literal"><span class="pre">false</span></code>) or just any (<code class="docutils literal"><span class="pre">true</span></code>) security group must
+be present for the instance to be used for discovery.</p>
+</dd>
+</dl>
+<dl class="docutils" id="discovery-ec2-host-type">
+<dt><strong>discovery.ec2.host_type</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">private_ip</span></code></div>
+<div class="line"><em>Allowed Values:</em>  <code class="docutils literal"><span class="pre">private_ip</span></code>, <code class="docutils literal"><span class="pre">public_ip</span></code>, <code class="docutils literal"><span class="pre">private_dns</span></code>, <code class="docutils literal"><span class="pre">public_dns</span></code></div>
+</div>
+<p class="last">Defines via which host type to communicate with other instances.</p>
+</dd>
+</dl>
+<dl class="docutils" id="discovery-ec2-zones">
+<dt><strong>discovery.ec2.availability_zones</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">A list of availability zones. Only instances within the given availability
+zone will be used for unicast host discovery.</p>
+</dd>
+</dl>
+<dl class="docutils" id="discovery-ec2-tags">
+<dt><strong>discovery.ec2.tag.&lt;name&gt;</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>EC2 instances for discovery can also be filtered by tags using the
+<code class="docutils literal"><span class="pre">discovery.ec2.tag.</span></code> prefix plus the tag name.</p>
+<p class="last">E.g. to filter instances that have the <code class="docutils literal"><span class="pre">environment</span></code> tags with the value
+<code class="docutils literal"><span class="pre">dev</span></code> your setting will look like: <code class="docutils literal"><span class="pre">discovery.ec2.tag.environment:</span> <span class="pre">dev</span></code>.</p>
+</dd>
+<dt><strong>cloud.aws.ec2.endpoint</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">If you have your own compatible implementation of the EC2 API service you can
+set the enpoint that should be used.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="discovery-on-microsoft-azure">
+<span id="conf-azure-discovery"></span><h4><a class="toc-backref" href="#id11">Discovery on Microsoft Azure</a><a class="headerlink" href="#discovery-on-microsoft-azure" title="Permalink to this headline">¶</a></h4>
+<p>CrateDB has built-in support for discovery via the Azure Virtual Machine API.
+To enable Azure discovery set the <code class="docutils literal"><span class="pre">discovery.zen.hosts_provider</span></code> setting to <code class="docutils literal"><span class="pre">azure</span></code>.</p>
+<dl class="docutils">
+<dt><strong>cloud.azure.management.resourcegroup.name</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>The name of the resource group the CrateDB cluster is running on.</p>
+<p class="last">All nodes need to be started within the same resource group.</p>
+</dd>
+<dt><strong>cloud.azure.management.subscription.id</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>The subscription ID of your Azure account.</p>
+<p class="last">You can find the ID on the <a class="reference external" href="https://portal.azure.com">Azure Portal</a>.</p>
+</dd>
+<dt><strong>cloud.azure.management.tenant.id</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The tenant ID of the <a class="reference external" href="https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/#_create-ad-application-with-password">Active Directory application</a>.</p>
+</dd>
+<dt><strong>cloud.azure.management.app.id</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The application ID of the <a class="reference external" href="https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/#_create-ad-application-with-password">Active Directory application</a>.</p>
+</dd>
+<dt><strong>cloud.azure.management.app.secret</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The password of the <a class="reference external" href="https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal-cli/#_create-ad-application-with-password">Active Directory application</a>.</p>
+</dd>
+<dt><strong>discovery.azure.method</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em> <code class="docutils literal"><span class="pre">no</span></code></div>
+<div class="line"><em>Default:</em> <code class="docutils literal"><span class="pre">vnet</span></code></div>
+<div class="line"><em>Allowed Values:</em> <code class="docutils literal"><span class="pre">vnet</span> <span class="pre">|</span> <span class="pre">subnet</span></code></div>
+</div>
+<p class="last">Defines the scope of the discovery. <code class="docutils literal"><span class="pre">vnet</span></code> will discover all VMs within the
+same virtual network (default), <code class="docutils literal"><span class="pre">subnet</span></code> will discover all VMs within the
+same subnet of the CrateDB instance.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="section" id="routing-allocation">
+<span id="conf-routing"></span><h2><a class="toc-backref" href="#id12">Routing Allocation</a><a class="headerlink" href="#routing-allocation" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="cluster-routing-allocation-enable">
+<dt><strong>cluster.routing.allocation.enable</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">all</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+<div class="line"><em>Allowed Values:</em> <code class="docutils literal"><span class="pre">all</span> <span class="pre">|</span> <span class="pre">none</span> <span class="pre">|</span> <span class="pre">primaries</span> <span class="pre">|</span> <span class="pre">new_primaries</span></code></div>
+</div>
+<p><code class="docutils literal"><span class="pre">all</span></code> allows all shard allocations, the cluster can allocate all kinds of
+shards.</p>
+<p><code class="docutils literal"><span class="pre">none</span></code> allows no shard allocations at all. No shard will be moved or
+created.</p>
+<p><code class="docutils literal"><span class="pre">primaries</span></code> only primaries can be moved or created. This includes existing
+primary shards.</p>
+<p class="last"><code class="docutils literal"><span class="pre">new_primaries</span></code> allows allocations for new primary shards only. This means
+that for example a newly added node will not allocate any replicas. However
+it is still possible to allocate new primary shards for new indices. Whenever
+you want to perform a zero downtime upgrade of your cluster you need to set
+this value before gracefully stopping the first node and reset it to <code class="docutils literal"><span class="pre">all</span></code>
+after starting the last updated node.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This allocation setting has no effect on recovery of primary shards! Even
+when <code class="docutils literal"><span class="pre">cluster.routing.allocation.enable</span></code> is set to <code class="docutils literal"><span class="pre">none</span></code>, nodes will
+recover their unassigned local primary shards immediatelly after restart, in
+case the <code class="docutils literal"><span class="pre">recovery.initial_shards</span></code> setting is satisfied.</p>
+</div>
+<dl class="docutils" id="cluster-routing-rebalance-enable">
+<dt><strong>cluster.routing.rebalance.enable</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">all</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+<div class="line"><em>Allowed Values:</em> <code class="docutils literal"><span class="pre">all</span> <span class="pre">|</span> <span class="pre">none</span> <span class="pre">|</span> <span class="pre">primaries</span> <span class="pre">|</span> <span class="pre">replicas</span></code></div>
+</div>
+<p>Enables/Disables rebalancing for different types of shards.</p>
+<p><code class="docutils literal"><span class="pre">all</span></code> allows shard rebalancing for all types of shards.</p>
+<p><code class="docutils literal"><span class="pre">none</span></code> disables shard rebalancing for any types.</p>
+<p><code class="docutils literal"><span class="pre">primaries</span></code> allows shard rebalancing only for primary shards.</p>
+<p class="last"><code class="docutils literal"><span class="pre">replicas</span></code> allows shard rebalancing only for replica shards.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-allow-rebalance">
+<dt><strong>cluster.routing.allocation.allow_rebalance</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">indices_all_active</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+<div class="line"><em>Allowed Values:</em> <code class="docutils literal"><span class="pre">always</span> <span class="pre">|</span> <span class="pre">indices_primary_active</span> <span class="pre">|</span> <span class="pre">indices_all_active</span></code></div>
+</div>
+<p class="last">Allow to control when rebalancing will happen based on the total state of all
+the indices shards in the cluster. Defaulting to <code class="docutils literal"><span class="pre">indices_all_active</span></code> to
+reduce chatter during initial recovery.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-cluster-concurrent-rebalance">
+<dt><strong>cluster.routing.allocation.cluster_concurrent_rebalance</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">2</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Define how many concurrent rebalancing tasks are allowed cluster wide.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-node-initial-primaries-recoveries">
+<dt><strong>cluster.routing.allocation.node_initial_primaries_recoveries</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">4</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Define the number of initial recoveries of primaries that are allowed per
+node. Since most times local gateway is used, those should be fast and we can
+handle more of those per node without creating load.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-node-concurrent-recoveries">
+<dt><strong>cluster.routing.allocation.node_concurrent_recoveries</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">2</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">How many concurrent recoveries are allowed to happen on a node.</p>
+</dd>
+</dl>
+<div class="section" id="awareness">
+<span id="conf-routing-allocation-awareness"></span><h3><a class="toc-backref" href="#id13">Awareness</a><a class="headerlink" href="#awareness" title="Permalink to this headline">¶</a></h3>
+<p>Cluster allocation awareness allows to configure shard and replicas allocation
+across generic attributes associated with nodes.</p>
+<dl class="docutils" id="cluster-routing-allocation-awareness-attributes">
+<dt><strong>cluster.routing.allocation.awareness.attributes</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p>Define node attributes which will be used to do awareness based on the
+allocation of a shard and its replicas. For example, let&#8217;s say we have
+defined an attribute <code class="docutils literal"><span class="pre">rack_id</span></code> and we start 2 nodes with
+<code class="docutils literal"><span class="pre">node.attr.rack_id</span></code> set to rack_one, and deploy a single table with 5
+shards and 1 replica. The table will be fully deployed on the current nodes
+(5 shards and 1 replica each, total of 10 shards).</p>
+<p>Now, if we start two more nodes, with <code class="docutils literal"><span class="pre">node.attr.rack_id</span></code> set to rack_two,
+shards will relocate to even the number of shards across the nodes, but a
+shard and its replica will not be allocated in the same rack_id value.</p>
+<p class="last">The awareness attributes can hold several values</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-awareness-force-values">
+<dt><strong>cluster.routing.allocation.awareness.force.*.values</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">Attributes on which shard allocation will be forced. <code class="docutils literal"><span class="pre">*</span></code> is a placeholder
+for the awareness attribute, which can be defined using the
+<a class="reference internal" href="#cluster-routing-allocation-awareness-attributes">cluster.routing.allocation.awareness.attributes</a> setting. Let&#8217;s say we
+configured an awareness attribute <code class="docutils literal"><span class="pre">zone</span></code> and the values <code class="docutils literal"><span class="pre">zone1,</span> <span class="pre">zone2</span></code>
+here, start 2 nodes with <code class="docutils literal"><span class="pre">node.attr.zone</span></code> set to <code class="docutils literal"><span class="pre">zone1</span></code> and create a
+table with 5 shards and 1 replica. The table will be created, but only 5
+shards will be allocated (with no replicas). Only when we start more shards
+with <code class="docutils literal"><span class="pre">node.attr.zone</span></code> set to <code class="docutils literal"><span class="pre">zone2</span></code> the replicas will be allocated.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="balanced-shards">
+<h3><a class="toc-backref" href="#id14">Balanced Shards</a><a class="headerlink" href="#balanced-shards" title="Permalink to this headline">¶</a></h3>
+<p>All these values are relative to one another. The first three are used to
+compose a three separate weighting functions into one. The cluster is balanced
+when no allowed action can bring the weights of each node closer together by
+more then the fourth setting. Actions might not be allowed, for instance, due
+to forced awareness or allocation filtering.</p>
+<dl class="docutils" id="cluster-routing-allocation-balance-shard">
+<dt><strong>cluster.routing.allocation.balance.shard</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">0.45f</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the weight factor for shards allocated on a node (float). Raising
+this raises the tendency to equalize the number of shards across all nodes in
+the cluster.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-balance-index">
+<dt><strong>cluster.routing.allocation.balance.index</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">0.55f</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines a factor to the number of shards per index allocated on a specific
+node (float). Increasing this value raises the tendency to equalize the
+number of shards per index across all nodes in the cluster.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-balance-threshold">
+<dt><strong>cluster.routing.allocation.balance.threshold</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">1.0f</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Minimal optimization value of operations that should be performed (non
+negative float). Increasing this value will cause the cluster to be less
+aggressive about optimising the shard balance.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="cluster-wide-allocation-filtering">
+<h3><a class="toc-backref" href="#id15">Cluster-Wide Allocation Filtering</a><a class="headerlink" href="#cluster-wide-allocation-filtering" title="Permalink to this headline">¶</a></h3>
+<p>Allow to control the allocation of all shards based on include/exclude filters.</p>
+<p>E.g. this could be used to allocate all the new shards on the nodes with
+specific IP addresses or custom attributes.</p>
+<dl class="docutils" id="cluster-routing-allocation-include">
+<dt><strong>cluster.routing.allocation.include.*</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">Place new shards only on nodes where one of the specified values matches the
+attribute. e.g.: cluster.routing.allocation.include.zone: &#8220;zone1,zone2&#8221;</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-exclude">
+<dt><strong>cluster.routing.allocation.exclude.*</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">Place new shards only on nodes where none of the specified values matches the
+attribute. e.g.: cluster.routing.allocation.exclude.zone: &#8220;zone1&#8221;</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-require">
+<dt><strong>cluster.routing.allocation.require.*</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">Used to specify a number of rules, which all MUST match for a node in order
+to allocate a shard on it. This is in contrast to include which will include
+a node if ANY rule matches.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="disk-based-shard-allocation">
+<h3><a class="toc-backref" href="#id16">Disk-based Shard Allocation</a><a class="headerlink" href="#disk-based-shard-allocation" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils" id="cluster-routing-allocation-disk-threshold-enabled">
+<dt><strong>cluster.routing.allocation.disk.threshold_enabled</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">true</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Prevent shard allocation on nodes depending of the disk usage.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-disk-watermark-low">
+<dt><strong>cluster.routing.allocation.disk.watermark.low</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">85%</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the lower disk threshold limit for shard allocations. New shards will
+not be allocated on nodes with disk usage greater than this value. It can
+also be set to an absolute bytes value (like e.g. <code class="docutils literal"><span class="pre">500mb</span></code>) to prevent the
+cluster from allocating new shards on node with less free disk space than
+this value.</p>
+</dd>
+</dl>
+<dl class="docutils" id="cluster-routing-allocation-disk-watermark-high">
+<dt><strong>cluster.routing.allocation.disk.watermark.high</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">90%</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the higher disk threshold limit for shard allocations. The cluster
+will attempt to relocate existing shards to another node if the disk usage on
+a node rises above this value. It can also be set to an absolute bytes value
+(like e.g. <code class="docutils literal"><span class="pre">500mb</span></code>) to relocate shards from nodes with less free disk space
+than this value.</p>
+</dd>
+</dl>
+<p>By default, the cluster will retrieve information about the disk usage of the
+nodes every 30 seconds. This can also be changed by setting the
+<a class="reference internal" href="#cluster-info-update-interval">cluster.info.update.interval</a> setting.</p>
+</div>
+</div>
+<div class="section" id="recovery">
+<h2><a class="toc-backref" href="#id17">Recovery</a><a class="headerlink" href="#recovery" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="indices-recovery-max-bytes-per-sec">
+<dt><strong>indices.recovery.max_bytes_per_sec</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">40mb</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Specifies the maximum number of bytes that can be transferred during shard
+recovery per seconds. Limiting can be disabled by setting it to <code class="docutils literal"><span class="pre">0</span></code>. This
+setting allows to control the network usage of the recovery process. Higher
+values may result in higher network utilization, but also faster recovery
+process.</p>
+</dd>
+</dl>
+<dl class="docutils" id="indices-recovery-retry-delay-state-sync">
+<dt><strong>indices.recovery.retry_delay_state_sync</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">500ms</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the time to wait after an issue caused by cluster state syncing
+before retrying to recover.</p>
+</dd>
+</dl>
+<dl class="docutils" id="indices-recovery-retry-delay-network">
+<dt><strong>indices.recovery.retry_delay_network</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">5s</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the time to wait after an issue caused by the network before retrying
+to recover.</p>
+</dd>
+</dl>
+<dl class="docutils" id="indices-recovery-internal-action-timeout">
+<dt><strong>indices.recovery.internal_action_timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">15m</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the timeout for internal requests made as part of the recovery.</p>
+</dd>
+</dl>
+<dl class="docutils" id="indices-recovery-internal-action-long-timeout">
+<dt><strong>indices.recovery.internal_action_long_timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">30m</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines the timeout for internal requests made as part of the recovery that
+are expected to take a long time. Defaults to twice
+<a class="reference internal" href="#indices-recovery-internal-action-timeout"><span class="std std-ref">internal_action_timeout</span></a>.</p>
+</dd>
+</dl>
+<dl class="docutils" id="indices-recovery-recovery-activity-timeout">
+<dt><strong>indices.recovery.recovery_activity_timeout</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">30m</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Recoveries that don&#8217;t show any activity for more then this interval will
+fail. Defaults to <a class="reference internal" href="#indices-recovery-internal-action-long-timeout"><span class="std std-ref">internal_action_long_timeout</span></a>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="store-level-throttling">
+<span id="indices-store-throttle"></span><h2><a class="toc-backref" href="#id18">Store Level Throttling</a><a class="headerlink" href="#store-level-throttling" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="indices-store-throttle-type">
+<dt><strong>indices.store.throttle.type</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">none</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+<div class="line"><em>Allowed Values:</em>  <code class="docutils literal"><span class="pre">all</span> <span class="pre">|</span> <span class="pre">merge</span> <span class="pre">|</span> <span class="pre">none</span></code></div>
+</div>
+<p class="last">Allows to throttle <code class="docutils literal"><span class="pre">merge</span></code> (or <code class="docutils literal"><span class="pre">all</span></code>) processes of the store module.</p>
+</dd>
+</dl>
+<dl class="docutils" id="indices-store-throttle-max-bytes-per-sec">
+<dt><strong>indices.store.throttle.max_bytes_per_sec</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">0b</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">If throttling is enabled by <a class="reference internal" href="#indices-store-throttle-type">indices.store.throttle.type</a>, this setting
+specifies the maximum bytes per second a store module process can operate
+with.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="query-circuit-breaker">
+<h2><a class="toc-backref" href="#id19">Query Circuit Breaker</a><a class="headerlink" href="#query-circuit-breaker" title="Permalink to this headline">¶</a></h2>
+<p>The Query circuit breaker will keep track of the used memory during the
+execution of a query. If a query consumes too much memory or if the cluster is
+already near its memory limit it will terminate the query to ensure the cluster
+keeps working.</p>
+<dl class="docutils">
+<dt><strong>indices.breaker.query.limit</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">60%</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Specifies the limit for the query breaker. Provided values can either be
+absolute values (intepreted as a number of bytes), byte sizes (eg. 1mb) or
+percentage of the heap size (eg. 12%). A value of <code class="docutils literal"><span class="pre">-1</span></code> disables breaking
+the circuit while still accounting memory usage.</p>
+</dd>
+<dt><strong>indices.breaker.query.overhead</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">1.09</span></code></div>
+<div class="line"><em>Runtime:</em>   <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">A constant that all data estimations are multiplied with to determine a final
+estimation.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="field-data-circuit-breaker">
+<h2><a class="toc-backref" href="#id20">Field Data Circuit Breaker</a><a class="headerlink" href="#field-data-circuit-breaker" title="Permalink to this headline">¶</a></h2>
+<p>The field data circuit breaker allows estimation of needed heap memory required
+for loading field data into memory. If a certain limit is reached an exception
+is raised.</p>
+<dl class="docutils">
+<dt><strong>indices.breaker.fielddata.limit</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">60%</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Specifies the JVM heap limit for the fielddata breaker.</p>
+</dd>
+<dt><strong>indices.breaker.fielddata.overhead</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">1.03</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">A constant that all field data estimations are multiplied with to determine a
+final estimation.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="request-circuit-breaker">
+<h2><a class="toc-backref" href="#id21">Request Circuit Breaker</a><a class="headerlink" href="#request-circuit-breaker" title="Permalink to this headline">¶</a></h2>
+<p>The request circuit breaker allows an estimation of required heap memory per
+request. If a single request exceeds the specified amount of memory, an
+exception is raised.</p>
+<dl class="docutils">
+<dt><strong>indices.breaker.request.limit</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">60%</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Specifies the JVM heap limit for the request circuit breaker.</p>
+</dd>
+<dt><strong>indices.breaker.request.overhead</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">1.0</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">A constant that all request estimations are multiplied with to determine a
+final estimation.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="thread-pools">
+<h2><a class="toc-backref" href="#id22">Thread Pools</a><a class="headerlink" href="#thread-pools" title="Permalink to this headline">¶</a></h2>
+<p>Every node holds several thread pools to improve how threads are managed within
+a node. There are several pools, but the important ones include:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">index</span></code>: For index/delete operations, defaults to fixed</li>
+<li><code class="docutils literal"><span class="pre">search</span></code>: For count/search operations, defaults to fixed</li>
+<li><code class="docutils literal"><span class="pre">get</span></code>: For queries that are optimized to do a direct lookup by primary key,
+defaults to fixed</li>
+<li><code class="docutils literal"><span class="pre">bulk</span></code>: For bulk operations, defaults to fixed</li>
+<li><code class="docutils literal"><span class="pre">refresh</span></code>: For refresh operations, defaults to cache</li>
+</ul>
+<dl class="docutils">
+<dt><strong>thread_pool.&lt;name&gt;.type</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+<div class="line"><em>Allowed Values:</em> <code class="docutils literal"><span class="pre">fixed</span> <span class="pre">|</span> <span class="pre">cache</span></code></div>
+</div>
+<p><code class="docutils literal"><span class="pre">fixed</span></code> holds a fixed size of threads to handle the requests. It also has a
+queue for pending requests if no threads are available.</p>
+<p class="last"><code class="docutils literal"><span class="pre">cache</span></code> will spawn a thread if there are pending requests (unbounded).</p>
+</dd>
+</dl>
+<div class="section" id="settings-for-fixed-thread-pools">
+<h3><a class="toc-backref" href="#id23">Settings for fixed thread pools</a><a class="headerlink" href="#settings-for-fixed-thread-pools" title="Permalink to this headline">¶</a></h3>
+<p>If the type of a thread pool is set to <code class="docutils literal"><span class="pre">fixed</span></code> there are a few optional
+settings.</p>
+<dl class="docutils">
+<dt><strong>thread_pool.&lt;name&gt;.size</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">Number of threads. The default size of the different thread pools depend on
+the number of available CPU cores.</p>
+</dd>
+<dt><strong>thread_pool.&lt;name&gt;.queue_size</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default index:</em>  <code class="docutils literal"><span class="pre">200</span></code></div>
+<div class="line"><em>Default search:</em> <code class="docutils literal"><span class="pre">1000</span></code></div>
+<div class="line"><em>Default get:</em> <code class="docutils literal"><span class="pre">1000</span></code></div>
+<div class="line"><em>Default bulk:</em> <code class="docutils literal"><span class="pre">50</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">Size of the queue for pending requests. A value of <code class="docutils literal"><span class="pre">-1</span></code> sets it to
+unbounded.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="metadata">
+<h2><a class="toc-backref" href="#id24">Metadata</a><a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils" id="cluster-info-update-interval">
+<dt><strong>cluster.info.update.interval</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>  <code class="docutils literal"><span class="pre">30s</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">yes</span></code></div>
+</div>
+<p class="last">Defines how often the cluster collect metadata information (e.g. disk usages
+etc.) if no concrete  event is triggered.</p>
+</dd>
+</dl>
+<div class="section" id="metadata-gateway">
+<span id="id1"></span><h3><a class="toc-backref" href="#id25">Metadata Gateway</a><a class="headerlink" href="#metadata-gateway" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>The gateway persists cluster meta data on disk every time the meta data
+changes. This data is stored persistently across full cluster restarts and
+recovered after nodes are started again.</div></blockquote>
+<dl class="docutils" id="gateway-expected-nodes">
+<dt><strong>gateway.expected_nodes</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">-1</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The setting <code class="docutils literal"><span class="pre">gateway.expected_nodes</span></code> defines the number of nodes that
+should be waited for until the cluster state is recovered immediately. The
+value of the setting should be equal to the number of nodes in the cluster,
+because you only want the cluster state to be recovered after all nodes are
+started.</p>
+</dd>
+</dl>
+<dl class="docutils" id="gateway-recover-after-time">
+<dt><strong>gateway.recover_after_time</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">0ms</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The <code class="docutils literal"><span class="pre">gateway.recover_after_time</span></code> setting defines the time to wait before
+starting starting the recovery once the number of nodes defined in
+<code class="docutils literal"><span class="pre">gateway.recover_after_nodes</span></code> are started. The setting is relevant if
+<code class="docutils literal"><span class="pre">gateway.recover_after_nodes</span></code> is less than <code class="docutils literal"><span class="pre">gateway.expected_nodes</span></code>.</p>
+</dd>
+</dl>
+<dl class="docutils" id="gateway-recover-after-nodes">
+<dt><strong>gateway.recover_after_nodes</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Default:</em>   <code class="docutils literal"><span class="pre">-1</span></code></div>
+<div class="line"><em>Runtime:</em>  <code class="docutils literal"><span class="pre">no</span></code></div>
+</div>
+<p class="last">The <code class="docutils literal"><span class="pre">gateway.recover_after_nodes</span></code> setting defines the number of nodes that
+need to be started before the cluster state recovery will start. Ideally the
+value of the setting should be equal to the number of nodes in the cluster,
+because you only want the cluster state to be recovered once all nodes are
+started. However, the value must be bigger than the half of the expected
+number of nodes in the cluster.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>
