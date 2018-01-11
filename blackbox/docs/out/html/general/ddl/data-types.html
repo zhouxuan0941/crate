@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data Types &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../../index.html" />
+    <link rel="up" title="Data Definition" href="index.html" />
+    <link rel="next" title="System Columns" href="system-columns.html" />
+    <link rel="prev" title="Creating Tables" href="create-table.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">General Use</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Definition</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="create-table.html">Creating Tables</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="data-types">
+<span id="id1"></span><h1>Data Types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h1>
+<p>Data can be stored in different formats. CrateDB has different types that can
+be specified if a table is created using the the <a class="reference internal" href="../../sql/statements/create-table.html#ref-create-table"><span class="std std-ref">CREATE TABLE</span></a>
+statement. Data types play a central role as they limit what kind of data can
+be inserted, how it is stored and they also influence the behaviour when the
+records are queried.</p>
+<p>Data type names are reserved words and need to be escaped when used as column
+names.</p>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#classification" id="id4">Classification</a><ul>
+<li><a class="reference internal" href="#primitive-types" id="id5">Primitive Types</a></li>
+<li><a class="reference internal" href="#geographic-types" id="id6">Geographic Types</a></li>
+<li><a class="reference internal" href="#compound-types" id="id7">Compound Types</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#boolean" id="id8"><code class="docutils literal"><span class="pre">boolean</span></code></a></li>
+<li><a class="reference internal" href="#string" id="id9"><code class="docutils literal"><span class="pre">string</span></code></a></li>
+<li><a class="reference internal" href="#numeric-types" id="id10">Numeric Types</a><ul>
+<li><a class="reference internal" href="#special-floating-point-values" id="id11">Special Floating Point Values</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ip" id="id12"><code class="docutils literal"><span class="pre">ip</span></code></a></li>
+<li><a class="reference internal" href="#timestamp" id="id13"><code class="docutils literal"><span class="pre">timestamp</span></code></a></li>
+<li><a class="reference internal" href="#geo-point" id="id14"><code class="docutils literal"><span class="pre">geo_point</span></code></a></li>
+<li><a class="reference internal" href="#geo-shape" id="id15"><code class="docutils literal"><span class="pre">geo_shape</span></code></a><ul>
+<li><a class="reference internal" href="#definition" id="id16">Definition</a></li>
+<li><a class="reference internal" href="#geo-shape-index-structure" id="id17">Geo Shape Index Structure</a></li>
+<li><a class="reference internal" href="#representation" id="id18">Representation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#object" id="id19"><code class="docutils literal"><span class="pre">object</span></code></a><ul>
+<li><a class="reference internal" href="#strict" id="id20"><code class="docutils literal"><span class="pre">strict</span></code></a></li>
+<li><a class="reference internal" href="#dynamic" id="id21"><code class="docutils literal"><span class="pre">dynamic</span></code></a></li>
+<li><a class="reference internal" href="#ignored" id="id22"><code class="docutils literal"><span class="pre">ignored</span></code></a></li>
+<li><a class="reference internal" href="#object-literals" id="id23">Object Literals</a><ul>
+<li><a class="reference internal" href="#examples" id="id24">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#array" id="id25"><code class="docutils literal"><span class="pre">array</span></code></a><ul>
+<li><a class="reference internal" href="#array-constructor" id="id26">Array Constructor</a><ul>
+<li><a class="reference internal" href="#id2" id="id27">Examples</a></li>
+<li><a class="reference internal" href="#array-representation" id="id28">Array Representation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#type-conversion" id="id29">Type Conversion</a><ul>
+<li><a class="reference internal" href="#cast" id="id30"><code class="docutils literal"><span class="pre">CAST</span></code></a></li>
+<li><a class="reference internal" href="#try-cast" id="id31"><code class="docutils literal"><span class="pre">TRY_CAST</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="classification">
+<h2><a class="toc-backref" href="#id4">Classification</a><a class="headerlink" href="#classification" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="primitive-types">
+<span id="sql-ddl-datatypes-primitives"></span><h3><a class="toc-backref" href="#id5">Primitive Types</a><a class="headerlink" href="#primitive-types" title="Permalink to this headline">¶</a></h3>
+<p>Primitive types represent primitive values.</p>
+<p>These are values that are atomic, not composed of separate parts, no containers
+or collections.</p>
+<ul class="simple">
+<li><a class="reference internal" href="#boolean">boolean</a></li>
+<li><a class="reference internal" href="#numeric-types">byte</a></li>
+<li><a class="reference internal" href="#numeric-types">short</a></li>
+<li><a class="reference internal" href="#numeric-types">integer</a></li>
+<li><a class="reference internal" href="#numeric-types">long</a></li>
+<li><a class="reference internal" href="#numeric-types">float</a></li>
+<li><a class="reference internal" href="#numeric-types">double</a></li>
+<li><a class="reference internal" href="#string">string</a></li>
+<li><a class="reference internal" href="#ip">ip</a></li>
+<li><a class="reference internal" href="#timestamp">timestamp</a></li>
+</ul>
+</div>
+<div class="section" id="geographic-types">
+<span id="sql-ddl-datatypes-geographic"></span><h3><a class="toc-backref" href="#id6">Geographic Types</a><a class="headerlink" href="#geographic-types" title="Permalink to this headline">¶</a></h3>
+<p>Geographic types represent points or shapes in a 2d world:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#geo-point">geo_point</a></li>
+<li><a class="reference internal" href="#geo-shape">geo_shape</a></li>
+</ul>
+</div>
+<div class="section" id="compound-types">
+<span id="sql-ddl-datatypes-compound"></span><h3><a class="toc-backref" href="#id7">Compound Types</a><a class="headerlink" href="#compound-types" title="Permalink to this headline">¶</a></h3>
+<p>Compound types represent values that are composed out of distinct parts like
+containers or collections:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#object">object</a></li>
+<li><a class="reference internal" href="#array">array</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="boolean">
+<h2><a class="toc-backref" href="#id8"><code class="docutils literal"><span class="pre">boolean</span></code></a><a class="headerlink" href="#boolean" title="Permalink to this headline">¶</a></h2>
+<p>A basic boolean type. Accepting <code class="docutils literal"><span class="pre">true</span></code> and <code class="docutils literal"><span class="pre">false</span></code> as values. Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_bool_table</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">first_column</span> <span class="nb">boolean</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="string">
+<span id="data-type-string"></span><h2><a class="toc-backref" href="#id9"><code class="docutils literal"><span class="pre">string</span></code></a><a class="headerlink" href="#string" title="Permalink to this headline">¶</a></h2>
+<p>A text-based basic type containing one or more characters. All unicode
+characters are allowed. Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table2</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">first_column</span> <span class="n">string</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<p>Columns of type string can also be analyzed. See <a class="reference internal" href="fulltext-indices.html#sql-ddl-index-fulltext"><span class="std std-ref">Fulltext Index With Analyzer</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Maximum indexed string length is restricted to 32766 bytes, when encoded
+with UTF-8 unless the string is analyzed using full text or indexing and
+the usage of the <a class="reference internal" href="storage.html#ddl-storage-columnstore"><span class="std std-ref">Column Store</span></a> is disabled.</p>
+</div>
+</div>
+<div class="section" id="numeric-types">
+<h2><a class="toc-backref" href="#id10">Numeric Types</a><a class="headerlink" href="#numeric-types" title="Permalink to this headline">¶</a></h2>
+<p>CrateDB supports a set of numeric types: <code class="docutils literal"><span class="pre">integer</span></code>, <code class="docutils literal"><span class="pre">long</span></code>, <code class="docutils literal"><span class="pre">short</span></code>,
+<code class="docutils literal"><span class="pre">double</span></code>, <code class="docutils literal"><span class="pre">float</span></code> and <code class="docutils literal"><span class="pre">byte</span></code>.</p>
+<p>The <code class="docutils literal"><span class="pre">float</span></code> and <code class="docutils literal"><span class="pre">double</span></code> data types are inexact, variable-precision numeric
+types. It means that these types are stored as an approximation. Therefore,
+storage, calculation, and retrieval of the value will not always result in an
+exact representation of the actual floating-point value.</p>
+<p>For instance, the result of applying <code class="docutils literal"><span class="pre">sum</span></code> or <code class="docutils literal"><span class="pre">avg</span></code> aggregate functions may
+slightly vary between query executions or comparing floating-point values for
+equality might not always be correct.</p>
+<p>All types have the same ranges as corresponding <a class="reference external" href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html">Java types</a>. You can insert
+any number for any type, be it a <code class="docutils literal"><span class="pre">float</span></code>, <code class="docutils literal"><span class="pre">integer</span></code>, or <code class="docutils literal"><span class="pre">byte</span></code> as long as
+its within the corresponding range. Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table3</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">first_column</span> <span class="nb">integer</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">second_column</span> <span class="n">long</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">third_column</span> <span class="n">short</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">fourth_column</span> <span class="k">double</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">fifth_column</span> <span class="k">float</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">sixth_column</span> <span class="n">byte</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="section" id="special-floating-point-values">
+<h3><a class="toc-backref" href="#id11">Special Floating Point Values</a><a class="headerlink" href="#special-floating-point-values" title="Permalink to this headline">¶</a></h3>
+<p>CrateDB conforms to the <a class="reference external" href="http://ieeexplore.ieee.org/document/30711/?arnumber=30711&amp;filter=AND(p_Publication_Number:2355)">IEEE 754</a> standard concerning special values for
+floating point types (<code class="docutils literal"><span class="pre">float</span></code>, <code class="docutils literal"><span class="pre">double</span></code>). This means that it also
+supports  <code class="docutils literal"><span class="pre">NaN</span></code>, <code class="docutils literal"><span class="pre">Infinity</span></code>, <code class="docutils literal"><span class="pre">-Infinity</span></code> (negative infinity), and <code class="docutils literal"><span class="pre">-0</span></code>
+(signed zero).</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="mf">0.0</span> <span class="o">/</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">;</span>
+<span class="go">+-------------+-------------+---------------+</span>
+<span class="go">| (0.0 / 0.0) | (1.0 / 0.0) | (1.0 / - 0.0) |</span>
+<span class="go">+-------------+-------------+---------------+</span>
+<span class="go">| NaN         | Infinity    | -Infinity     |</span>
+<span class="go">+-------------+-------------+---------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>These special numeric values can also be inserted into a column of type
+<code class="docutils literal"><span class="pre">float</span></code> or <code class="docutils literal"><span class="pre">double</span></code> using a <code class="docutils literal"><span class="pre">string</span></code> literal.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">my_table3</span> <span class="p">(</span><span class="n">fourth_column</span><span class="p">,</span> <span class="n">fifth_column</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;NaN&#39;</span><span class="p">,</span> <span class="s1">&#39;Infinity&#39;</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ip">
+<h2><a class="toc-backref" href="#id12"><code class="docutils literal"><span class="pre">ip</span></code></a><a class="headerlink" href="#ip" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">ip</span></code> type allows to store IPv4 and IPv6 addresses by inserting their string
+representation. Internally it maps to a <code class="docutils literal"><span class="pre">long</span></code> allowing expected sorting,
+filtering, and aggregation.</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table_ips</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">fqdn</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">ip_addr</span> <span class="n">ip</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table_ips</span> <span class="p">(</span><span class="n">fqdn</span><span class="p">,</span> <span class="n">ip_addr</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">values</span> <span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">),</span>
+<span class="mf">...</span>        <span class="p">(</span><span class="s1">&#39;router.local&#39;</span><span class="p">,</span> <span class="s1">&#39;0:0:0:0:0:ffff:c0a8:64&#39;</span><span class="p">);</span>
+<span class="go">INSERT OK, 2 rows affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table_ips</span> <span class="p">(</span><span class="n">fqdn</span><span class="p">,</span> <span class="n">ip_addr</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">values</span> <span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="s1">&#39;not.a.real.ip&#39;</span><span class="p">);</span>
+<span class="go">SQLActionException[ColumnValidationException: Validation failed for ip_addr: Cannot cast &#39;not.a.real.ip&#39; to type ip]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="timestamp">
+<h2><a class="toc-backref" href="#id13"><code class="docutils literal"><span class="pre">timestamp</span></code></a><a class="headerlink" href="#timestamp" title="Permalink to this headline">¶</a></h2>
+<p>The timestamp type is a special type which maps to a formatted string.
+Internally it maps to the UTC milliseconds since 1970-01-01T00:00:00Z stored as
+<code class="docutils literal"><span class="pre">long</span></code>. Timestamps are always returned as <code class="docutils literal"><span class="pre">long</span></code> values.</p>
+<p>The default format is <a class="reference external" href="http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateOptionalTimeParser()">dateOptionalTime</a> and cannot be changed currently.</p>
+<p>Formatted date strings containing timezone offset information will be converted
+to UTC.</p>
+<p>Formated string without timezone offset information will be treated as UTC.</p>
+<p>Timestamps will also accept a <code class="docutils literal"><span class="pre">long</span></code> representing UTC milliseconds since the
+epoch or a <code class="docutils literal"><span class="pre">float</span></code> or <code class="docutils literal"><span class="pre">double</span></code> representing UTC seconds since the epoch
+with milliseconds as fractions.</p>
+<p>Due to internal date parsing, not the full <code class="docutils literal"><span class="pre">long</span></code> range is supported for
+timestamp values, but only dates between year <code class="docutils literal"><span class="pre">292275054BC</span></code> and
+<code class="docutils literal"><span class="pre">292278993AD</span></code>, which is slightly smaller.</p>
+<p>Examples:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table4</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">id</span> <span class="nb">integer</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">first_column</span> <span class="nb">timestamp</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table4</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">first_column</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">values</span> <span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="s1">&#39;1970-01-01T00:00:00&#39;</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table4</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">first_column</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">values</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="s1">&#39;1970-01-01T00:00:00+0100&#39;</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table4</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">first_column</span><span class="p">)</span> <span class="k">values</span> <span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="mf">0</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table4</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">first_column</span><span class="p">)</span> <span class="k">values</span> <span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">my_table4</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">first_column</span><span class="p">)</span> <span class="k">values</span> <span class="p">(</span><span class="mf">3</span><span class="p">,</span> <span class="s1">&#39;wrong&#39;</span><span class="p">);</span>
+<span class="go">SQLActionException[ColumnValidationException: Validation failed for first_column: Cannot cast &#39;wrong&#39; to type timestamp]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When inserting timestamps smaller than <code class="docutils literal"><span class="pre">-999999999999999</span></code> (equals to
+<code class="docutils literal"><span class="pre">-29719-04-05T22:13:20.001Z</span></code>) or bigger than <code class="docutils literal"><span class="pre">999999999999999</span></code> (equals to
+<code class="docutils literal"><span class="pre">33658-09-27T01:46:39.999Z</span></code>) rouding issues may occur.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a column is dynamically created the type detection won&#8217;t recognize
+timestamps. That means columns of type timestamp must always be declared beforehand.</p>
+</div>
+</div>
+<div class="section" id="geo-point">
+<span id="geo-point-data-type"></span><h2><a class="toc-backref" href="#id14"><code class="docutils literal"><span class="pre">geo_point</span></code></a><a class="headerlink" href="#geo-point" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">geo_point</span></code> type is used to store latitude and longitude geo coordinates.</p>
+<p>Columns with the <code class="docutils literal"><span class="pre">geo_point</span></code> type are represented and inserted using an array
+of doubles in the following format:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">lon_value</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">lat_value</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Alternatively a <a class="reference external" href="http://en.wikipedia.org/wiki/Well-known_text">WKT</a> string can also be used to declare geo points:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="s1">&#39;POINT ( &lt;lon_value&gt; &lt;lat_value&gt; )&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Empty geo points are not supported.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a column is dynamically created the type detection won&#8217;t recognize
+neither WKT strings nor double arrays. That means columns of type geo_point
+must always be declared beforehand.</p>
+</div>
+<p>Create table example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table_geopoint</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">id</span> <span class="nb">integer</span> <span class="k">primary</span> <span class="k">key</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">pin</span> <span class="n">geo_point</span>
+<span class="mf">...</span> <span class="p">)</span> <span class="k">with</span> <span class="p">(</span><span class="n">number_of_replicas</span> <span class="o">=</span> <span class="mf">0</span><span class="p">)</span>
+<span class="k">CREATE</span> <span class="n">OK</span><span class="p">,</span> <span class="mf">1</span> <span class="k">row</span> <span class="n">affected</span> <span class="p">(</span><span class="mf">...</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="geo-shape">
+<span id="geo-shape-data-type"></span><h2><a class="toc-backref" href="#id15"><code class="docutils literal"><span class="pre">geo_shape</span></code></a><a class="headerlink" href="#geo-shape" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">geo_shape</span></code> type is used to store geometric shapes defined as <a class="reference external" href="http://geojson.org/geojson-spec.html#geometry-objects">GeoJSON
+geometry objects</a>.</p>
+<p>A geo_shape column can store different kinds of <a class="reference external" href="http://geojson.org/geojson-spec.html#geometry-objects">GeoJSON geometry objects</a>.
+Thus it is possible to store e.g. <code class="docutils literal"><span class="pre">LineString</span></code> and <code class="docutils literal"><span class="pre">MultiPolygon</span></code> shapes in
+the same column.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Empty <code class="docutils literal"><span class="pre">Polygon</span></code> and <code class="docutils literal"><span class="pre">LineString</span></code> geo shapes are not supported.</p>
+</div>
+<div class="section" id="definition">
+<h3><a class="toc-backref" href="#id16">Definition</a><a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h3>
+<p>To define a geo_shape column:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">columnName</span><span class="o">&gt;</span> <span class="n">geo_shape</span>
+</pre></div>
+</div>
+<p>A geographical index with default parameters is created implicitly to allow for
+geographical queries.</p>
+<p>The default definition for the column type is:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">columnName</span><span class="o">&gt;</span> <span class="n">geo_shape</span> <span class="k">INDEX</span> <span class="k">USING</span> <span class="n">geohash</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">precision</span><span class="o">=</span><span class="s1">&#39;50m&#39;</span><span class="p">,</span> <span class="n">distance_error_pct</span><span class="o">=</span><span class="mf">0.025</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are two geographic index types: <code class="docutils literal"><span class="pre">geohash</span></code> (the default) and
+<code class="docutils literal"><span class="pre">quadtree</span></code>. These indices are only allowed on geo_shape columns. For more
+information, see <a class="reference internal" href="#geo-shape-data-type-index"><span class="std std-ref">Geo Shape Index Structure</span></a>.</p>
+<p>Both of these index types accept the following parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">precision:</th><td class="field-body"><p class="first">(Default: <code class="docutils literal"><span class="pre">50m</span></code>) Define the maximum precision of the used index
+and thus for all indexed shapes. Given as string containing a
+number and an optional distance unit (defaults to <code class="docutils literal"><span class="pre">m</span></code>).</p>
+<p>Supported units are <code class="docutils literal"><span class="pre">inch</span></code> (<code class="docutils literal"><span class="pre">in</span></code>), <code class="docutils literal"><span class="pre">yard</span></code> (<code class="docutils literal"><span class="pre">yd</span></code>), <code class="docutils literal"><span class="pre">miles</span></code>
+(<code class="docutils literal"><span class="pre">mi</span></code>), <code class="docutils literal"><span class="pre">kilometers</span></code> (<code class="docutils literal"><span class="pre">km</span></code>), <code class="docutils literal"><span class="pre">meters``(``m</span></code>),
+<code class="docutils literal"><span class="pre">centimeters</span></code> (<code class="docutils literal"><span class="pre">cm</span></code>), <code class="docutils literal"><span class="pre">millimeters</span></code> (<code class="docutils literal"><span class="pre">mm</span></code>).</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">distance_error_pct:</th><td class="field-body"><p class="first">(Default: <code class="docutils literal"><span class="pre">0.025</span></code> (2,5%)) The measure of acceptable
+error for shapes stored in this column expressed as a
+percentage value of the shape size The allowed maximum is
+<code class="docutils literal"><span class="pre">0.5</span></code> (50%).</p>
+<p>The percentage will be taken from the diagonal distance
+from the center of the bounding box enclosing the shape to
+the closest corner of the enclosing box. In effect bigger
+shapes will be indexed with lower precision than smaller
+shapes. The ratio of precision loss is determined by this
+setting, that means the higher the <code class="docutils literal"><span class="pre">distance_error_pct</span></code>
+the smaller the indexing precision.</p>
+<p>This will have the effect of increasing the indexed shape
+internally, so e.g. points that are not exactly inside
+this shape will end up inside it when it comes to querying
+as the shape has grown when indexed.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">tree_levels:</th><td class="field-body"><p class="first last">Maximum number of layers to be used by the <code class="docutils literal"><span class="pre">PrefixTree</span></code> defined
+by the index type (either <code class="docutils literal"><span class="pre">geohash</span></code> or <code class="docutils literal"><span class="pre">quadtree</span></code>, see
+<a class="reference internal" href="#geo-shape-data-type-index"><span class="std std-ref">Geo Shape Index Structure</span></a>). This can be used to control
+the precision of the used index. Since this parameter requires a
+certain level of understanting of the underlying implementation,
+users may use the <code class="docutils literal"><span class="pre">precision</span></code> parameter instead. CrateDB uses
+the <code class="docutils literal"><span class="pre">tree_levels</span></code> parameter internally and this is what is
+returned via the <code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code> statement even if you use
+the precision parameter. Defaults to the value which is <code class="docutils literal"><span class="pre">50m</span></code>
+converted to <code class="docutils literal"><span class="pre">precision</span></code> depending on the index type.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="geo-shape-index-structure">
+<span id="geo-shape-data-type-index"></span><h3><a class="toc-backref" href="#id17">Geo Shape Index Structure</a><a class="headerlink" href="#geo-shape-index-structure" title="Permalink to this headline">¶</a></h3>
+<p>Computations on very complex polygons and geometry collections are exact but
+very expensive. To provide fast queries even on complex shapes, CrateDB uses a
+different approach to store, analyze and query geo shapes.</p>
+<p>The surface of the earth is represented as a number of grid layers each with
+higher precision. While the upper layer has one grid cell, the layer below
+contains many cells for the equivalent space.</p>
+<p>Each grid cell on each layer is addressed in 2d space either by a <a class="reference external" href="https://en.wikipedia.org/wiki/Geohash">Geohash</a>
+for <code class="docutils literal"><span class="pre">geohash</span></code> trees or by tightly packed coordinates in a <a class="reference external" href="https://en.wikipedia.org/wiki/Quadtree">Quadtree</a>. Those
+addresses conveniently share the same address-prefix between lower layers and
+upper layers. So we are able to use a <a class="reference external" href="https://en.wikipedia.org/wiki/Trie">Trie</a> to represent the grids, and
+<a class="reference external" href="https://en.wikipedia.org/wiki/Trie">Tries</a> can be queried efficiently as their complexity is determined by the
+tree depth only.</p>
+<p>A geo shape is transformed into these grid cells. Think of this transformation
+process as dissecting a vector image into its pixelated counterpart, reasonably
+accurately. We end up with multiple images each with a better resolution, up to
+the configured precision.</p>
+<p>Every grid cell that processed up to the configured precision is stored in an
+inverted index, creating a mapping from a grid cell to all shapes that touch
+it. This mapping is our geographic index.</p>
+<p>The main difference is that the <code class="docutils literal"><span class="pre">geohash</span></code> supports higher precision than the
+<code class="docutils literal"><span class="pre">quadtree</span></code> tree. Both tree implementations support precision in order of
+fractions of millimeters.</p>
+</div>
+<div class="section" id="representation">
+<h3><a class="toc-backref" href="#id18">Representation</a><a class="headerlink" href="#representation" title="Permalink to this headline">¶</a></h3>
+<p>Columns with the <code class="docutils literal"><span class="pre">geo_shape</span></code> type are represented and inserted as object
+containing a valid <a class="reference external" href="http://geojson.org/">GeoJSON</a> geometry object:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="k">type</span> <span class="o">=</span> <span class="s1">&#39;Polygon&#39;</span><span class="p">,</span>
+  <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="p">[</span> <span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">101.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">101.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span> <span class="p">]</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Alternatively a <a class="reference external" href="http://en.wikipedia.org/wiki/Well-known_text">WKT</a> string can be used to represent a geo_shape as well:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="s1">&#39;POLYGON ((5 5, 10 5, 10 10, 5 10, 5 5))&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is not possible to detect a geo_shape type for a dynamically created
+column. Like with <a class="reference internal" href="#geo-point-data-type"><span class="std std-ref">geo_point</span></a> type, geo_shape columns need
+to be created explicitly using either <a class="reference internal" href="../../sql/statements/create-table.html#ref-create-table"><span class="std std-ref">CREATE TABLE</span></a> or
+<a class="reference internal" href="../../sql/statements/alter-table.html#ref-alter-table"><span class="std std-ref">ALTER TABLE</span></a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="object">
+<span id="object-data-type"></span><h2><a class="toc-backref" href="#id19"><code class="docutils literal"><span class="pre">object</span></code></a><a class="headerlink" href="#object" title="Permalink to this headline">¶</a></h2>
+<p>The object type allows to define nested documents instead of old-n-busted flat
+tables.</p>
+<p>An <code class="docutils literal"><span class="pre">object</span></code> can contain other fields of any type, even further object
+columns. An <code class="docutils literal"><span class="pre">object</span></code> column can be either schemaless or enforce its defined
+schema. It can even be used as a kind of json-blob.</p>
+<p>Syntax:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">columnName</span><span class="o">&gt;</span> <span class="k">OBJECT</span> <span class="p">[</span> <span class="p">({</span><span class="n">DYNAMIC</span><span class="o">|</span><span class="k">STRICT</span><span class="o">|</span><span class="n">IGNORED</span><span class="p">})</span> <span class="p">]</span> <span class="p">[</span> <span class="k">AS</span> <span class="p">(</span> <span class="o">&lt;</span><span class="n">columnDefinition</span><span class="o">&gt;*</span> <span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>The only required part of this column definition is <code class="docutils literal"><span class="pre">OBJECT</span></code>.</p>
+<p>The column policy defining this objects behaviour is optional, if left out
+<code class="docutils literal"><span class="pre">DYNAMIC</span></code> will be used.</p>
+<p>The list of subcolumns is optional as well, if left out, this object will have
+no schema (with a schema created on the fly on first inserts in case of
+<code class="docutils literal"><span class="pre">DYNAMIC</span></code>).</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table11</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">title</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">col1</span> <span class="k">object</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">col3</span> <span class="k">object</span><span class="p">(</span><span class="k">strict</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span>
+<span class="mf">...</span>     <span class="n">age</span> <span class="nb">integer</span><span class="p">,</span>
+<span class="mf">...</span>     <span class="k">name</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>     <span class="n">col31</span> <span class="k">object</span> <span class="k">as</span> <span class="p">(</span>
+<span class="mf">...</span>       <span class="n">birthday</span> <span class="nb">timestamp</span>
+<span class="mf">...</span>     <span class="p">)</span>
+<span class="mf">...</span>   <span class="p">)</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="section" id="strict">
+<h3><a class="toc-backref" href="#id20"><code class="docutils literal"><span class="pre">strict</span></code></a><a class="headerlink" href="#strict" title="Permalink to this headline">¶</a></h3>
+<p>The column policy can be configured to be <code class="docutils literal"><span class="pre">strict</span></code>, rejecting any subcolumn
+that is not defined upfront in the schema. As you might have guessed, defining
+<code class="docutils literal"><span class="pre">strict</span></code> objects without subcolumns results in an unusable column that will
+always be null, which is the most useless column one could create.</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table12</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">title</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">author</span> <span class="k">object</span><span class="p">(</span><span class="k">strict</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span>
+<span class="mf">...</span>     <span class="k">name</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>     <span class="n">birthday</span> <span class="nb">timestamp</span>
+<span class="mf">...</span>   <span class="p">)</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dynamic">
+<h3><a class="toc-backref" href="#id21"><code class="docutils literal"><span class="pre">dynamic</span></code></a><a class="headerlink" href="#dynamic" title="Permalink to this headline">¶</a></h3>
+<p>Another option is <code class="docutils literal"><span class="pre">dynamic</span></code>, which means that new subcolumns can be added in this object.</p>
+<p>Note that adding new columns to an object with a <code class="docutils literal"><span class="pre">dynamic</span></code> policy will affect
+the schema of the table. Once a column is added, it shows up in the
+<code class="docutils literal"><span class="pre">information_schema.columns</span></code> table and its type and attributes are fixed.
+They will have the type that was guessed by their inserted/updated value and
+they will always be <code class="docutils literal"><span class="pre">not_indexed</span></code> which means they are analyzed with the
+<code class="docutils literal"><span class="pre">plain</span></code> analyzer, which means as-is.</p>
+<p>If a new column <code class="docutils literal"><span class="pre">a</span></code> was added with type <code class="docutils literal"><span class="pre">integer</span></code>, adding strings to this
+column will result in an error.</p>
+<p>Examples:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table13</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">title</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">author</span> <span class="k">object</span> <span class="k">as</span> <span class="p">(</span>
+<span class="mf">...</span>     <span class="k">name</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>     <span class="n">birthday</span> <span class="nb">timestamp</span>
+<span class="mf">...</span>   <span class="p">)</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<p>which is exactly the same as:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table14</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">title</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">author</span> <span class="k">object</span><span class="p">(</span><span class="n">dynamic</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span>
+<span class="mf">...</span>     <span class="k">name</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>     <span class="n">birthday</span> <span class="nb">timestamp</span>
+<span class="mf">...</span>   <span class="p">)</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<p>New columns added to <code class="docutils literal"><span class="pre">dynamic</span></code> objects are, once added, usable as usual
+subcolumns. One can retrieve them, sort by them and use them in where clauses.</p>
+</div>
+<div class="section" id="ignored">
+<h3><a class="toc-backref" href="#id22"><code class="docutils literal"><span class="pre">ignored</span></code></a><a class="headerlink" href="#ignored" title="Permalink to this headline">¶</a></h3>
+<p>The third option is <code class="docutils literal"><span class="pre">ignored</span></code> which results in an object that allows
+inserting new subcolumns but this adding will not affect the schema, they are
+not mapped according to their type, which is therefor not guessed as well. You
+can in fact add any value to an added column of the same name. The first value
+added does not determine what you can add further, like with <code class="docutils literal"><span class="pre">dynamic</span></code>
+objects.</p>
+<p>An object configured like this will simply accept and return the columns
+inserted into it, but otherwise ignore them.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table15</span> <span class="p">(</span>
+<span class="mf">...</span>   <span class="n">title</span> <span class="n">string</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">details</span> <span class="k">object</span><span class="p">(</span><span class="n">ignored</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span>
+<span class="mf">...</span>     <span class="n">num_pages</span> <span class="nb">integer</span><span class="p">,</span>
+<span class="mf">...</span>     <span class="n">font_size</span> <span class="k">float</span>
+<span class="mf">...</span>   <span class="p">)</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">Ignored</span></code> objects should be mainly used for storing and fetching.
+Filtering by and ordering on them is possible but very performance
+intensive. <code class="docutils literal"><span class="pre">Ignored</span></code> objects are a <em>black box</em> for the storage engine, so
+the filtering/ordering is done using an expensive table scan and a
+filter/order function outside of the storage engine.</p>
+</div>
+</div>
+<div class="section" id="object-literals">
+<span id="data-type-object-literals"></span><h3><a class="toc-backref" href="#id23">Object Literals</a><a class="headerlink" href="#object-literals" title="Permalink to this headline">¶</a></h3>
+<p>To insert values into object columns one can use object literals or parameters.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Even though they look like <cite>JSON</cite> - object literals are not <cite>JSON</cite>
+compatible.</p>
+</div>
+<p>Object literals are given in curly brackets. Key value pairs are connected via
+<code class="docutils literal"><span class="pre">=</span></code>.</p>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">[</span> <span class="n">ident</span> <span class="o">=</span> <span class="n">expr</span> <span class="p">[</span> <span class="p">,</span> <span class="mf">...</span> <span class="p">]</span> <span class="p">]</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>The <em>key</em> of a key-value pair is an SQL identifier. That means every unquoted
+identifier in an object literal key will be lowercased.</p>
+<p>The <em>value</em> of a key-value pair is another literal or a parameter.</p>
+<p>An object literal can contain zero or more key value pairs</p>
+<div class="section" id="examples">
+<h4><a class="toc-backref" href="#id24">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<p>Empty object literal:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{}</span>
+</pre></div>
+</div>
+<p>Boolean type:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">my_bool_column</span> <span class="o">=</span> <span class="k">true</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>String type:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">my_str_col</span> <span class="o">=</span> <span class="s1">&#39;this is a string value&#39;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Number types:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">my_int_col</span> <span class="o">=</span> <span class="mf">1234</span><span class="p">,</span> <span class="n">my_float_col</span> <span class="o">=</span> <span class="mf">5.6</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Array type:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">my_array_column</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Camel case keys must be quoted:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="s s-Name">&quot;CamelCaseColumn&quot;</span> <span class="o">=</span> <span class="s1">&#39;this is a string value&#39;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Nested object:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">nested_obj_colmn</span> <span class="o">=</span> <span class="p">{</span> <span class="n">int_col</span> <span class="o">=</span> <span class="mf">1234</span><span class="p">,</span> <span class="n">str_col</span> <span class="o">=</span> <span class="s1">&#39;string value&#39;</span> <span class="p">}</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>You can even specify a placeholder parameter for a value:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">my_other_column</span> <span class="o">=</span> <span class="o">?</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Combined:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="n">id</span> <span class="o">=</span> <span class="mf">1</span><span class="p">,</span> <span class="k">name</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;apple&#39;</span><span class="p">,</span> <span class="s1">&#39;banana&#39;</span><span class="p">,</span> <span class="s1">&#39;pear&#39;</span><span class="p">],</span> <span class="n">size</span> <span class="o">=</span> <span class="mf">3.1415</span><span class="p">,</span> <span class="k">valid</span> <span class="o">=</span> <span class="o">?</span> <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="array">
+<span id="data-type-array"></span><h2><a class="toc-backref" href="#id25"><code class="docutils literal"><span class="pre">array</span></code></a><a class="headerlink" href="#array" title="Permalink to this headline">¶</a></h2>
+<p>CrateDB supports arrays.</p>
+<p>An array is a collection of other data types. These are:</p>
+<ul class="simple">
+<li>boolean</li>
+<li>string</li>
+<li>ip</li>
+<li>all numeric types (integer, long, short, double, float, byte)</li>
+<li>timestamp</li>
+<li>object</li>
+<li>geo_point</li>
+</ul>
+<p>Array types are defined as follows:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">my_table_arrays</span> <span class="p">(</span>
+<span class="mf">...</span>     <span class="n">tags</span> <span class="k">array</span><span class="p">(</span><span class="n">string</span><span class="p">),</span>
+<span class="mf">...</span>     <span class="n">objects</span> <span class="k">array</span><span class="p">(</span><span class="k">object</span> <span class="k">as</span> <span class="p">(</span><span class="n">age</span> <span class="nb">integer</span><span class="p">,</span> <span class="k">name</span> <span class="n">string</span><span class="p">))</span>
+<span class="mf">...</span> <span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently arrays cannot be nested. Something like array(array(string))
+won&#8217;t work.</p>
+</div>
+<div class="section" id="array-constructor">
+<span id="data-type-array-literals"></span><h3><a class="toc-backref" href="#id26">Array Constructor</a><a class="headerlink" href="#array-constructor" title="Permalink to this headline">¶</a></h3>
+<p>Arrays can be written using the array constructor <code class="docutils literal"><span class="pre">ARRAY[]</span></code> or short <code class="docutils literal"><span class="pre">[]</span></code>.
+The array constructor is an expression that accepts both literals and
+expressions as its parameters. Parameters may contain zero or more elements.</p>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="k">ARRAY</span> <span class="p">]</span> <span class="s1">&#39;[&#39;</span> <span class="n">element</span> <span class="p">[</span> <span class="p">,</span> <span class="mf">...</span> <span class="p">]</span> <span class="s1">&#39;]&#39;</span>
+</pre></div>
+</div>
+<p>All array elements must have the same data type, which determines the inner
+type of the array. If an array contains no elements, its element type will be
+inferred by the context in which it occurs, if possible.</p>
+<div class="section" id="id2">
+<h4><a class="toc-backref" href="#id27">Examples</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>Some valid arrays are:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">[]</span>
+<span class="p">[</span><span class="k">null</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">,</span> <span class="mf">7</span><span class="p">,</span> <span class="mf">8</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">&#39;Zaphod&#39;</span><span class="p">,</span> <span class="s1">&#39;Ford&#39;</span><span class="p">,</span> <span class="s1">&#39;Arthur&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="o">?</span><span class="p">]</span>
+<span class="k">ARRAY</span><span class="p">[</span><span class="k">true</span><span class="p">,</span> <span class="k">false</span><span class="p">]</span>
+<span class="k">ARRAY</span><span class="p">[</span><span class="n">column_a</span><span class="p">,</span> <span class="n">column_b</span><span class="p">]</span>
+<span class="k">ARRAY</span><span class="p">[</span><span class="k">ARRAY</span><span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">1</span> <span class="o">+</span> <span class="mf">2</span><span class="p">],</span> <span class="k">ARRAY</span><span class="p">[</span><span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">3</span> <span class="o">+</span> <span class="mf">4</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="array-representation">
+<h4><a class="toc-backref" href="#id28">Array Representation</a><a class="headerlink" href="#array-representation" title="Permalink to this headline">¶</a></h4>
+<p>Arrays are always represented as zero or more literal elements inside square
+brackets (<code class="docutils literal"><span class="pre">[]</span></code>), for example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">&#39;Zaphod&#39;</span><span class="p">,</span> <span class="s1">&#39;Ford&#39;</span><span class="p">,</span> <span class="s1">&#39;Arthur&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="type-conversion">
+<span id="id3"></span><h2><a class="toc-backref" href="#id29">Type Conversion</a><a class="headerlink" href="#type-conversion" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cast">
+<h3><a class="toc-backref" href="#id30"><code class="docutils literal"><span class="pre">CAST</span></code></a><a class="headerlink" href="#cast" title="Permalink to this headline">¶</a></h3>
+<p>A type <code class="docutils literal"><span class="pre">cast</span></code> specifies a conversion from one data type to another. It will
+only succeed if the value of the expression is convertible to the desired data
+type, otherwise an error is thrown.</p>
+<p>CrateDB supports two equivalent syntaxes for type casts:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">cast</span><span class="p">(</span><span class="n">expression</span> <span class="k">as</span> <span class="k">type</span><span class="p">)</span>
+<span class="n">expression</span><span class="o">::</span><span class="k">type</span>
+</pre></div>
+</div>
+<p>Example usages:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">cast</span><span class="p">(</span><span class="n">port</span><span class="p">[</span><span class="s1">&#39;http&#39;</span><span class="p">]</span> <span class="k">as</span> <span class="nb">boolean</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+-------------------------------+</span>
+<span class="go">| CAST(port[&#39;http&#39;] AS boolean) |</span>
+<span class="go">+-------------------------------+</span>
+<span class="go">| TRUE                          |</span>
+<span class="go">+-------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="p">(</span><span class="mf">2</span><span class="o">+</span><span class="mf">10</span><span class="p">)</span><span class="o">/</span><span class="mf">2</span><span class="o">::</span><span class="n">string</span><span class="p">;</span>
+<span class="go">+--------------------------------+</span>
+<span class="go">| CAST(((2 + 10) / 2) AS string) |</span>
+<span class="go">+--------------------------------+</span>
+<span class="go">|                              6 |</span>
+<span class="go">+--------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>It is also possible to convert array structures to different data types, e.g.
+converting an array of integer values to a boolean array.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">cast</span><span class="p">([</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">5</span><span class="p">]</span> <span class="k">as</span> <span class="k">array</span><span class="p">(</span><span class="nb">boolean</span><span class="p">))</span> <span class="k">as</span>
+<span class="mf">...</span> <span class="n">active_threads</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+---------------------+</span>
+<span class="go">| active_threads      |</span>
+<span class="go">+---------------------+</span>
+<span class="go">| [false, true, true] |</span>
+<span class="go">+---------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is not possible to cast to or from <code class="docutils literal"><span class="pre">object</span></code>, <code class="docutils literal"><span class="pre">geopoint</span></code>, and
+<code class="docutils literal"><span class="pre">geoshape</span></code> data type.</p>
+</div>
+</div>
+<div class="section" id="try-cast">
+<h3><a class="toc-backref" href="#id31"><code class="docutils literal"><span class="pre">TRY_CAST</span></code></a><a class="headerlink" href="#try-cast" title="Permalink to this headline">¶</a></h3>
+<p>While <code class="docutils literal"><span class="pre">cast</span></code> throws an error for incompatible type casts, <code class="docutils literal"><span class="pre">try_cast</span></code>
+returns <code class="docutils literal"><span class="pre">null</span></code> in this case. Otherwise the result is the same as with
+<code class="docutils literal"><span class="pre">cast</span></code>.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">try_cast</span><span class="p">(</span><span class="n">expression</span> <span class="k">as</span> <span class="k">type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example usages:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">try_cast</span><span class="p">(</span><span class="s1">&#39;true&#39;</span> <span class="k">as</span> <span class="nb">boolean</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">| TRY_CAST(&#39;true&#39; AS boolean) |</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">| TRUE                        |</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>Trying to cast a <code class="docutils literal"><span class="pre">string</span></code> to <code class="docutils literal"><span class="pre">integer</span></code>, will fail with <code class="docutils literal"><span class="pre">cast</span></code> if
+<code class="docutils literal"><span class="pre">string</span></code> is no valid integer but return <code class="docutils literal"><span class="pre">null</span></code> with <code class="docutils literal"><span class="pre">try_cast</span></code>:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">try_cast</span><span class="p">(</span><span class="k">name</span> <span class="k">as</span> <span class="nb">integer</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+---------------------------+</span>
+<span class="go">| TRY_CAST(name AS integer) |</span>
+<span class="go">+---------------------------+</span>
+<span class="go">| NULL                      |</span>
+<span class="go">+---------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>

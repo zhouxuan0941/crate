@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Information Schema &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../index.html" />
+    <link rel="up" title="General Use" href="index.html" />
+    <link rel="next" title="Administration" href="../admin/index.html" />
+    <link rel="prev" title="Optimistic Concurrency Control" href="occ.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">General Use</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ddl/index.html">Data Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ddl/create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ddl/alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="information-schema">
+<span id="id1"></span><h1>Information Schema<a class="headerlink" href="#information-schema" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">information_schema</span></code> is a special schema that contains virtual tables which
+are read-only and can be queried to get information about the state of the
+cluster.</p>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#access" id="id3">Access</a></li>
+<li><a class="reference internal" href="#virtual-tables" id="id4">Virtual Tables</a><ul>
+<li><a class="reference internal" href="#tables" id="id5"><code class="docutils literal"><span class="pre">tables</span></code></a><ul>
+<li><a class="reference internal" href="#settings" id="id6"><code class="docutils literal"><span class="pre">settings</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#columns" id="id7"><code class="docutils literal"><span class="pre">columns</span></code></a></li>
+<li><a class="reference internal" href="#table-constraints" id="id8"><code class="docutils literal"><span class="pre">table_constraints</span></code></a></li>
+<li><a class="reference internal" href="#key-column-usage" id="id9"><code class="docutils literal"><span class="pre">key_column_usage</span></code></a></li>
+<li><a class="reference internal" href="#table-partitions" id="id10"><code class="docutils literal"><span class="pre">table_partitions</span></code></a></li>
+<li><a class="reference internal" href="#routines" id="id11"><code class="docutils literal"><span class="pre">routines</span></code></a></li>
+<li><a class="reference internal" href="#schemata" id="id12"><code class="docutils literal"><span class="pre">schemata</span></code></a></li>
+<li><a class="reference internal" href="#sql-features" id="id13"><code class="docutils literal"><span class="pre">sql_features</span></code></a></li>
+<li><a class="reference internal" href="#ingestion-rules" id="id14"><code class="docutils literal"><span class="pre">ingestion_rules</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="access">
+<h2><a class="toc-backref" href="#id3">Access</a><a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h2>
+<p>When the user management is enabled, accessing the <code class="docutils literal"><span class="pre">information_schema</span></code> is
+open to all users and it does not require any privileges.</p>
+<p>However, being able to query <code class="docutils literal"><span class="pre">information_schema</span></code> tables will not allow the
+user to retrieve all the rows in the table, as it can contain information
+related to tables over which the connected user does not have any privileges.
+The only rows that will be returned will be the ones the user is allowed to
+access.</p>
+<p>For example, if the user <code class="docutils literal"><span class="pre">john</span></code> has any privilege on the <code class="docutils literal"><span class="pre">doc.books</span></code> table
+but no privilege at all on <code class="docutils literal"><span class="pre">doc.locations</span></code>, when <code class="docutils literal"><span class="pre">john</span></code> issues a <code class="docutils literal"><span class="pre">SELECT</span> <span class="pre">*</span>
+<span class="pre">FROM</span> <span class="pre">information_schema.tables</span></code> statement, the tables information related to
+the <code class="docutils literal"><span class="pre">doc.locations</span></code> table will not be returned.</p>
+</div>
+<div class="section" id="virtual-tables">
+<h2><a class="toc-backref" href="#id4">Virtual Tables</a><a class="headerlink" href="#virtual-tables" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="tables">
+<span id="information-schema-tables"></span><h3><a class="toc-backref" href="#id5"><code class="docutils literal"><span class="pre">tables</span></code></a><a class="headerlink" href="#tables" title="Permalink to this headline">¶</a></h3>
+<p>The information schema contains a table called <cite>tables</cite>.</p>
+<p>This table can be queried to get a list of all available tables and their
+settings like the <code class="docutils literal"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">shards</span></code> or <code class="docutils literal"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">replicas</span></code>.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">table_schema</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">number_of_shards</span><span class="p">,</span> <span class="n">number_of_replicas</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="k">tables</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_name</span> <span class="k">not</span> <span class="k">like</span> <span class="s1">&#39;my_table%&#39;</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">table_schema</span> <span class="k">asc</span><span class="p">,</span> <span class="n">table_name</span> <span class="k">asc</span><span class="p">;</span>
+<span class="go">+--------------------+-------------------------+------------------+--------------------+</span>
+<span class="go">| table_schema       | table_name              | number_of_shards | number_of_replicas |</span>
+<span class="go">+--------------------+-------------------------+------------------+--------------------+</span>
+<span class="go">| blob               | myblobs                 |                3 | 0                  |</span>
+<span class="go">| doc                | documents               |                4 | 0-1                |</span>
+<span class="go">| doc                | locations               |                2 | 0                  |</span>
+<span class="go">| doc                | partitioned_table       |                4 | 0-1                |</span>
+<span class="go">| doc                | quotes                  |                2 | 0                  |</span>
+<span class="go">| information_schema | columns                 |                1 | 0                  |</span>
+<span class="go">| information_schema | ingestion_rules         |                1 | 0                  |</span>
+<span class="go">| information_schema | key_column_usage        |                1 | 0                  |</span>
+<span class="go">| information_schema | referential_constraints |                1 | 0                  |</span>
+<span class="go">| information_schema | routines                |                1 | 0                  |</span>
+<span class="go">| information_schema | schemata                |                1 | 0                  |</span>
+<span class="go">| information_schema | sql_features            |                1 | 0                  |</span>
+<span class="go">| information_schema | table_constraints       |                1 | 0                  |</span>
+<span class="go">| information_schema | table_partitions        |                1 | 0                  |</span>
+<span class="go">| information_schema | tables                  |                1 | 0                  |</span>
+<span class="go">| pg_catalog         | pg_type                 |                1 | 0                  |</span>
+<span class="go">| sys                | allocations             |                1 | 0                  |</span>
+<span class="go">| sys                | checks                  |                1 | 0                  |</span>
+<span class="go">| sys                | cluster                 |                1 | 0                  |</span>
+<span class="go">| sys                | jobs                    |                1 | 0                  |</span>
+<span class="go">| sys                | jobs_log                |                1 | 0                  |</span>
+<span class="go">| sys                | node_checks             |                1 | 0                  |</span>
+<span class="go">| sys                | nodes                   |                1 | 0                  |</span>
+<span class="go">| sys                | operations              |                1 | 0                  |</span>
+<span class="go">| sys                | operations_log          |                1 | 0                  |</span>
+<span class="go">| sys                | privileges              |                1 | 0                  |</span>
+<span class="go">| sys                | repositories            |                1 | 0                  |</span>
+<span class="go">| sys                | shards                  |                1 | 0                  |</span>
+<span class="go">| sys                | snapshots               |                1 | 0                  |</span>
+<span class="go">| sys                | summits                 |                1 | 0                  |</span>
+<span class="go">| sys                | users                   |                1 | 0                  |</span>
+<span class="go">+--------------------+-------------------------+------------------+--------------------+</span>
+<span class="go">SELECT 31 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>The table also contains additional information such as specified routing
+(<a class="reference internal" href="ddl/sharding.html#sql-ddl-sharding"><span class="std std-ref">Sharding</span></a>) and partitioned by (<a class="reference internal" href="ddl/partitioned-tables.html#partitioned-tables"><span class="std std-ref">Partitioned Tables</span></a>)
+columns:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">clustered_by</span><span class="p">,</span> <span class="n">partitioned_by</span><span class="p">,</span> <span class="n">blobs_path</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="k">tables</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_name</span> <span class="k">not</span> <span class="k">like</span> <span class="s1">&#39;my_table%&#39;</span>
+<span class="mf">...</span>   <span class="k">and</span> <span class="p">(</span><span class="n">table_schema</span> <span class="o">=</span> <span class="s1">&#39;doc&#39;</span> <span class="k">or</span> <span class="n">table_schema</span> <span class="o">=</span> <span class="s1">&#39;blob&#39;</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">table_schema</span> <span class="k">asc</span><span class="p">,</span> <span class="n">table_name</span> <span class="k">asc</span><span class="p">;</span>
+<span class="go">+-------------------+--------------+----------------+--------...-+</span>
+<span class="go">| table_name        | clustered_by | partitioned_by | blobs_path |</span>
+<span class="go">+-------------------+--------------+----------------+--------...-+</span>
+<span class="go">| myblobs           | digest       | NULL           | ...        |</span>
+<span class="go">| documents         | _id          | NULL           | NULL       |</span>
+<span class="go">| locations         | id           | NULL           | NULL       |</span>
+<span class="go">| partitioned_table | _id          | [&quot;date&quot;]       | NULL       |</span>
+<span class="go">| quotes            | id           | NULL           | NULL       |</span>
+<span class="go">+-------------------+--------------+----------------+--------...-+</span>
+<span class="go">SELECT 5 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p class="rubric">Schema</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="64%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+<th class="head">Data Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">blobs_path</span></code></td>
+<td>The data path of the blob table</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">closed</span></code></td>
+<td>The state of the table</td>
+<td><code class="docutils literal"><span class="pre">Boolean</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">clustered_by</span></code></td>
+<td>The routing column used to cluster the table</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">column_policy</span></code></td>
+<td>Defines whether the table uses a <code class="docutils literal"><span class="pre">STRICT</span></code> or a <code class="docutils literal"><span class="pre">DYNAMIC</span></code> <a class="reference internal" href="ddl/column-policy.html#column-policy"><span class="std std-ref">Column Policy</span></a></td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">number_of_replicas</span></code></td>
+<td>The number of replicas the table currently has</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">number_of_shards</span></code></td>
+<td>The number of shards the table is currently distributed across</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">partitioned_by</span></code></td>
+<td>The column used to partition the table</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">reference_generation</span></code></td>
+<td>Specifies how values in the self-referencing column are generated</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">routing_hash_function</span></code></td>
+<td>The hash function used for internal routing</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">self_referencing_column_name</span></code></td>
+<td>The name of the column that uniquely identifies each row (always <code class="docutils literal"><span class="pre">_id</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">settings</span></code></td>
+<td><a class="reference internal" href="../sql/statements/create-table.html#with-clause"><span class="std std-ref">WITH</span></a></td>
+<td><code class="docutils literal"><span class="pre">Object</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">table_catalog</span></code></td>
+<td>Refers to the <code class="docutils literal"><span class="pre">table_schema</span></code></td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">table_name</span></code></td>
+<td>The name of the table</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">table_schema</span></code></td>
+<td>The name of the schema the table belongs to</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">table_type</span></code></td>
+<td>The type of the table (always <code class="docutils literal"><span class="pre">BASE</span> <span class="pre">TABLE</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">version</span></code></td>
+<td>A collection of version numbers relevent to the table</td>
+<td><code class="docutils literal"><span class="pre">Object</span></code></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="settings">
+<h4><a class="toc-backref" href="#id6"><code class="docutils literal"><span class="pre">settings</span></code></a><a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h4>
+<p>Table settings specify configuration parameters for tables. Some settings can
+be set during Cluster runtime and others are only applied on cluster restart.</p>
+<p>This list of table settings in <a class="reference internal" href="../sql/statements/create-table.html#with-clause"><span class="std std-ref">WITH</span></a> shows detailed information
+of each parameter.</p>
+<p>Table parameters can be applied with <code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code> on creation of a table.
+With <code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code> they can be set on already existing tables.</p>
+<p>The following statement creates a new table and sets the refresh interval of
+shards to 500 ms and sets the shard allocation for primary shards only:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">parameterized_table</span> <span class="p">(</span><span class="n">id</span> <span class="nb">int</span><span class="p">,</span> <span class="k">content</span> <span class="n">string</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">with</span> <span class="p">(</span><span class="s s-Name">&quot;refresh_interval&quot;</span><span class="o">=</span><span class="mf">500</span><span class="p">,</span> <span class="s s-Name">&quot;routing.allocation.enable&quot;</span><span class="o">=</span><span class="s1">&#39;primaries&#39;</span><span class="p">);</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<p>The settings can be verified by querying <code class="docutils literal"><span class="pre">information_schema.tables</span></code>:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;routing&#39;</span><span class="p">][</span><span class="s1">&#39;allocation&#39;</span><span class="p">][</span><span class="s1">&#39;enable&#39;</span><span class="p">]</span> <span class="k">as</span> <span class="n">alloc_enable</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;refresh_interval&#39;</span><span class="p">]</span> <span class="k">as</span> <span class="n">refresh_interval</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="k">tables</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;parameterized_table&#39;</span><span class="p">;</span>
+<span class="go">+--------------+------------------+</span>
+<span class="go">| alloc_enable | refresh_interval |</span>
+<span class="go">+--------------+------------------+</span>
+<span class="go">| primaries    |              500 |</span>
+<span class="go">+--------------+------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>On existing tables this needs to be done with <code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code> statement:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">alter</span> <span class="k">table</span> <span class="n">parameterized_table</span>
+<span class="mf">...</span> <span class="k">set</span> <span class="p">(</span><span class="s s-Name">&quot;routing.allocation.enable&quot;</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">);</span>
+<span class="go">ALTER OK, -1 rows affected (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="columns">
+<h3><a class="toc-backref" href="#id7"><code class="docutils literal"><span class="pre">columns</span></code></a><a class="headerlink" href="#columns" title="Permalink to this headline">¶</a></h3>
+<p>This table can be queried to get a list of all available columns of all tables
+and their definition like data type and ordinal position inside the table:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">ordinal_position</span> <span class="k">as</span> <span class="n">pos</span><span class="p">,</span> <span class="n">data_type</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">columns</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_schema</span> <span class="o">=</span> <span class="s1">&#39;doc&#39;</span> <span class="k">and</span> <span class="n">table_name</span> <span class="k">not</span> <span class="k">like</span> <span class="s1">&#39;my_table%&#39;</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">table_name</span> <span class="k">asc</span><span class="p">,</span> <span class="n">column_name</span> <span class="k">asc</span><span class="p">;</span>
+<span class="go">+-------------------+--------------------------------+------+--------------+</span>
+<span class="go">| table_name        | column_name                    |  pos | data_type    |</span>
+<span class="go">+-------------------+--------------------------------+------+--------------+</span>
+<span class="go">| documents         | body                           |    1 | string       |</span>
+<span class="go">| documents         | title                          |    2 | string       |</span>
+<span class="go">| locations         | date                           |    1 | timestamp    |</span>
+<span class="go">| locations         | description                    |    2 | string       |</span>
+<span class="go">| locations         | id                             |    3 | string       |</span>
+<span class="go">| locations         | information                    |    4 | object_array |</span>
+<span class="go">| locations         | information[&#39;evolution_level&#39;] | NULL | short        |</span>
+<span class="go">| locations         | information[&#39;population&#39;]      | NULL | long         |</span>
+<span class="go">| locations         | kind                           |    5 | string       |</span>
+<span class="go">| locations         | name                           |    6 | string       |</span>
+<span class="go">| locations         | position                       |    7 | integer      |</span>
+<span class="go">| locations         | race                           |    8 | object       |</span>
+<span class="go">| locations         | race[&#39;description&#39;]            | NULL | string       |</span>
+<span class="go">| locations         | race[&#39;interests&#39;]              | NULL | string_array |</span>
+<span class="go">| locations         | race[&#39;name&#39;]                   | NULL | string       |</span>
+<span class="go">| partitioned_table | date                           |    1 | timestamp    |</span>
+<span class="go">| partitioned_table | id                             |    2 | long         |</span>
+<span class="go">| partitioned_table | title                          |    3 | string       |</span>
+<span class="go">| quotes            | id                             |    1 | integer      |</span>
+<span class="go">| quotes            | quote                          |    2 | string       |</span>
+<span class="go">+-------------------+--------------------------------+------+--------------+</span>
+<span class="go">SELECT 20 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>You can even query this tables&#8217; own columns (attention: this might lead to
+infinite recursion of your mind, beware!):</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ordinal_position</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">columns</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_schema</span> <span class="o">=</span> <span class="s1">&#39;information_schema&#39;</span>
+<span class="mf">...</span> <span class="k">and</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;columns&#39;</span> <span class="k">order</span> <span class="k">by</span> <span class="n">ordinal_position</span> <span class="k">asc</span><span class="p">;</span>
+<span class="go">+---------------------------+-----------+------------------+</span>
+<span class="go">| column_name               | data_type | ordinal_position |</span>
+<span class="go">+---------------------------+-----------+------------------+</span>
+<span class="go">| character_maximum_length  | integer   |                1 |</span>
+<span class="go">| character_octet_length    | integer   |                2 |</span>
+<span class="go">| character_set_catalog     | string    |                3 |</span>
+<span class="go">| character_set_name        | string    |                4 |</span>
+<span class="go">| character_set_schema      | string    |                5 |</span>
+<span class="go">| check_action              | integer   |                6 |</span>
+<span class="go">| check_references          | string    |                7 |</span>
+<span class="go">| collation_catalog         | string    |                8 |</span>
+<span class="go">| collation_name            | string    |                9 |</span>
+<span class="go">| collation_schema          | string    |               10 |</span>
+<span class="go">| column_default            | string    |               11 |</span>
+<span class="go">| column_name               | string    |               12 |</span>
+<span class="go">| data_type                 | string    |               13 |</span>
+<span class="go">| datetime_precision        | integer   |               14 |</span>
+<span class="go">| domain_catalog            | string    |               15 |</span>
+<span class="go">| domain_name               | string    |               16 |</span>
+<span class="go">| domain_schema             | string    |               17 |</span>
+<span class="go">| generation_expression     | string    |               18 |</span>
+<span class="go">| interval_precision        | integer   |               19 |</span>
+<span class="go">| interval_type             | string    |               20 |</span>
+<span class="go">| is_generated              | boolean   |               21 |</span>
+<span class="go">| is_nullable               | boolean   |               22 |</span>
+<span class="go">| numeric_precision         | integer   |               23 |</span>
+<span class="go">| numeric_precision_radix   | integer   |               24 |</span>
+<span class="go">| numeric_scale             | integer   |               25 |</span>
+<span class="go">| ordinal_position          | short     |               26 |</span>
+<span class="go">| table_catalog             | string    |               27 |</span>
+<span class="go">| table_name                | string    |               28 |</span>
+<span class="go">| table_schema              | string    |               29 |</span>
+<span class="go">| user_defined_type_catalog | string    |               30 |</span>
+<span class="go">| user_defined_type_name    | string    |               31 |</span>
+<span class="go">| user_defined_type_schema  | string    |               32 |</span>
+<span class="go">+---------------------------+-----------+------------------+</span>
+<span class="go">SELECT 32 rows in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Columns are always sorted alphabetically in ascending order regardless of the
+order they were defined on table creation. Thus the <code class="docutils literal"><span class="pre">ordinal_position</span></code>
+reflects the alphabetical position.</p>
+</div>
+<p class="rubric">Schema</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="51%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+<th class="head">Data Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">table_catalog</span></code></td>
+<td>Refers to the <code class="docutils literal"><span class="pre">table_schema</span></code></td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">table_schema</span></code></td>
+<td>Schema name containing the table</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">table_name</span></code></td>
+<td>Table Name</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">column_name</span></code></td>
+<td>Column Name
+For fields in object columns this is not an
+identifier but a path and therefore must not
+be double quoted when programmatically
+obtained.</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ordinal_position</span></code></td>
+<td>The position of the column within the
+table</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">is_nullable</span></code></td>
+<td>Whether the column is nullable</td>
+<td><code class="docutils literal"><span class="pre">Boolean</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">data_type</span></code></td>
+<td><p class="first">The data type of the column</p>
+<p class="last">For further information see <a class="reference internal" href="ddl/data-types.html#data-types"><span class="std std-ref">Data Types</span></a></p>
+</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">column_default</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">character_maximum_length</span></code></td>
+<td><p class="first">Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</p>
+<p class="last">Please refer to <a class="reference internal" href="ddl/data-types.html#data-type-string"><span class="std std-ref">string</span></a> type</p>
+</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">character_octet_length</span></code></td>
+<td><p class="first">Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</p>
+<p class="last">Please refer to <a class="reference internal" href="ddl/data-types.html#data-type-string"><span class="std std-ref">string</span></a> type</p>
+</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">numeric_precision</span></code></td>
+<td>Indicates the number of significant digits
+for a numeric <code class="docutils literal"><span class="pre">data_type</span></code>. For all other
+data types this column is <code class="docutils literal"><span class="pre">NULL</span></code>.</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">numeric_precision_radix</span></code></td>
+<td>Indicates in which base the value in the
+column <code class="docutils literal"><span class="pre">numeric_precision</span></code> for a numeric
+<code class="docutils literal"><span class="pre">data_type</span></code> is exposed. This can either be
+2 (binary) or 10 (decimal). For all other
+data types this column is <code class="docutils literal"><span class="pre">NULL</span></code>.</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">numeric_scale</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">datetime_precision</span></code></td>
+<td>Contains the fractional seconds precision for
+a <code class="docutils literal"><span class="pre">timestamp</span></code> <code class="docutils literal"><span class="pre">data_type</span></code>. For all other
+data types this column is <code class="docutils literal"><span class="pre">null</span></code>.</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">interval_type</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">interval_precision</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">character_set_catalog</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">character_set_schema</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">character_set_name</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">collation_catalog</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">collation_schema</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">collation_name</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">domain_catalog</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">domain_schema</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">domain_name</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_defined_type_catalog</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_defined_type_schema</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_defined_type_name</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">check_references</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">check_action</span></code></td>
+<td>Not implemented (always returns <code class="docutils literal"><span class="pre">NULL</span></code>)</td>
+<td><code class="docutils literal"><span class="pre">Integer</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">generation_expression</span></code></td>
+<td>The expression used to generate ad column.
+If the column is not generated <code class="docutils literal"><span class="pre">NULL</span></code> is
+returned.</td>
+<td><code class="docutils literal"><span class="pre">String</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">is_generated</span></code></td>
+<td>Returns <code class="docutils literal"><span class="pre">true</span></code> or <code class="docutils literal"><span class="pre">false</span></code> wether the
+column is generated or not</td>
+<td><code class="docutils literal"><span class="pre">Boolean</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="table-constraints">
+<h3><a class="toc-backref" href="#id8"><code class="docutils literal"><span class="pre">table_constraints</span></code></a><a class="headerlink" href="#table-constraints" title="Permalink to this headline">¶</a></h3>
+<p>This table can be queried to get a list of all defined table constraints, their
+type, name and which table they are defined in.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently only <code class="docutils literal"><span class="pre">PRIMARY_KEY</span></code> constraints are supported.</p>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">table_schema</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">constraint_name</span><span class="p">,</span> <span class="n">constraint_type</span> <span class="k">as</span> <span class="k">type</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">table_constraints</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;tables&#39;</span>
+<span class="mf">...</span>   <span class="k">or</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;quotes&#39;</span>
+<span class="mf">...</span>   <span class="k">or</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
+<span class="mf">...</span>   <span class="k">or</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;tbl&#39;</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">table_schema</span> <span class="k">desc</span><span class="p">,</span> <span class="n">table_name</span> <span class="k">asc</span> <span class="k">limit</span> <span class="mf">10</span><span class="p">;</span>
+<span class="go">+--------------------+------------+-...------------------+-------------+</span>
+<span class="go">| table_schema       | table_name | constraint_name      | type        |</span>
+<span class="go">+--------------------+------------+-...------------------+-------------+</span>
+<span class="go">| information_schema | tables     | tables_pk            | PRIMARY KEY |</span>
+<span class="go">| doc                | quotes     | quotes_pk            | PRIMARY KEY |</span>
+<span class="go">| doc                | tbl        | doc_tbl_col_not_null | CHECK       |</span>
+<span class="go">+--------------------+------------+-...------------------+-------------+</span>
+<span class="go">SELECT 3 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="key-column-usage">
+<h3><a class="toc-backref" href="#id9"><code class="docutils literal"><span class="pre">key_column_usage</span></code></a><a class="headerlink" href="#key-column-usage" title="Permalink to this headline">¶</a></h3>
+<p>This table may be queried to retrieve primary key information from all user
+tables:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">constraint_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">ordinal_position</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">key_column_usage</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;students&#39;</span>
+<span class="o">+-----------------+------------+-------------+------------------+</span>
+<span class="o">|</span> <span class="n">constraint_name</span> <span class="o">|</span> <span class="n">table_name</span> <span class="o">|</span> <span class="n">column_name</span> <span class="o">|</span> <span class="n">ordinal_position</span> <span class="o">|</span>
+<span class="o">+-----------------+------------+-------------+------------------+</span>
+<span class="o">|</span> <span class="n">students_pk</span>     <span class="o">|</span> <span class="n">students</span>   <span class="o">|</span> <span class="n">id</span>          <span class="o">|</span>                <span class="mf">1</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">students_pk</span>     <span class="o">|</span> <span class="n">students</span>   <span class="o">|</span> <span class="n">department</span>  <span class="o">|</span>                <span class="mf">2</span> <span class="o">|</span>
+<span class="o">+-----------------+------------+-------------+------------------+</span>
+<span class="k">SELECT</span> <span class="mf">2</span> <span class="k">rows</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mf">...</span> <span class="n">sec</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="table-partitions">
+<span id="is-table-partitions"></span><h3><a class="toc-backref" href="#id10"><code class="docutils literal"><span class="pre">table_partitions</span></code></a><a class="headerlink" href="#table-partitions" title="Permalink to this headline">¶</a></h3>
+<p>This table can be queried to get information about all partitioned tables, Each
+partition of a table is represented as one row. The row contains the
+information table name, schema name, partition ident, and the values of the
+partition. <code class="docutils literal"><span class="pre">values</span></code> is a key-value object with the &#8216;partitioned by column&#8217; as
+key(s) and the corresponding value as value(s).</p>
+<p>For further information see <a class="reference internal" href="ddl/partitioned-tables.html#partitioned-tables"><span class="std std-ref">Partitioned Tables</span></a>.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">a_partitioned_table</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="k">content</span><span class="p">)</span> <span class="k">values</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="s1">&#39;content_a&#39;</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">alter</span> <span class="k">table</span> <span class="n">a_partitioned_table</span> <span class="k">set</span> <span class="p">(</span><span class="n">number_of_shards</span><span class="o">=</span><span class="mf">5</span><span class="p">);</span>
+<span class="go">ALTER OK, -1 rows affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">a_partitioned_table</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="k">content</span><span class="p">)</span> <span class="k">values</span> <span class="p">(</span><span class="mf">2</span><span class="p">,</span> <span class="s1">&#39;content_b&#39;</span><span class="p">);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<p>The following example shows a table where the column &#8216;content&#8217; of table
+&#8216;a_partitioned_table&#8217; has been used to partition the table. The table has two
+partitions. The partitions are introduced when data is inserted where &#8216;content&#8217;
+is &#8216;content_a&#8217;, and &#8216;content_b&#8217;.:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">schema_name</span> <span class="k">as</span> <span class="k">schema</span><span class="p">,</span> <span class="n">partition_ident</span><span class="p">,</span> <span class="s s-Name">&quot;values&quot;</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">table_partitions</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">partition_ident</span><span class="p">;</span>
+<span class="go">+---------------------+--------+--------------------+--------------------------+</span>
+<span class="go">| table_name          | schema | partition_ident    | values                   |</span>
+<span class="go">+---------------------+--------+--------------------+--------------------------+</span>
+<span class="go">| a_partitioned_table | doc    | 04566rreehimst2vc4 | {&quot;content&quot;: &quot;content_a&quot;} |</span>
+<span class="go">| a_partitioned_table | doc    | 04566rreehimst2vc8 | {&quot;content&quot;: &quot;content_b&quot;} |</span>
+<span class="go">+---------------------+--------+--------------------+--------------------------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>The second partition has been created after the number of shards for future
+partitions have been changed on the partitioned table, so they show <code class="docutils literal"><span class="pre">5</span></code>
+instead of <code class="docutils literal"><span class="pre">4</span></code>:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">partition_ident</span><span class="p">,</span>
+<span class="mf">...</span> <span class="n">number_of_shards</span><span class="p">,</span> <span class="n">number_of_replicas</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">table_partitions</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">partition_ident</span><span class="p">;</span>
+<span class="go">+---------------------+--------------------+------------------+--------------------+</span>
+<span class="go">| table_name          | partition_ident    | number_of_shards | number_of_replicas |</span>
+<span class="go">+---------------------+--------------------+------------------+--------------------+</span>
+<span class="go">| a_partitioned_table | 04566rreehimst2vc4 |                4 | 0-1                |</span>
+<span class="go">| a_partitioned_table | 04566rreehimst2vc8 |                5 | 0-1                |</span>
+<span class="go">+---------------------+--------------------+------------------+--------------------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="routines">
+<h3><a class="toc-backref" href="#id11"><code class="docutils literal"><span class="pre">routines</span></code></a><a class="headerlink" href="#routines" title="Permalink to this headline">¶</a></h3>
+<p>The routines table contains tokenizers, token-filters, char-filters, custom
+analyzers created by <code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code> statements (see
+<a class="reference internal" href="ddl/fulltext-indices.html#sql-ddl-custom-analyzer"><span class="std std-ref">Create a Custom Analyzer</span></a>), and functions created by <code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code>
+statements:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">routine_name</span><span class="p">,</span> <span class="n">routine_type</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">routines</span>
+<span class="mf">...</span> <span class="k">group</span> <span class="k">by</span> <span class="n">routine_name</span><span class="p">,</span> <span class="n">routine_type</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">routine_name</span> <span class="k">asc</span> <span class="k">limit</span> <span class="mf">5</span><span class="p">;</span>
+<span class="go">+----------------------+--------------+</span>
+<span class="go">| routine_name         | routine_type |</span>
+<span class="go">+----------------------+--------------+</span>
+<span class="go">| PathHierarchy        | TOKENIZER    |</span>
+<span class="go">| apostrophe           | TOKEN_FILTER |</span>
+<span class="go">| arabic               | ANALYZER     |</span>
+<span class="go">| arabic_normalization | TOKEN_FILTER |</span>
+<span class="go">| arabic_stem          | TOKEN_FILTER |</span>
+<span class="go">+----------------------+--------------+</span>
+<span class="go">SELECT 5 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>For example you can use this table to list existing tokenizers like this:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">routine_name</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">routines</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">routine_type</span><span class="o">=</span><span class="s1">&#39;TOKENIZER&#39;</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">routine_name</span> <span class="k">asc</span> <span class="k">limit</span> <span class="mf">10</span><span class="p">;</span>
+<span class="go">+---------------+</span>
+<span class="go">| routine_name  |</span>
+<span class="go">+---------------+</span>
+<span class="go">| PathHierarchy |</span>
+<span class="go">| classic       |</span>
+<span class="go">| e2_mypattern  |</span>
+<span class="go">| edgeNGram     |</span>
+<span class="go">| edge_ngram    |</span>
+<span class="go">| keyword       |</span>
+<span class="go">| letter        |</span>
+<span class="go">| lowercase     |</span>
+<span class="go">| nGram         |</span>
+<span class="go">| ngram         |</span>
+<span class="go">+---------------+</span>
+<span class="go">SELECT 10 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>Or get an overview of how many routines and routine types are available:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="n">routine_type</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">routines</span>
+<span class="mf">...</span> <span class="k">group</span> <span class="k">by</span> <span class="n">routine_type</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">routine_type</span><span class="p">;</span>
+<span class="go">+----------+--------------+</span>
+<span class="go">| count(*) | routine_type |</span>
+<span class="go">+----------+--------------+</span>
+<span class="go">|       48 | ANALYZER     |</span>
+<span class="go">|        4 | CHAR_FILTER  |</span>
+<span class="go">|       16 | TOKENIZER    |</span>
+<span class="go">|       59 | TOKEN_FILTER |</span>
+<span class="go">+----------+--------------+</span>
+<span class="go">SELECT 4 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p class="rubric">Schema</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="61%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Data Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>routine_name</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>routine_type</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td>routine_body</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>routine_schema</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td>data_type</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>is_deterministic</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-even"><td>routine_definition</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>specific_name</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">routine_name:</th><td class="field-body">Name of the routine (might be duplicated in case of overloading)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">routine_type:</th><td class="field-body">Type of the routine.
+Can be <code class="docutils literal"><span class="pre">FUNCTION</span></code>, <code class="docutils literal"><span class="pre">ANALYZER</span></code>, <code class="docutils literal"><span class="pre">CHAR_FILTER</span></code>, <code class="docutils literal"><span class="pre">TOKEN_FILTER</span></code>
+or <code class="docutils literal"><span class="pre">TOKEN_FILTER</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">routine_schema:</th><td class="field-body">The schema where the routine was defined.
+If it doesn&#8217;t apply, then <code class="docutils literal"><span class="pre">NULL</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">routine_body:</th><td class="field-body">The language used for the routine implementation.
+If it doesn&#8217;t apply, then <code class="docutils literal"><span class="pre">NULL</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">data_type:</th><td class="field-body">The return type of the function.
+If it doesn&#8217;t apply, then <code class="docutils literal"><span class="pre">NULL</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">is_deterministic:</th><td class="field-body">If the routine is deterministic then <cite>True</cite>, else <cite>False</cite> (<code class="docutils literal"><span class="pre">NULL</span></code> if it
+doesn&#8217;t apply).</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">routine_definition:</th><td class="field-body">The function definition (<code class="docutils literal"><span class="pre">NULL</span></code> if it doesn&#8217;t apply).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">specific_name:</th><td class="field-body">Used to uniquely identify the function in a schema, even if the function is
+overloaded.  Currently the specific name contains the types of the function
+arguments. As the format might change in the future, it should be only used
+to compare it to other instances of <code class="docutils literal"><span class="pre">specific_name</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="schemata">
+<h3><a class="toc-backref" href="#id12"><code class="docutils literal"><span class="pre">schemata</span></code></a><a class="headerlink" href="#schemata" title="Permalink to this headline">¶</a></h3>
+<p>The schemata table lists all existing schemas. These schemas are always
+available: <code class="docutils literal"><span class="pre">blob</span></code>, <code class="docutils literal"><span class="pre">doc</span></code>, <code class="docutils literal"><span class="pre">information_schema</span></code> and <code class="docutils literal"><span class="pre">sys</span></code>:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">schema_name</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">schemata</span> <span class="k">order</span> <span class="k">by</span> <span class="n">schema_name</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">| schema_name        |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| blob               |</span>
+<span class="go">| doc                |</span>
+<span class="go">| information_schema |</span>
+<span class="go">| pg_catalog         |</span>
+<span class="go">| sys                |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 5 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sql-features">
+<span id="id2"></span><h3><a class="toc-backref" href="#id13"><code class="docutils literal"><span class="pre">sql_features</span></code></a><a class="headerlink" href="#sql-features" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">sql_features</span></code> table outlines supported and unsupported SQL features of
+CrateDB based to the current SQL standard (see <a class="reference internal" href="../appendices/supported-features.html#sql-supported-features"><span class="std std-ref">Supported Features</span></a>):</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">feature_name</span><span class="p">,</span> <span class="n">is_supported</span><span class="p">,</span> <span class="n">sub_feature_id</span><span class="p">,</span> <span class="n">sub_feature_name</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="n">sql_features</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">feature_id</span><span class="o">=</span><span class="s1">&#39;F501&#39;</span><span class="p">;</span>
+<span class="go">+--------------------------------+--------------+----------------+--------------------+</span>
+<span class="go">| feature_name                   | is_supported | sub_feature_id | sub_feature_name   |</span>
+<span class="go">+--------------------------------+--------------+----------------+--------------------+</span>
+<span class="go">| Features and conformance views | FALSE        |                |                    |</span>
+<span class="go">| Features and conformance views | TRUE         | 1              | SQL_FEATURES view  |</span>
+<span class="go">| Features and conformance views | FALSE        | 2              | SQL_SIZING view    |</span>
+<span class="go">| Features and conformance views | FALSE        | 3              | SQL_LANGUAGES view |</span>
+<span class="go">+--------------------------------+--------------+----------------+--------------------+</span>
+<span class="go">SELECT 4 rows in set (... sec)</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="28%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Data Type</th>
+<th class="head">Nullable</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>feature_id</td>
+<td>String</td>
+<td>NO</td>
+</tr>
+<tr class="row-odd"><td>feature_name</td>
+<td>String</td>
+<td>NO</td>
+</tr>
+<tr class="row-even"><td>sub_feature_id</td>
+<td>String</td>
+<td>NO</td>
+</tr>
+<tr class="row-odd"><td>sub_feature_name</td>
+<td>String</td>
+<td>NO</td>
+</tr>
+<tr class="row-even"><td>is_supported</td>
+<td>String</td>
+<td>NO</td>
+</tr>
+<tr class="row-odd"><td>is_verified_by</td>
+<td>String</td>
+<td>YES</td>
+</tr>
+<tr class="row-even"><td>comments</td>
+<td>String</td>
+<td>YES</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">feature_id:</th><td class="field-body"><p class="first">Identifier of the feature</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">feature_name:</th><td class="field-body"><p class="first">Descriptive name of the feature by the Standard</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">sub_feature_id:</th><td class="field-body"><p class="first">Identifier of the subfeature;
+If it has zero-length, this is a feature</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">sub_feature_name:</th><td class="field-body"><p class="first">Descriptive name of the subfeature by the Standard;
+If it has zero-length, this is a feature</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">is_supported:</th><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">YES</span></code> if the feature is fully supported by the current version of
+CrateDB, <code class="docutils literal"><span class="pre">NO</span></code> if not</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">is_verified_by:</th><td class="field-body"><p class="first">Identifies the conformance test used to verify the claim;</p>
+<p>Always <code class="docutils literal"><span class="pre">NULL</span></code> since the CrateDB development group does not perform formal
+testing of feature conformance</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">comments:</th><td class="field-body"><p class="first last">Either <code class="docutils literal"><span class="pre">NULL</span></code> or shows a comment about the supported status of the
+feature</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ingestion-rules">
+<span id="information-schema-ingest"></span><h3><a class="toc-backref" href="#id14"><code class="docutils literal"><span class="pre">ingestion_rules</span></code></a><a class="headerlink" href="#ingestion-rules" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">ingestion_rules</span></code> table contains rules created by
+<a class="reference internal" href="../sql/statements/create-ingest-rule.html#create-ingest-rule"><span class="std std-ref">CREATE INGEST RULE</span></a> statements.</p>
+<p class="rubric">Schema</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="61%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Data Type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>rule_name</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>source_ident</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td>target_table</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>condition</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">rule_name:</th><td class="field-body">The rule name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">source_ident:</th><td class="field-body">The ingestion source identifier</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">target_table:</th><td class="field-body">The target table identifier</td>
+</tr>
+<tr class="field-even field"><th class="field-name">condition:</th><td class="field-body">A boolean expression used to filter the source data</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>
