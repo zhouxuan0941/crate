@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Fulltext Search &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../../index.html" />
+    <link rel="up" title="Querying Crate" href="index.html" />
+    <link rel="next" title="Geo Search" href="geo.html" />
+    <link rel="prev" title="Refresh" href="refresh.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">General Use</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ddl/index.html">Data Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Querying Crate</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="refresh.html">Refresh</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="fulltext-search">
+<span id="sql-dql-fulltext-search"></span><h1>Fulltext Search<a class="headerlink" href="#fulltext-search" title="Permalink to this headline">¶</a></h1>
+<p>In order to use fulltext search on one or more columns, a
+<a class="reference internal" href="../ddl/fulltext-indices.html#sql-ddl-index-fulltext"><span class="std std-ref">fulltext index with an analyzer</span></a> has to be
+defined while creating the column: either with <code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code> or <code class="docutils literal"><span class="pre">ALTER</span>
+<span class="pre">TABLE</span> <span class="pre">ADD</span> <span class="pre">COLUMN</span></code>. For more information see <a class="reference internal" href="../ddl/fulltext-indices.html#fulltext-indices"><span class="std std-ref">Fulltext Indices</span></a>.</p>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#match-predicate" id="id1"><code class="docutils literal"><span class="pre">MATCH</span></code> Predicate</a><ul>
+<li><a class="reference internal" href="#synopsis" id="id2">Synopsis</a><ul>
+<li><a class="reference internal" href="#arguments" id="id3">Arguments</a></li>
+<li><a class="reference internal" href="#match-types" id="id4">Match Types</a><ul>
+<li><a class="reference internal" href="#options" id="id5">Options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage" id="id6">Usage</a></li>
+<li><a class="reference internal" href="#searching-on-multiple-columns" id="id7">Searching On Multiple Columns</a></li>
+<li><a class="reference internal" href="#negative-search" id="id8">Negative Search</a></li>
+<li><a class="reference internal" href="#filter-by-score" id="id9">Filter By <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a></a></li>
+</ul>
+</div>
+<div class="section" id="match-predicate">
+<span id="predicates-match"></span><h2><a class="toc-backref" href="#id1"><code class="docutils literal"><span class="pre">MATCH</span></code> Predicate</a><a class="headerlink" href="#match-predicate" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="synopsis">
+<h3><a class="toc-backref" href="#id2">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">MATCH</span> <span class="p">(</span>
+     <span class="p">{</span>  <span class="n">column_ident</span> <span class="o">|</span> <span class="p">(</span> <span class="n">column_ident</span> <span class="p">[</span><span class="n">boost</span><span class="p">]</span>  <span class="p">[,</span> <span class="mf">...</span><span class="p">]</span> <span class="p">)</span> <span class="p">}</span>
+ <span class="p">,</span> <span class="n">query_term</span>
+<span class="p">)</span>  <span class="p">[</span> <span class="k">using</span> <span class="n">match_type</span> <span class="p">[</span> <span class="k">with</span> <span class="p">(</span> <span class="n">match_parameter</span> <span class="p">[</span><span class="o">=</span> <span class="k">value</span><span class="p">]</span> <span class="p">[,</span> <span class="mf">...</span> <span class="p">]</span> <span class="p">)</span> <span class="p">]</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>The MATCH predicate performs a fulltext search on one or more indexed columns
+or indices and supports different matching techniques. It can also be used to
+perform <a class="reference internal" href="geo.html#sql-dql-geo-search"><span class="std std-ref">geographical searches</span></a> on
+<a class="reference internal" href="../ddl/data-types.html#geo-shape-data-type"><span class="std std-ref">geo_shape</span></a> indices.</p>
+<p>The actual applicability of the MATCH predicate depends on the index&#8217;s type. In
+fact, the availability of certain <code class="docutils literal"><span class="pre">match_types</span></code> and <code class="docutils literal"><span class="pre">match_parameters</span></code>
+depend on the index. This section however, only covers the usage of the MATCH
+predicate on <code class="docutils literal"><span class="pre">fulltext</span></code> indices on string columns. To use MATCH on
+<a class="reference internal" href="../ddl/data-types.html#geo-shape-data-type"><span class="std std-ref">geo_shape</span></a> indices, see <a class="reference internal" href="geo.html#sql-dql-geo-search"><span class="std std-ref">Geo Search</span></a>.</p>
+<p>In order to use fulltext searches on a column, a <a class="reference internal" href="../ddl/fulltext-indices.html#sql-ddl-index-fulltext"><span class="std std-ref">fulltext index with an
+analyzer</span></a> must be created for this column. See
+<a class="reference internal" href="../ddl/fulltext-indices.html#fulltext-indices"><span class="std std-ref">Fulltext Indices</span></a> for details. There are different types of
+<a class="reference internal" href="../ddl/fulltext-indices.html#fulltext-indices"><span class="std std-ref">Fulltext Indices</span></a> with different goals, however it&#8217;s not possible to
+query multiple index columns with different index types within the same MATCH
+predicate.</p>
+<p>To get the relevance of a matching row, a specific system column
+<a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> can be selected. It
+contains a numeric score <em>relative to the other rows</em>: The higher, the more
+relevant the row:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">_score</span> <span class="k">from</span> <span class="n">locations</span> <span class="k">where</span> <span class="k">match</span><span class="p">(</span><span class="n">name_description_ft</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span> <span class="k">order</span> <span class="k">by</span> <span class="n">_score</span> <span class="k">desc</span><span class="p">;</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">| name      |    _score |</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">| Bartledan | 1.5112252 |</span>
+<span class="go">| Altair    | 1.3862944 |</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>The MATCH predicate in its simplest form performs a fulltext search against a
+single column. It takes the <code class="docutils literal"><span class="pre">query_term</span></code> and, if no <code class="docutils literal"><span class="pre">analyzer</span></code> was
+provided, analyzes the term with the analyzer configured on <code class="docutils literal"><span class="pre">column_ident</span></code>.
+The resulting tokens are then matched against the index at <code class="docutils literal"><span class="pre">column_ident</span></code> and
+if one of them matches, MATCH returns <code class="docutils literal"><span class="pre">TRUE</span></code>.</p>
+<p>The MATCH predicate can be also used to perform a fulltext search on multiple
+columns with a single <code class="docutils literal"><span class="pre">query_term</span></code> and to add weight to specific columns it&#8217;s
+possible to add a <code class="docutils literal"><span class="pre">boost</span></code> argument to each <code class="docutils literal"><span class="pre">column_ident</span></code>. Matches on
+columns with a higher boost result in a higher <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> value for that document.</p>
+<p>The <code class="docutils literal"><span class="pre">match_type</span></code> argument determines how a single <code class="docutils literal"><span class="pre">query_term</span></code> is applied
+and and how the resulting <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> is computed. For more information see
+<a class="reference internal" href="#predicates-match-types"><span class="std std-ref">Match Types</span></a>.</p>
+<p>Results are ordered by <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a>
+by default, but can be overridden by adding an <code class="docutils literal"><span class="pre">ORDER</span> <span class="pre">BY</span></code> clause.</p>
+<div class="section" id="arguments">
+<h4><a class="toc-backref" href="#id3">Arguments</a><a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h4>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">column_ident:</th><td class="field-body">A reference to an index column or an existing column that is
+indexed and of type <code class="docutils literal"><span class="pre">string</span></code>. By default every column is
+indexed but only the raw data is stored, so matching against a
+<code class="docutils literal"><span class="pre">string</span></code> column without a fulltext index is equivalent to
+using the <code class="docutils literal"><span class="pre">=</span></code> operator. To perform real fulltext searches use
+a <a class="reference internal" href="../ddl/fulltext-indices.html#sql-ddl-index-fulltext"><span class="std std-ref">Fulltext Index With Analyzer</span></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">boost:</th><td class="field-body">a column ident can have a boost attached. That is a weight factor that
+increases the relevance of a column in respect to the other columns.
+The default boost is 1.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">query_term:</th><td class="field-body">This string is analyzed (using the explicitly given <code class="docutils literal"><span class="pre">analyzer</span></code>
+or the analyzer of the columns to perform the search on) and the
+resulting tokens are compared to the index. The tokens used for
+search are combined using the boolean <code class="docutils literal"><span class="pre">OR</span></code> operator unless
+stated otherwise using the <code class="docutils literal"><span class="pre">operator</span></code> option.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">match_type:</th><td class="field-body">Optional. Defaults to <code class="docutils literal"><span class="pre">best_fields</span></code> for fulltext indices. For
+details see <a class="reference internal" href="#predicates-match-types"><span class="std std-ref">Match Types</span></a>.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">MATCH</span></code> predicate can only be used in the <a class="reference internal" href="selects.html#sql-dql-where-clause"><span class="std std-ref">WHERE Clause</span></a>
+and on user-created tables. Using the <code class="docutils literal"><span class="pre">MATCH</span></code> predicate on system tables
+is not supported.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">One MATCH predicate cannot combine columns of both relations of a join.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>MATCH predicates cannot be used on columns of both relations of a join if
+they cannot be logically applied to each of them separately. For example:</p>
+<p>This is allowed: FROM t1, t2 WHERE match(t1.txt, &#8216;foo&#8217;) AND match(t2.txt,
+&#8216;bar&#8217;);</p>
+<p class="last">But this is not: FROM t1, t2 WHERE match(t1.txt, &#8216;foo&#8217;) OR match(t2.txt,
+&#8216;bar&#8217;);</p>
+</div>
+</div>
+<div class="section" id="match-types">
+<span id="predicates-match-types"></span><h4><a class="toc-backref" href="#id4">Match Types</a><a class="headerlink" href="#match-types" title="Permalink to this headline">¶</a></h4>
+<p>The match type determines how the <code class="docutils literal"><span class="pre">query_term</span></code> is applied and the
+<a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> is created, thereby
+influencing which documents are considered more relevant. The default
+<code class="docutils literal"><span class="pre">match_type</span></code> for fulltext indices is <code class="docutils literal"><span class="pre">best_fields</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">best_fields:</th><td class="field-body"><p class="first">Use the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> of
+the column that matched best. For example if a column contains
+all the tokens of the <code class="docutils literal"><span class="pre">query_term</span></code> it&#8217;s considered more
+relevant than other columns containing only one.</p>
+<p>This type is the default, if omitted.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">most_fields:</th><td class="field-body"><p class="first">This match type takes the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> of every matching
+column and averages their scores.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">cross_fields:</th><td class="field-body"><p class="first">This match type analyzes the <code class="docutils literal"><span class="pre">query_term</span></code> into tokens and
+searches all tokens in all given columns at once as if they were
+one big column (given they have the same analyzer). All tokens
+have to be present in at least one column, so querying for <code class="docutils literal"><span class="pre">foo</span>
+<span class="pre">bar</span></code> should have the tokens <code class="docutils literal"><span class="pre">foo</span></code> in one column and <code class="docutils literal"><span class="pre">bar</span></code>
+in the same or any other.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">phrase:</th><td class="field-body"><p class="first">This match type differs from <code class="docutils literal"><span class="pre">best_fields</span></code> in that it constructs a
+phrase query from the <code class="docutils literal"><span class="pre">query_term</span></code>. A phrase query will only match
+if the tokens in the columns are <em>exactly</em> in the same order as the
+analyzed columns from the <code class="docutils literal"><span class="pre">query_term</span></code>. So, querying for <code class="docutils literal"><span class="pre">foo</span> <span class="pre">bar</span></code>
+(analyzed tokens: <code class="docutils literal"><span class="pre">foo</span></code> and <code class="docutils literal"><span class="pre">bar</span></code>) will only match if one of the
+columns contains those two token in that order - without any other
+tokens in between.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">phrase_prefix:</th><td class="field-body"><p class="first last">This match type is roughly the same than <code class="docutils literal"><span class="pre">phrase</span></code> but it
+allows to match by prefix on the last token of the
+<code class="docutils literal"><span class="pre">query_term</span></code>. For example if your query for <code class="docutils literal"><span class="pre">foo</span> <span class="pre">ba</span></code>, one
+of the columns has to contain <code class="docutils literal"><span class="pre">foo</span></code> and a token that starts
+with <code class="docutils literal"><span class="pre">ba</span></code> in that order. So a column containing <code class="docutils literal"><span class="pre">foo</span> <span class="pre">baz</span></code>
+would match and <code class="docutils literal"><span class="pre">foo</span> <span class="pre">bar</span></code> too.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="options">
+<h5><a class="toc-backref" href="#id5">Options</a><a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h5>
+<p>The match options further distinguish the way the matching process using a
+certain match type works. Not all options are applicable to all match types.
+See the options below for details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">analyzer:</th><td class="field-body"><p class="first">The analyzer used to convert the <code class="docutils literal"><span class="pre">query_term</span></code> into tokens.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">boost:</th><td class="field-body"><p class="first">This numeric value is multiplied with the resulting <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> of this <code class="docutils literal"><span class="pre">match</span></code> call. If
+this <code class="docutils literal"><span class="pre">match</span></code> call is used with other conditions in the where clause a
+value above <code class="docutils literal"><span class="pre">1.0</span></code> will increase its influence on the overall
+<a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> of the whole
+query, a value below <code class="docutils literal"><span class="pre">1.0</span></code> will decrease it.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">cutoff_frequency:</th><td class="field-body"><p class="first">The token frequency is the number of occurrences of a token
+in a column. This option specifies a minimum token frequency
+that excludes matching tokens with a higher frequency from
+the overall <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a>. Their
+<a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> is
+only included if another token with a lower frequency also
+matches. This can be used to suppress results where only
+high frequency terms like <code class="docutils literal"><span class="pre">the</span></code> would cause a match.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">fuzziness:</th><td class="field-body"><p class="first">Can be used to perform fuzzy full text search.</p>
+<p>On numeric columns use a numeric, on timestamp columns a long
+indicating milliseconds, on strings use a number indicating the
+maximum allowed Levenshtein Edit Distance. Use <code class="docutils literal"><span class="pre">prefix_length</span></code>,
+<code class="docutils literal"><span class="pre">fuzzy_rewrite</span></code> and <code class="docutils literal"><span class="pre">max_expansions</span></code> to fine tune the fuzzy
+matching process.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">fuzzy_rewrite:</th><td class="field-body"><p class="first">The same than <code class="docutils literal"><span class="pre">rewrite</span></code> but only applies to queries using
+<code class="docutils literal"><span class="pre">fuzziness</span></code>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">max_expansions:</th><td class="field-body"><p class="first">When using <code class="docutils literal"><span class="pre">fuzziness</span></code> or <code class="docutils literal"><span class="pre">phrase_prefix</span></code> this options
+controls to how many different possible tokens a search token
+will be expanded. The <code class="docutils literal"><span class="pre">fuzziness</span></code> controls how big the
+distance or difference between the original token and the set
+of tokens it is expanded to can be. This option controls how
+big this set can get.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">minimum_should_match:</th><td class="field-body"><p class="first">The number of tokens from the <code class="docutils literal"><span class="pre">query_term</span></code> to match
+when <code class="docutils literal"><span class="pre">or</span></code> is used. Defaults to <code class="docutils literal"><span class="pre">1</span></code>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">operator:</th><td class="field-body"><p class="first">Can be <code class="docutils literal"><span class="pre">or</span></code> or <code class="docutils literal"><span class="pre">and</span></code>. The default is <code class="docutils literal"><span class="pre">or</span></code>. It is used to
+combine the tokens of the <code class="docutils literal"><span class="pre">query_term</span></code>. If <code class="docutils literal"><span class="pre">and</span></code> is used, every
+token from the <code class="docutils literal"><span class="pre">query_term</span></code> has to match. If <code class="docutils literal"><span class="pre">or</span></code> is used only
+the number of <code class="docutils literal"><span class="pre">minimum_should_match</span></code> have to match.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">prefix_length:</th><td class="field-body"><p class="first">When used with <code class="docutils literal"><span class="pre">fuzziness</span></code> option or with <code class="docutils literal"><span class="pre">phrase_prefix</span></code>
+this options controls how long the common prefix of the tokens
+that are considered as similar (same prefix or fuzziness
+distance/difference)has to be.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rewrite:</th><td class="field-body"><p class="first">When using <code class="docutils literal"><span class="pre">phrase_prefix</span></code> the prefix query is constructed
+using all possible terms and rewriting them into another kind of
+query to compute the score. Possible values are
+<code class="docutils literal"><span class="pre">constant_score_auto</span></code>, <code class="docutils literal"><span class="pre">constant_score_boolean</span></code>,
+<code class="docutils literal"><span class="pre">constant_score_filter</span></code>, <code class="docutils literal"><span class="pre">scoring_boolean</span></code>,``top_terms_N``,
+<code class="docutils literal"><span class="pre">top_terms_boost_N</span></code>. The <code class="docutils literal"><span class="pre">constant_...</span></code> values can be used
+together with the <code class="docutils literal"><span class="pre">boost</span></code> option to set a constant <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> for rows with a matching
+prefix or fuzzy match.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">slop:</th><td class="field-body"><p class="first">When matching for phrases this option controls how exact the phrase
+match should be (proximity search). If set to <code class="docutils literal"><span class="pre">0</span></code> (the default), the
+terms must be in the exact order. If two transposed terms should match,
+a minimum <code class="docutils literal"><span class="pre">slop</span></code> of <code class="docutils literal"><span class="pre">2</span></code> has to be set. Only applicable to <code class="docutils literal"><span class="pre">phrase</span></code>
+and <code class="docutils literal"><span class="pre">phrase_prefix</span></code> queries. As an example with <code class="docutils literal"><span class="pre">slop</span></code> 2, querying
+for <code class="docutils literal"><span class="pre">foo</span> <span class="pre">bar</span></code> will not only match <code class="docutils literal"><span class="pre">foo</span> <span class="pre">bar</span></code> but also <code class="docutils literal"><span class="pre">foo</span> <span class="pre">what</span> <span class="pre">a</span>
+<span class="pre">bar</span></code>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">tie_breaker:</th><td class="field-body"><p class="first">When using <code class="docutils literal"><span class="pre">best_fields</span></code>, <code class="docutils literal"><span class="pre">phrase</span></code> or <code class="docutils literal"><span class="pre">phrase_prefix</span></code>
+the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> of
+every other column will be multiplied with this value and added
+to the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> of
+the best matching column. Defaults to <code class="docutils literal"><span class="pre">0.0</span></code>. Not applicable to
+match type <code class="docutils literal"><span class="pre">most_fields</span></code> as this type is executed as if it had
+a <code class="docutils literal"><span class="pre">tie_breaker</span></code> of <code class="docutils literal"><span class="pre">1.0</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">zero_terms_query:</th><td class="field-body"><p class="first last">If no tokens are generated analyzing the <code class="docutils literal"><span class="pre">query_term</span></code> then
+no documents are matched. If <code class="docutils literal"><span class="pre">all</span></code> is given here, all
+documents are matched.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2><a class="toc-backref" href="#id6">Usage</a><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>A fulltext search is done using the <a class="reference internal" href="#predicates-match"><span class="std std-ref">MATCH Predicate</span></a> predicate:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span> <span class="k">from</span> <span class="n">locations</span> <span class="k">where</span> <span class="k">match</span><span class="p">(</span><span class="n">name_description_ft</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span> <span class="k">order</span> <span class="k">by</span> <span class="n">_score</span> <span class="k">desc</span><span class="p">;</span>
+<span class="go">+-----------+</span>
+<span class="go">| name      |</span>
+<span class="go">+-----------+</span>
+<span class="go">| Bartledan |</span>
+<span class="go">| Altair    |</span>
+<span class="go">+-----------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>It returns <code class="docutils literal"><span class="pre">TRUE</span></code> for rows which match the search string. To get more
+detailed information about the quality of a match, the relevance of the row,
+the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> can be selected:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">_score</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">locations</span> <span class="k">where</span> <span class="k">match</span><span class="p">(</span><span class="n">name_description_ft</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span> <span class="k">order</span> <span class="k">by</span> <span class="n">_score</span> <span class="k">desc</span><span class="p">;</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">| name      |    _score |</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">| Bartledan | 1.5112252 |</span>
+<span class="go">| Altair    | 1.3862944 |</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <cite>_score</cite> is not an absolute value. It just sets a row in relation to the
+other ones.</p>
+</div>
+</div>
+<div class="section" id="searching-on-multiple-columns">
+<h2><a class="toc-backref" href="#id7">Searching On Multiple Columns</a><a class="headerlink" href="#searching-on-multiple-columns" title="Permalink to this headline">¶</a></h2>
+<p>There are two possibilities if a search should span the contents of multiple
+columns:</p>
+<ul class="simple">
+<li>use a composite index column on your table. See
+<a class="reference internal" href="../ddl/fulltext-indices.html#sql-ddl-composite-index"><span class="std std-ref">Defining a Composite Index</span></a>.</li>
+<li>use the <a class="reference internal" href="#predicates-match"><span class="std std-ref">MATCH Predicate</span></a> predicate on multiple columns.</li>
+</ul>
+<p>When querying multiple columns, there are many ways how the relevance a.k.a.
+<a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> can be computed. These
+different techniques are called <a class="reference internal" href="#predicates-match-types"><span class="std std-ref">Match Types</span></a>.</p>
+<p>To increase the relevance of rows where one column matches extremely well, use
+<code class="docutils literal"><span class="pre">best_fields</span></code> (the default).</p>
+<p>If rows with good matches spread over all included columns should be more
+relevant, use <code class="docutils literal"><span class="pre">most_fields</span></code>. If searching multiple columns as if they were
+one, use <code class="docutils literal"><span class="pre">cross_fields</span></code>.</p>
+<p>For searching of matching phrases (tokens are in the exact same order) use
+<code class="docutils literal"><span class="pre">phrase</span></code> or <code class="docutils literal"><span class="pre">phrase_prefix</span></code>:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">_score</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="k">match</span><span class="p">(</span>
+<span class="mf">...</span>     <span class="p">(</span><span class="n">name_description_ft</span><span class="p">,</span> <span class="n">race</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">kind</span> <span class="mf">0.75</span><span class="p">),</span>
+<span class="mf">...</span>     <span class="s1">&#39;end of the galaxy&#39;</span>
+<span class="mf">...</span> <span class="p">)</span> <span class="k">order</span> <span class="k">by</span> <span class="n">_score</span> <span class="k">desc</span><span class="p">;</span>
+<span class="go">+-------------------+-----------+</span>
+<span class="go">| name              |    _score |</span>
+<span class="go">+-------------------+-----------+</span>
+<span class="go">| NULL              | 3.3526964 |</span>
+<span class="go">| Altair            | 1.3862944 |</span>
+<span class="go">| Aldebaran         | 1.2243153 |</span>
+<span class="go">| North West Ripple | 0.796588  |</span>
+<span class="go">| Outer Eastern Rim | 0.796588  |</span>
+<span class="go">+-------------------+-----------+</span>
+<span class="go">SELECT 5 rows in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">_score</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="k">match</span><span class="p">(</span>
+<span class="mf">...</span>     <span class="p">(</span><span class="n">name_description_ft</span><span class="p">),</span> <span class="s1">&#39;end of the galaxy&#39;</span>
+<span class="mf">...</span> <span class="p">)</span> <span class="k">using</span> <span class="n">phrase</span> <span class="k">with</span> <span class="p">(</span><span class="n">analyzer</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">slop</span><span class="o">=</span><span class="mf">4</span><span class="p">);</span>
+<span class="go">+------+-------------------------+-----------+</span>
+<span class="go">| name | description             |    _score |</span>
+<span class="go">+------+-------------------------+-----------+</span>
+<span class="go">| NULL | The end of the Galaxy.% | 3.3526967 |</span>
+<span class="go">+------+-------------------------+-----------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>A vast amount of options exist to fine-tune your fulltext search. A detailed
+reference can be found here <a class="reference internal" href="#predicates-match"><span class="std std-ref">MATCH Predicate</span></a>.</p>
+</div>
+<div class="section" id="negative-search">
+<h2><a class="toc-backref" href="#id8">Negative Search</a><a class="headerlink" href="#negative-search" title="Permalink to this headline">¶</a></h2>
+<p>A negative fulltext search can be done using a <code class="docutils literal"><span class="pre">NOT</span></code> clause:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">_score</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="k">not</span> <span class="k">match</span><span class="p">(</span><span class="n">name_description_ft</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">_score</span><span class="p">,</span> <span class="k">name</span> <span class="k">asc</span><span class="p">;</span>
+<span class="go">+------------------------------------+--------+</span>
+<span class="go">| name                               | _score |</span>
+<span class="go">+------------------------------------+--------+</span>
+<span class="go">|                                    |    1.0 |</span>
+<span class="go">| Aldebaran                          |    1.0 |</span>
+<span class="go">| Algol                              |    1.0 |</span>
+<span class="go">| Allosimanius Syneca                |    1.0 |</span>
+<span class="go">| Alpha Centauri                     |    1.0 |</span>
+<span class="go">| Argabuthon                         |    1.0 |</span>
+<span class="go">| Arkintoofle Minor                  |    1.0 |</span>
+<span class="go">| Galactic Sector QQ7 Active J Gamma |    1.0 |</span>
+<span class="go">| North West Ripple                  |    1.0 |</span>
+<span class="go">| Outer Eastern Rim                  |    1.0 |</span>
+<span class="go">| NULL                               |    1.0 |</span>
+<span class="go">+------------------------------------+--------+</span>
+<span class="go">SELECT 11 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="filter-by-score">
+<h2><a class="toc-backref" href="#id9">Filter By <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a></a><a class="headerlink" href="#filter-by-score" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to filter results by the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> column but as its value is a computed
+value relative to the highest score of all results and consequently never
+absolute or comparable across searches the usefulness outside of sorting is
+very limited.</p>
+<p>Although possible, filtering by the greater-than-or-equals(&#8216;&gt;=&#8217;) operator on
+the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> column would not
+make much sense and can lead to unpredictable result sets.</p>
+<p>Anyway let&#8217;s do it here for demonstration purpose:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">_score</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">locations</span> <span class="k">where</span> <span class="k">match</span><span class="p">(</span><span class="n">name_description_ft</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">and</span> <span class="n">_score</span> <span class="o">&gt;=</span> <span class="mf">0.8</span> <span class="k">order</span> <span class="k">by</span> <span class="n">_score</span><span class="p">;</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">| name      |    _score |</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">| Altair    | 2.3862944 |</span>
+<span class="go">| Bartledan | 2.5112252 |</span>
+<span class="go">+-----------+-----------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>As you might have noticed, the <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> value has changed for the same query
+text and document because it&#8217;s a ratio relative to all results, and by
+filtering on <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a>, &#8216;all
+results&#8217; has already changed.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">As noted above <a class="reference internal" href="../ddl/system-columns.html#sql-administration-system-column-score"><span class="std std-ref">_score</span></a> is a
+relative number and not comparable across searches. Filtering is therefore
+greatly discouraged.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>

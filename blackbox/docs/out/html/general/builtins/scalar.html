@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scalar Functions &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../../index.html" />
+    <link rel="up" title="Built-in Functions and Operators" href="index.html" />
+    <link rel="next" title="Aggregation" href="aggregation.html" />
+    <link rel="prev" title="Built-in Functions and Operators" href="index.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">General Use</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ddl/index.html">Data Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ddl/alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Built-in Functions and Operators</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="scalar-functions">
+<span id="scalar"></span><h1>Scalar Functions<a class="headerlink" href="#scalar-functions" title="Permalink to this headline">¶</a></h1>
+<p>Scalar functions return a single value (not a table).</p>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#string-functions" id="id10">String Functions</a><ul>
+<li><a class="reference internal" href="#concat-first-arg-second-arg-parameter" id="id11"><code class="docutils literal"><span class="pre">concat('first_arg',</span> <span class="pre">second_arg,</span> <span class="pre">[</span> <span class="pre">parameter</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a></li>
+<li><a class="reference internal" href="#format-format-string-parameter-parameter" id="id12"><code class="docutils literal"><span class="pre">format('format_string',</span> <span class="pre">parameter,</span> <span class="pre">[</span> <span class="pre">parameter</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a></li>
+<li><a class="reference internal" href="#substr-string-from-count" id="id13"><code class="docutils literal"><span class="pre">substr('string',</span> <span class="pre">from,</span> <span class="pre">[</span> <span class="pre">count</span> <span class="pre">])</span></code></a></li>
+<li><a class="reference internal" href="#char-length-string" id="id14"><code class="docutils literal"><span class="pre">char_length('string')</span></code></a></li>
+<li><a class="reference internal" href="#bit-length-string" id="id15"><code class="docutils literal"><span class="pre">bit_length('string')</span></code></a></li>
+<li><a class="reference internal" href="#octet-length-string" id="id16"><code class="docutils literal"><span class="pre">octet_length('string')</span></code></a></li>
+<li><a class="reference internal" href="#lower-string" id="id17"><code class="docutils literal"><span class="pre">lower('string')</span></code></a></li>
+<li><a class="reference internal" href="#upper-string" id="id18"><code class="docutils literal"><span class="pre">upper('string')</span></code></a></li>
+<li><a class="reference internal" href="#sha1-string" id="id19"><code class="docutils literal"><span class="pre">sha1('string')</span></code></a></li>
+<li><a class="reference internal" href="#md5-string" id="id20"><code class="docutils literal"><span class="pre">md5('string')</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#date-and-time-functions" id="id21">Date and Time Functions</a><ul>
+<li><a class="reference internal" href="#date-trunc-interval-timezone-timestamp" id="id22"><code class="docutils literal"><span class="pre">date_trunc('interval',</span> <span class="pre">['timezone',]</span> <span class="pre">timestamp)</span></code></a></li>
+<li><a class="reference internal" href="#extract-field-from-source" id="id23"><code class="docutils literal"><span class="pre">extract(field</span> <span class="pre">from</span> <span class="pre">source)</span></code></a><ul>
+<li><a class="reference internal" href="#synopsis" id="id24">Synopsis</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#current-timestamp" id="id25"><code class="docutils literal"><span class="pre">CURRENT_TIMESTAMP</span></code></a></li>
+<li><a class="reference internal" href="#date-format-format-string-timezone-timestamp" id="id26"><code class="docutils literal"><span class="pre">date_format([format_string,</span> <span class="pre">[timezone,]]</span> <span class="pre">timestamp)</span></code></a><ul>
+<li><a class="reference internal" href="#id1" id="id27">Synopsis</a></li>
+<li><a class="reference internal" href="#format" id="id28">Format</a></li>
+<li><a class="reference internal" href="#timezone" id="id29">Timezone</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#geo-functions" id="id30">Geo Functions</a><ul>
+<li><a class="reference internal" href="#distance-geo-point1-geo-point2" id="id31"><code class="docutils literal"><span class="pre">distance(geo_point1,</span> <span class="pre">geo_point2)</span></code></a></li>
+<li><a class="reference internal" href="#within-shape1-shape2" id="id32"><code class="docutils literal"><span class="pre">within(shape1,</span> <span class="pre">shape2)</span></code></a></li>
+<li><a class="reference internal" href="#intersects-geo-shape-geo-shape" id="id33"><code class="docutils literal"><span class="pre">intersects(geo_shape,</span> <span class="pre">geo_shape)</span></code></a></li>
+<li><a class="reference internal" href="#latitude-geo-point-and-longitude-geo-point" id="id34"><code class="docutils literal"><span class="pre">latitude(geo_point)</span></code> and <code class="docutils literal"><span class="pre">longitude(geo_point)</span></code></a></li>
+<li><a class="reference internal" href="#geohash-geo-point" id="id35"><code class="docutils literal"><span class="pre">geohash(geo_point)</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathematical-functions" id="id36">Mathematical Functions</a><ul>
+<li><a class="reference internal" href="#abs-number" id="id37"><code class="docutils literal"><span class="pre">abs(number)</span></code></a></li>
+<li><a class="reference internal" href="#ceil-number" id="id38"><code class="docutils literal"><span class="pre">ceil(number)</span></code></a></li>
+<li><a class="reference internal" href="#floor-number" id="id39"><code class="docutils literal"><span class="pre">floor(number)</span></code></a></li>
+<li><a class="reference internal" href="#ln-number" id="id40"><code class="docutils literal"><span class="pre">ln(number)</span></code></a></li>
+<li><a class="reference internal" href="#log-x-number-b-number" id="id41"><code class="docutils literal"><span class="pre">log(x</span> <span class="pre">:</span> <span class="pre">number,</span> <span class="pre">b</span> <span class="pre">:</span> <span class="pre">number)</span></code></a></li>
+<li><a class="reference internal" href="#power-a-number-b-number" id="id42"><code class="docutils literal"><span class="pre">power(a:</span> <span class="pre">number,</span> <span class="pre">b:</span> <span class="pre">number)</span></code></a></li>
+<li><a class="reference internal" href="#random" id="id43"><code class="docutils literal"><span class="pre">random()</span></code></a></li>
+<li><a class="reference internal" href="#round-number" id="id44"><code class="docutils literal"><span class="pre">round(number)</span></code></a></li>
+<li><a class="reference internal" href="#sqrt-number" id="id45"><code class="docutils literal"><span class="pre">sqrt(number)</span></code></a></li>
+<li><a class="reference internal" href="#sin-number" id="id46"><code class="docutils literal"><span class="pre">sin(number)</span></code></a></li>
+<li><a class="reference internal" href="#asin-number" id="id47"><code class="docutils literal"><span class="pre">asin(number)</span></code></a></li>
+<li><a class="reference internal" href="#cos-number" id="id48"><code class="docutils literal"><span class="pre">cos(number)</span></code></a></li>
+<li><a class="reference internal" href="#acos-number" id="id49"><code class="docutils literal"><span class="pre">acos(number)</span></code></a></li>
+<li><a class="reference internal" href="#tan-number" id="id50"><code class="docutils literal"><span class="pre">tan(number)</span></code></a></li>
+<li><a class="reference internal" href="#atan-number" id="id51"><code class="docutils literal"><span class="pre">atan(number)</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#regular-expression-functions" id="id52">Regular Expression Functions</a><ul>
+<li><a class="reference internal" href="#regexp-matches-source-pattern-flags" id="id53"><code class="docutils literal"><span class="pre">regexp_matches(source,</span> <span class="pre">pattern</span> <span class="pre">[,</span> <span class="pre">flags])</span></code></a><ul>
+<li><a class="reference internal" href="#flags" id="id54">Flags</a></li>
+<li><a class="reference internal" href="#examples" id="id55">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#regexp-replace-source-pattern-replacement-flags" id="id56"><code class="docutils literal"><span class="pre">regexp_replace(source,</span> <span class="pre">pattern,</span> <span class="pre">replacement</span> <span class="pre">[,</span> <span class="pre">flags])</span></code></a><ul>
+<li><a class="reference internal" href="#id4" id="id57">Flags</a></li>
+<li><a class="reference internal" href="#id5" id="id58">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#array-functions" id="id59">Array Functions</a><ul>
+<li><a class="reference internal" href="#array-cat-first-array-second-array" id="id60"><code class="docutils literal"><span class="pre">array_cat(first_array,</span> <span class="pre">second_array)</span></code></a></li>
+<li><a class="reference internal" href="#array-unique-first-array-second-array" id="id61"><code class="docutils literal"><span class="pre">array_unique(first_array,</span> <span class="pre">[</span> <span class="pre">second_array])</span></code></a></li>
+<li><a class="reference internal" href="#array-difference-first-array-second-array" id="id62"><code class="docutils literal"><span class="pre">array_difference(first_array,</span> <span class="pre">second_array)</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conditional-functions-and-expressions" id="id63">Conditional Functions and Expressions</a><ul>
+<li><a class="reference internal" href="#case-when-then-end" id="id64"><code class="docutils literal"><span class="pre">CASE</span> <span class="pre">WHEN</span> <span class="pre">...</span> <span class="pre">THEN</span> <span class="pre">...</span> <span class="pre">END</span></code></a></li>
+<li><a class="reference internal" href="#if-condition-result-default" id="id65"><code class="docutils literal"><span class="pre">if(condition,</span> <span class="pre">result</span> <span class="pre">[,</span> <span class="pre">default])</span></code></a></li>
+<li><a class="reference internal" href="#coalesce-first-arg-second-arg" id="id66"><code class="docutils literal"><span class="pre">coalesce('first_arg',</span> <span class="pre">second_arg</span> <span class="pre">[,</span> <span class="pre">...</span> <span class="pre">])</span></code></a></li>
+<li><a class="reference internal" href="#greatest-first-arg-second-arg" id="id67"><code class="docutils literal"><span class="pre">greatest('first_arg',</span> <span class="pre">second_arg[</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a></li>
+<li><a class="reference internal" href="#least-first-arg-second-arg" id="id68"><code class="docutils literal"><span class="pre">least('first_arg',</span> <span class="pre">second_arg[</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a></li>
+<li><a class="reference internal" href="#nullif-first-arg-second-arg" id="id69"><code class="docutils literal"><span class="pre">nullif('first_arg',</span> <span class="pre">second_arg)</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#system-information-functions" id="id70">System Information Functions</a><ul>
+<li><a class="reference internal" href="#current-schema" id="id71"><code class="docutils literal"><span class="pre">CURRENT_SCHEMA</span></code></a></li>
+<li><a class="reference internal" href="#current-user" id="id72"><code class="docutils literal"><span class="pre">CURRENT_USER</span></code></a></li>
+<li><a class="reference internal" href="#user" id="id73"><code class="docutils literal"><span class="pre">USER</span></code></a></li>
+<li><a class="reference internal" href="#session-user" id="id74"><code class="docutils literal"><span class="pre">SESSION_USER</span></code></a></li>
+<li><a class="reference internal" href="#pg-backend-pid" id="id75"><code class="docutils literal"><span class="pre">pg_backend_pid()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="string-functions">
+<h2><a class="toc-backref" href="#id10">String Functions</a><a class="headerlink" href="#string-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="concat-first-arg-second-arg-parameter">
+<h3><a class="toc-backref" href="#id11"><code class="docutils literal"><span class="pre">concat('first_arg',</span> <span class="pre">second_arg,</span> <span class="pre">[</span> <span class="pre">parameter</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a><a class="headerlink" href="#concat-first-arg-second-arg-parameter" title="Permalink to this headline">¶</a></h3>
+<p>Concatenates a variable number of arguments into a single string. It ignores
+<code class="docutils literal"><span class="pre">NULL</span></code> values.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">concat</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+----------------------------+</span>
+<span class="go">| concat(&#39;foo&#39;, null, &#39;bar&#39;) |</span>
+<span class="go">+----------------------------+</span>
+<span class="go">| foobar                     |</span>
+<span class="go">+----------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>You can also use the <code class="docutils literal"><span class="pre">||</span></code> operator:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="s1">&#39;foo&#39;</span> <span class="o">||</span> <span class="s1">&#39;bar&#39;</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+----------------------+</span>
+<span class="go">| concat(&#39;foo&#39;, &#39;bar&#39;) |</span>
+<span class="go">+----------------------+</span>
+<span class="go">| foobar               |</span>
+<span class="go">+----------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="format-format-string-parameter-parameter">
+<h3><a class="toc-backref" href="#id12"><code class="docutils literal"><span class="pre">format('format_string',</span> <span class="pre">parameter,</span> <span class="pre">[</span> <span class="pre">parameter</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a><a class="headerlink" href="#format-format-string-parameter-parameter" title="Permalink to this headline">¶</a></h3>
+<p>Formats a string similar to the C function <code class="docutils literal"><span class="pre">printf</span></code>. For details about the
+format string syntax, see <a class="reference external" href="http://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html">formatter</a></p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">format</span><span class="p">(</span><span class="s1">&#39;%s.%s&#39;</span><span class="p">,</span> <span class="n">schema_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">shards</span>
+<span class="mf">...</span> <span class="k">where</span> <span class="n">table_name</span> <span class="o">=</span> <span class="s1">&#39;locations&#39;</span>
+<span class="mf">...</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+------------------------------------------+</span>
+<span class="go">| format(&#39;%s.%s&#39;, schema_name, table_name) |</span>
+<span class="go">+------------------------------------------+</span>
+<span class="go">| doc.locations                            |</span>
+<span class="go">+------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">format</span><span class="p">(</span><span class="s1">&#39;%tY&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">)</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">group</span> <span class="k">by</span> <span class="n">format</span><span class="p">(</span><span class="s1">&#39;%tY&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+---------------------+</span>
+<span class="go">| format(&#39;%tY&#39;, date) |</span>
+<span class="go">+---------------------+</span>
+<span class="go">|                1979 |</span>
+<span class="go">|                2013 |</span>
+<span class="go">+---------------------+</span>
+<span class="go">SELECT 2 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="substr-string-from-count">
+<h3><a class="toc-backref" href="#id13"><code class="docutils literal"><span class="pre">substr('string',</span> <span class="pre">from,</span> <span class="pre">[</span> <span class="pre">count</span> <span class="pre">])</span></code></a><a class="headerlink" href="#substr-string-from-count" title="Permalink to this headline">¶</a></h3>
+<p>Extracts a part of a string. <code class="docutils literal"><span class="pre">from</span></code> specifies where to start and <code class="docutils literal"><span class="pre">count</span></code>
+the length of the part.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">substr</span><span class="p">(</span><span class="k">name</span><span class="p">,</span> <span class="mf">3</span><span class="p">,</span> <span class="mf">2</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span>
+<span class="mf">...</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">| substr(name, 3, 2) |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| at                 |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="char-length-string">
+<span id="scalar-char-length"></span><h3><a class="toc-backref" href="#id14"><code class="docutils literal"><span class="pre">char_length('string')</span></code></a><a class="headerlink" href="#char-length-string" title="Permalink to this headline">¶</a></h3>
+<p>Counts the number of characters in a string.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">integer</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">char_length</span><span class="p">(</span><span class="s1">&#39;crate.io&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------------------+</span>
+<span class="go">| char_length(&#39;crate.io&#39;) |</span>
+<span class="go">+-------------------------+</span>
+<span class="go">|                       8 |</span>
+<span class="go">+-------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>Each character counts only once, regardless of its byte size.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">char_length</span><span class="p">(</span><span class="s1">&#39;©rate.io&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------------------+</span>
+<span class="go">| char_length(&#39;©rate.io&#39;) |</span>
+<span class="go">+-------------------------+</span>
+<span class="go">|                       8 |</span>
+<span class="go">+-------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bit-length-string">
+<span id="scalar-bit-length"></span><h3><a class="toc-backref" href="#id15"><code class="docutils literal"><span class="pre">bit_length('string')</span></code></a><a class="headerlink" href="#bit-length-string" title="Permalink to this headline">¶</a></h3>
+<p>Counts the number of bits in a string.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">integer</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">CrateDB uses UTF-8 encoding internally, which uses between 1 and 4 bytes
+per character.</p>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">bit_length</span><span class="p">(</span><span class="s1">&#39;crate.io&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------------------+</span>
+<span class="go">| bit_length(&#39;crate.io&#39;) |</span>
+<span class="go">+------------------------+</span>
+<span class="go">|                     64 |</span>
+<span class="go">+------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">bit_length</span><span class="p">(</span><span class="s1">&#39;©rate.io&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------------------+</span>
+<span class="go">| bit_length(&#39;©rate.io&#39;) |</span>
+<span class="go">+------------------------+</span>
+<span class="go">|                     72 |</span>
+<span class="go">+------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="octet-length-string">
+<span id="scalar-octet-length"></span><h3><a class="toc-backref" href="#id16"><code class="docutils literal"><span class="pre">octet_length('string')</span></code></a><a class="headerlink" href="#octet-length-string" title="Permalink to this headline">¶</a></h3>
+<p>Counts the number of bytes (octets) in a string.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">integer</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">octet_length</span><span class="p">(</span><span class="s1">&#39;crate.io&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------------+</span>
+<span class="go">| octet_length(&#39;crate.io&#39;) |</span>
+<span class="go">+--------------------------+</span>
+<span class="go">|                        8 |</span>
+<span class="go">+--------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">octet_length</span><span class="p">(</span><span class="s1">&#39;©rate.io&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------------+</span>
+<span class="go">| octet_length(&#39;©rate.io&#39;) |</span>
+<span class="go">+--------------------------+</span>
+<span class="go">|                        9 |</span>
+<span class="go">+--------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="lower-string">
+<h3><a class="toc-backref" href="#id17"><code class="docutils literal"><span class="pre">lower('string')</span></code></a><a class="headerlink" href="#lower-string" title="Permalink to this headline">¶</a></h3>
+<p>Converts all characters to lowercase. <code class="docutils literal"><span class="pre">lower</span></code> does not perform
+locale-sensitive or context-sensitive mappings.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">lower</span><span class="p">(</span><span class="s1">&#39;TransformMe&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span>
+<span class="mf">...</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+----------------------+</span>
+<span class="go">| lower(&#39;TransformMe&#39;) |</span>
+<span class="go">+----------------------+</span>
+<span class="go">| transformme          |</span>
+<span class="go">+----------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="upper-string">
+<h3><a class="toc-backref" href="#id18"><code class="docutils literal"><span class="pre">upper('string')</span></code></a><a class="headerlink" href="#upper-string" title="Permalink to this headline">¶</a></h3>
+<p>Converts all characters to uppercase. <code class="docutils literal"><span class="pre">upper</span></code> does not perform
+locale-sensitive or context-sensitive mappings.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">upper</span><span class="p">(</span><span class="s1">&#39;TransformMe&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">nodes</span>
+<span class="mf">...</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+----------------------+</span>
+<span class="go">| upper(&#39;TransformMe&#39;) |</span>
+<span class="go">+----------------------+</span>
+<span class="go">| TRANSFORMME          |</span>
+<span class="go">+----------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sha1-string">
+<span id="sha1"></span><h3><a class="toc-backref" href="#id19"><code class="docutils literal"><span class="pre">sha1('string')</span></code></a><a class="headerlink" href="#sha1-string" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>Computes the SHA1 checksum of the given string.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">sha1</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+<span class="go">+------------------------------------------+</span>
+<span class="go">| sha1(&#39;foo&#39;)                              |</span>
+<span class="go">+------------------------------------------+</span>
+<span class="go">| 0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33 |</span>
+<span class="go">+------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="md5-string">
+<h3><a class="toc-backref" href="#id20"><code class="docutils literal"><span class="pre">md5('string')</span></code></a><a class="headerlink" href="#md5-string" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>Computes the MD5 checksum of the given string.</p>
+<p>See <a class="reference internal" href="#sha1"><span class="std std-ref">sha1</span></a> for an example.</p>
+</div>
+</div>
+<div class="section" id="date-and-time-functions">
+<h2><a class="toc-backref" href="#id21">Date and Time Functions</a><a class="headerlink" href="#date-and-time-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="date-trunc-interval-timezone-timestamp">
+<span id="scalar-date-trunc"></span><h3><a class="toc-backref" href="#id22"><code class="docutils literal"><span class="pre">date_trunc('interval',</span> <span class="pre">['timezone',]</span> <span class="pre">timestamp)</span></code></a><a class="headerlink" href="#date-trunc-interval-timezone-timestamp" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">timestamp</span></code></p>
+<p>Limits a timestamps precision to a given interval.</p>
+<p>Valid intervals are:</p>
+<ul class="simple">
+<li>second</li>
+<li>minute</li>
+<li>hour</li>
+<li>day</li>
+<li>week</li>
+<li>month</li>
+<li>quarter</li>
+<li>year</li>
+</ul>
+<p>Valid values for <code class="docutils literal"><span class="pre">timezone</span></code> are either the name of a time zone (for example
+&#8216;Europe/Vienna&#8217;) or the UTC offset of a time zone (for example &#8216;+01:00&#8217;). To
+get a complete overview of all possible values take a look at the <a class="reference external" href="http://www.joda.org/joda-time/timezones.html">available
+time zones</a> supported by <a class="reference external" href="http://www.joda.org/joda-time/">Joda-Time</a>.</p>
+<p>The following example shows how to use the date_trunc function to generate a
+day based histogram in the <code class="docutils literal"><span class="pre">Europe/Moscow</span></code> timezone:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span>
+<span class="mf">...</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;Europe/Moscow&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">)</span> <span class="k">as</span> <span class="k">day</span><span class="p">,</span>
+<span class="mf">...</span> <span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">num_locations</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">group</span> <span class="k">by</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;Europe/Moscow&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;Europe/Moscow&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">);</span>
+<span class="go">+---------------+---------------+</span>
+<span class="go">| day           | num_locations |</span>
+<span class="go">+---------------+---------------+</span>
+<span class="go">| 308523600000  | 4             |</span>
+<span class="go">| 1367352000000 | 1             |</span>
+<span class="go">| 1373918400000 | 8             |</span>
+<span class="go">+---------------+---------------+</span>
+<span class="go">SELECT 3 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>If you don&#8217;t specify a time zone, <code class="docutils literal"><span class="pre">truncate</span></code> uses UTC time:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">)</span> <span class="k">as</span> <span class="k">day</span><span class="p">,</span> <span class="n">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">as</span> <span class="n">num_locations</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">group</span> <span class="k">by</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">);</span>
+<span class="go">+---------------+---------------+</span>
+<span class="go">| day           | num_locations |</span>
+<span class="go">+---------------+---------------+</span>
+<span class="go">| 308534400000  | 4             |</span>
+<span class="go">| 1367366400000 | 1             |</span>
+<span class="go">| 1373932800000 | 8             |</span>
+<span class="go">+---------------+---------------+</span>
+<span class="go">SELECT 3 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="extract-field-from-source">
+<h3><a class="toc-backref" href="#id23"><code class="docutils literal"><span class="pre">extract(field</span> <span class="pre">from</span> <span class="pre">source)</span></code></a><a class="headerlink" href="#extract-field-from-source" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">extract</span></code> is a special expression that translates to a function which
+retrieves subfields such as day, hour or minute from a timestamp.</p>
+<p>The return type depends on the used <code class="docutils literal"><span class="pre">field</span></code>.</p>
+<div class="section" id="synopsis">
+<h4><a class="toc-backref" href="#id24">Synopsis</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">EXTRACT</span><span class="p">(</span> <span class="n">field</span> <span class="k">FROM</span> <span class="n">expression</span> <span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">field:</th><td class="field-body">an identifier which identifies the part of the timestamp that should be
+extracted.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">expression:</th><td class="field-body">an expression that resolves to a timestamp or is castable to
+timestamp.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">extract</span><span class="p">(</span><span class="k">day</span> <span class="k">from</span> <span class="s1">&#39;2014-08-23&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+----------------------------------+</span>
+<span class="go">| EXTRACT(&#39;day&#39; FROM &#39;2014-08-23&#39;) |</span>
+<span class="go">+----------------------------------+</span>
+<span class="go">|                               23 |</span>
+<span class="go">+----------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">source</span></code> must be an expression that returns a timestamp. In case the
+expression has a different return type but is known to be castable to timestamp
+an implicit cast will be attempted.</p>
+<p><code class="docutils literal"><span class="pre">field</span></code> is an identifier that selects which part of the timestamp to extract.
+The following fields are supported:</p>
+<dl class="docutils">
+<dt><strong>CENTURY</strong></dt>
+<dd><div class="first line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">century of era</div>
+</div>
+<p>Returns the ISO representation which is a straight split of the date.</p>
+<p class="last">Year 2000 century 20 and year 2001 is also century 20. This is different to
+the GregorianJulian (GJ) calendar system where 2001 would be century 21.</p>
+</dd>
+<dt><strong>YEAR</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the year field</div>
+</div>
+</dd>
+<dt><strong>QUARTER</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the quarter of the year (1 - 4)</div>
+</div>
+</dd>
+<dt><strong>MONTH</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the month of the year</div>
+</div>
+</dd>
+<dt><strong>WEEK</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the week of the year</div>
+</div>
+</dd>
+<dt><strong>DAY</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the day of the month</div>
+</div>
+</dd>
+<dt><strong>DAY_OF_MONTH</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">same as <code class="docutils literal"><span class="pre">day</span></code></div>
+</div>
+</dd>
+<dt><strong>DAY_OF_WEEK</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">day of the week. Starting with Monday (1) to Sunday (7)</div>
+</div>
+</dd>
+<dt><strong>DOW</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">same as <code class="docutils literal"><span class="pre">day_of_week</span></code></div>
+</div>
+</dd>
+<dt><strong>DAY_OF_YEAR</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the day of the year (1 - 365 / 366)</div>
+</div>
+</dd>
+<dt><strong>DOY</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">same as <code class="docutils literal"><span class="pre">day_of_year</span></code></div>
+</div>
+</dd>
+<dt><strong>HOUR</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the hour field</div>
+</div>
+</dd>
+<dt><strong>MINUTE</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the minute field</div>
+</div>
+</dd>
+<dt><strong>SECOND</strong></dt>
+<dd><div class="first last line-block">
+<div class="line"><em>Return type:</em> <code class="docutils literal"><span class="pre">integer</span></code></div>
+<div class="line">the second field</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="current-timestamp">
+<h3><a class="toc-backref" href="#id25"><code class="docutils literal"><span class="pre">CURRENT_TIMESTAMP</span></code></a><a class="headerlink" href="#current-timestamp" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">CURRENT_TIMESTAMP</span></code> expression returns the timestamp in milliseconds
+since epoch at the time the SQL statement was handled. Therefore, the same
+timestamp value is returned for every invocation of a single statement.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the <code class="docutils literal"><span class="pre">CURRENT_TIMESTAMP</span></code> function is used in
+<a class="reference internal" href="../ddl/generated-columns.html#sql-ddl-generated-columns"><span class="std std-ref">Generated Columns</span></a> it behaves slightly different in
+<code class="docutils literal"><span class="pre">UPDATE</span></code> operations. In such a case the actual timestamp of each row
+update is returned.</p>
+</div>
+<p>synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">CURRENT_TIMESTAMP</span> <span class="p">[</span> <span class="p">(</span> <span class="k">precision</span> <span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">precision</span></code> must be a positive integer between 0 and 3. The default value is
+3. It determines the number of fractional seconds to output. A value of 0 means
+the timestamp will have second precision, no fractional seconds (milliseconds)
+are given.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">CURRENT_TIMESTAMP</span></code> will be evaluated  using javas
+<code class="docutils literal"><span class="pre">System.currentTimeMillis()</span></code>. So its actual result depends on the
+underlying operating system.</p>
+</div>
+</div>
+<div class="section" id="date-format-format-string-timezone-timestamp">
+<h3><a class="toc-backref" href="#id26"><code class="docutils literal"><span class="pre">date_format([format_string,</span> <span class="pre">[timezone,]]</span> <span class="pre">timestamp)</span></code></a><a class="headerlink" href="#date-format-format-string-timezone-timestamp" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">date_format</span></code> function formats a timestamp as string according to the
+(optional) format string.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<div class="section" id="id1">
+<h4><a class="toc-backref" href="#id27">Synopsis</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">DATE_FORMAT</span><span class="p">(</span> <span class="p">[</span> <span class="n">format_string</span><span class="p">,</span> <span class="p">[</span> <span class="n">timezone</span><span class="p">,</span> <span class="p">]</span> <span class="p">]</span> <span class="nb">timestamp</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>The only mandatory argument is the <code class="docutils literal"><span class="pre">timestamp</span></code> value to format. It can be any
+expression that is safely convertible to timestamp.</p>
+</div>
+<div class="section" id="format">
+<h4><a class="toc-backref" href="#id28">Format</a><a class="headerlink" href="#format" title="Permalink to this headline">¶</a></h4>
+<p>The syntax for the <code class="docutils literal"><span class="pre">format_string</span></code> is 100% compatible to the syntax of the
+<a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/date-and-time-functions.html#function_date-format">MySQL date_format</a> function. For reference, the format is listed in detail
+below <a class="footnote-reference" href="#mysql-docs" id="id2">[1]</a>:</p>
+<table border="1" class="docutils" id="id9">
+<caption><span class="caption-text">date_format Format</span><a class="headerlink" href="#id9" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Format Specifier</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>%a</td>
+<td>Abbreviated weekday name (Sun..Sat)</td>
+</tr>
+<tr class="row-odd"><td>%b</td>
+<td>Abbreviated month name (Jan..Dec)</td>
+</tr>
+<tr class="row-even"><td>%c</td>
+<td>Month in year, numeric (0..12)</td>
+</tr>
+<tr class="row-odd"><td>%D</td>
+<td>Day of month as ordinal number (1st, 2nd, ... 24th)</td>
+</tr>
+<tr class="row-even"><td>%d</td>
+<td>Day of month, padded to 2 digits (00..31)</td>
+</tr>
+<tr class="row-odd"><td>%e</td>
+<td>Day of month (0..31)</td>
+</tr>
+<tr class="row-even"><td>%f</td>
+<td>Microseconds, padded to 6 digits (000000..999999)</td>
+</tr>
+<tr class="row-odd"><td>%H</td>
+<td>Hour in 24-hour clock, padded to 2 digits (00..23)</td>
+</tr>
+<tr class="row-even"><td>%h</td>
+<td>Hour in 12-hour clock, padded to 2 digits (01..12)</td>
+</tr>
+<tr class="row-odd"><td>%I</td>
+<td>Hour in 12-hour clock, padded to 2 digits (01..12)</td>
+</tr>
+<tr class="row-even"><td>%i</td>
+<td>Minutes, numeric (00..59)</td>
+</tr>
+<tr class="row-odd"><td>%j</td>
+<td>Day of year, padded to 3 digits (001..366)</td>
+</tr>
+<tr class="row-even"><td>%k</td>
+<td>Hour in 24-hour clock (0..23)</td>
+</tr>
+<tr class="row-odd"><td>%l</td>
+<td>Hour in 12-hour clock (1..12)</td>
+</tr>
+<tr class="row-even"><td>%M</td>
+<td>Month name (January..December)</td>
+</tr>
+<tr class="row-odd"><td>%m</td>
+<td>Month in year, numeric, padded to 2 digits (00..12)</td>
+</tr>
+<tr class="row-even"><td>%p</td>
+<td>AM or PM</td>
+</tr>
+<tr class="row-odd"><td>%r</td>
+<td>Time, 12-hour (hh:mm:ss followed by AM or PM)</td>
+</tr>
+<tr class="row-even"><td>%S</td>
+<td>Seconds, padded to 2 digits (00..59)</td>
+</tr>
+<tr class="row-odd"><td>%s</td>
+<td>Seconds, padded to 2 digits (00..59)</td>
+</tr>
+<tr class="row-even"><td>%T</td>
+<td>Time, 24-hour (hh:mm:ss)</td>
+</tr>
+<tr class="row-odd"><td>%U</td>
+<td>Week number, sunday as first day of the week, first week of the year (01) is the one starting in this year, week 00 starts in last year (00..53)</td>
+</tr>
+<tr class="row-even"><td>%u</td>
+<td>Week number, monday as first day of the week, first week of the year (01) is the one with at least 4 days in this year (00..53)</td>
+</tr>
+<tr class="row-odd"><td>%V</td>
+<td>Week number, sunday as first day of the week, first week of the year (01) is the one starting in this year, uses the week number of the last year, if the week started in last year (01..53)</td>
+</tr>
+<tr class="row-even"><td>%v</td>
+<td>Week number, monday as first day of the week, first week of the year (01) is the one with at least 4 days in this year, uses the week number of the last year, if the week started in last year (01..53)</td>
+</tr>
+<tr class="row-odd"><td>%W</td>
+<td>Weekday name (Sunday..Saturday)</td>
+</tr>
+<tr class="row-even"><td>%w</td>
+<td>Day of the week (0=Sunday..6=Saturday)</td>
+</tr>
+<tr class="row-odd"><td>%X</td>
+<td>weekyear, sunday as first day of the week, numeric, four digits; used with %V</td>
+</tr>
+<tr class="row-even"><td>%x</td>
+<td>weekyear, monday as first day of the week, numeric, four digits; used with %v</td>
+</tr>
+<tr class="row-odd"><td>%Y</td>
+<td>Year, numeric, four digits</td>
+</tr>
+<tr class="row-even"><td>%y</td>
+<td>Year, numeric, two digits</td>
+</tr>
+<tr class="row-odd"><td>%%</td>
+<td>A literal &#8216;%&#8217; character</td>
+</tr>
+<tr class="row-even"><td>%x</td>
+<td>x, for any &#8216;x&#8217; not listed above</td>
+</tr>
+</tbody>
+</table>
+<p>If no <code class="docutils literal"><span class="pre">format_string</span></code> is given the default format will be used:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">Y</span><span class="o">-%</span><span class="n">m</span><span class="o">-%</span><span class="n">dT</span><span class="o">%</span><span class="n">H</span><span class="p">:</span><span class="o">%</span><span class="n">i</span><span class="p">:</span><span class="o">%</span><span class="n">s</span><span class="mf">.</span><span class="o">%</span><span class="n">fZ</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">date_format</span><span class="p">(</span><span class="s1">&#39;1970-01-01&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">epoque</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">| epoque                      |</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">| 1970-01-01T00:00:00.000000Z |</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="timezone">
+<h4><a class="toc-backref" href="#id29">Timezone</a><a class="headerlink" href="#timezone" title="Permalink to this headline">¶</a></h4>
+<p>Valid values for <code class="docutils literal"><span class="pre">timezone</span></code> are either the name of a time zone (for example
+&#8216;Europe/Vienna&#8217;) or the UTC offset of a time zone (for example &#8216;+01:00&#8217;). To
+get a complete overview of all possible values take a look at the <a class="reference external" href="http://www.joda.org/joda-time/timezones.html">available
+time zones</a> supported by <a class="reference external" href="http://www.joda.org/joda-time/">Joda-Time</a>.</p>
+<p>The <code class="docutils literal"><span class="pre">timezone</span></code> will be <code class="docutils literal"><span class="pre">UTC</span></code> if not provided:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">date_format</span><span class="p">(</span><span class="s1">&#39;%W the %D of %M %Y %H:%i %p&#39;</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">epoque</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------------------------------------+</span>
+<span class="go">| epoque                                    |</span>
+<span class="go">+-------------------------------------------+</span>
+<span class="go">| Thursday the 1st of January 1970 00:00 AM |</span>
+<span class="go">+-------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">date_format</span><span class="p">(</span><span class="s1">&#39;%Y/%m/%d %H:%i&#39;</span><span class="p">,</span> <span class="s1">&#39;EST&#39;</span><span class="p">,</span>  <span class="mf">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">est_epoque</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------------+</span>
+<span class="go">| est_epoque       |</span>
+<span class="go">+------------------+</span>
+<span class="go">| 1969/12/31 19:00 |</span>
+<span class="go">+------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="geo-functions">
+<h2><a class="toc-backref" href="#id30">Geo Functions</a><a class="headerlink" href="#geo-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="distance-geo-point1-geo-point2">
+<span id="scalar-distance"></span><h3><a class="toc-backref" href="#id31"><code class="docutils literal"><span class="pre">distance(geo_point1,</span> <span class="pre">geo_point2)</span></code></a><a class="headerlink" href="#distance-geo-point1-geo-point2" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>The <code class="docutils literal"><span class="pre">distance</span></code> function can be used to calculate the distance between two
+points on earth. It uses the <a class="reference external" href="https://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a> which gives great-circle
+distances between 2 points on a sphere based on their latitude and longitude.</p>
+<p>The return value is the distance in meters.</p>
+<p>Below is an example of the distance function where both points are specified
+using WKT. See <a class="reference internal" href="../ddl/data-types.html#geo-point-data-type"><span class="std std-ref">geo_point</span></a> for more information on the implicit
+type casting of geo points:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">distance</span><span class="p">(</span><span class="s1">&#39;POINT (10 20)&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT (11 21)&#39;</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------------------------------+</span>
+<span class="go">| distance(&#39;POINT (10 20)&#39;, &#39;POINT (11 21)&#39;) |</span>
+<span class="go">+--------------------------------------------+</span>
+<span class="go">|                          152354.3209044634 |</span>
+<span class="go">+--------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>This scalar function can always be used in both the <code class="docutils literal"><span class="pre">WHERE</span></code> and <code class="docutils literal"><span class="pre">ORDER</span> <span class="pre">BY</span></code>
+clauses. With the limitation that one of the arguments must be a literal and
+the other argument must be a column reference.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The algorithm of the calculation which is used when the distance function
+is used as part of the result column list has a different precision than
+what is stored inside the index which is utilized if the distance function
+is part of a WHERE clause.</p>
+<p class="last">For example if <cite>select distance(...)</cite> returns 0.0 an equality check with
+<cite>where distance(...) = 0</cite> might not yield anything at all due to the
+precision difference.</p>
+</div>
+</div>
+<div class="section" id="within-shape1-shape2">
+<span id="scalar-within"></span><h3><a class="toc-backref" href="#id32"><code class="docutils literal"><span class="pre">within(shape1,</span> <span class="pre">shape2)</span></code></a><a class="headerlink" href="#within-shape1-shape2" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">boolean</span></code></p>
+<p>The <code class="docutils literal"><span class="pre">within</span></code> function returns true if <code class="docutils literal"><span class="pre">shape1</span></code> is within <code class="docutils literal"><span class="pre">shape2</span></code>. If
+that is not the case false is returned.</p>
+<p><code class="docutils literal"><span class="pre">shape1</span></code> can either be a <code class="docutils literal"><span class="pre">geo_shape</span></code> or a <code class="docutils literal"><span class="pre">geo_point</span></code>. <code class="docutils literal"><span class="pre">shape2</span></code> must be
+a <code class="docutils literal"><span class="pre">geo_shape</span></code>.</p>
+<p>Below is an example of the within function which makes use of the implicit type
+casting from strings to geo point and geo shapes:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">within</span><span class="p">(</span>
+<span class="mf">...</span>   <span class="s1">&#39;POINT (10 10)&#39;</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="s1">&#39;POLYGON ((5 5, 10 5, 10 10, 5 10, 5 5))&#39;</span>
+<span class="mf">...</span> <span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------------------------------------------------------+</span>
+<span class="go">| within(&#39;POINT (10 10)&#39;, &#39;POLYGON ((5 5, 10 5, 10 10, 5 10, 5 5))&#39;) |</span>
+<span class="go">+--------------------------------------------------------------------+</span>
+<span class="go">| TRUE                                                               |</span>
+<span class="go">+--------------------------------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>This function can always be used within the <code class="docutils literal"><span class="pre">WHERE</span></code> clause.</p>
+</div>
+<div class="section" id="intersects-geo-shape-geo-shape">
+<span id="scalar-intersects"></span><h3><a class="toc-backref" href="#id33"><code class="docutils literal"><span class="pre">intersects(geo_shape,</span> <span class="pre">geo_shape)</span></code></a><a class="headerlink" href="#intersects-geo-shape-geo-shape" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">boolean</span></code></p>
+<p>The <code class="docutils literal"><span class="pre">intersects</span></code> function returns true if both argument shapes share some
+points or area, they <em>overlap</em>. This also includes two shapes where one lies
+<a class="reference internal" href="#scalar-within"><span class="std std-ref">within</span></a> the other.</p>
+<p>If <code class="docutils literal"><span class="pre">false</span></code> is returned, both shapes are considered <em>disjoint</em>.</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span>
+<span class="mf">...</span> <span class="n">intersects</span><span class="p">(</span>
+<span class="mf">...</span>   <span class="p">{</span><span class="k">type</span><span class="o">=</span><span class="s1">&#39;Polygon&#39;</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="p">[</span>
+<span class="mf">...</span>         <span class="p">[[</span><span class="mf">13.4252</span><span class="p">,</span> <span class="mf">52.7096</span><span class="p">],[</span><span class="mf">13.9416</span><span class="p">,</span> <span class="mf">52.0997</span><span class="p">],</span>
+<span class="mf">...</span>          <span class="p">[</span><span class="mf">12.7221</span><span class="p">,</span> <span class="mf">52.1334</span><span class="p">],[</span><span class="mf">13.4252</span><span class="p">,</span> <span class="mf">52.7096</span><span class="p">]]]},</span>
+<span class="mf">...</span>   <span class="s1">&#39;LINESTRING(13.9636 52.6763, 13.2275 51.9578,</span>
+<span class="s1">...               12.9199 52.5830, 11.9970 52.6830)&#39;</span>
+<span class="mf">...</span> <span class="p">)</span> <span class="k">as</span> <span class="n">intersects</span><span class="p">,</span>
+<span class="mf">...</span> <span class="n">intersects</span><span class="p">(</span>
+<span class="mf">...</span>   <span class="p">{</span><span class="k">type</span><span class="o">=</span><span class="s1">&#39;Polygon&#39;</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="p">[</span>
+<span class="mf">...</span>         <span class="p">[[</span><span class="mf">13.4252</span><span class="p">,</span> <span class="mf">52.7096</span><span class="p">],[</span><span class="mf">13.9416</span><span class="p">,</span> <span class="mf">52.0997</span><span class="p">],</span>
+<span class="mf">...</span>          <span class="p">[</span><span class="mf">12.7221</span><span class="p">,</span> <span class="mf">52.1334</span><span class="p">],[</span><span class="mf">13.4252</span><span class="p">,</span> <span class="mf">52.7096</span><span class="p">]]]},</span>
+<span class="mf">...</span>   <span class="s1">&#39;LINESTRING (11.0742 49.4538, 11.5686 48.1367)&#39;</span>
+<span class="mf">...</span> <span class="p">)</span> <span class="k">as</span> <span class="n">disjoint</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------+----------+</span>
+<span class="go">| intersects | disjoint |</span>
+<span class="go">+------------+----------+</span>
+<span class="go">| TRUE       | FALSE    |</span>
+<span class="go">+------------+----------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>Due to a limitation on the <a class="reference internal" href="../ddl/data-types.html#geo-shape-data-type"><span class="std std-ref">geo_shape</span></a> datatype this function
+cannot be used in the <a class="reference internal" href="../../sql/statements/select.html#sql-reference-order-by"><span class="std std-ref">ORDER BY</span></a>.</p>
+</div>
+<div class="section" id="latitude-geo-point-and-longitude-geo-point">
+<h3><a class="toc-backref" href="#id34"><code class="docutils literal"><span class="pre">latitude(geo_point)</span></code> and <code class="docutils literal"><span class="pre">longitude(geo_point)</span></code></a><a class="headerlink" href="#latitude-geo-point-and-longitude-geo-point" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>The <code class="docutils literal"><span class="pre">latitude</span></code> and <code class="docutils literal"><span class="pre">longitude</span></code> function return the coordinates of latitude
+or longitude of a point, or <code class="docutils literal"><span class="pre">NULL</span></code> if not available. The input must be a
+column of type <code class="docutils literal"><span class="pre">geo_point</span></code>, a valid WKT string or a double-array. See
+<a class="reference internal" href="../ddl/data-types.html#geo-point-data-type"><span class="std std-ref">geo_point</span></a> for more information on the implicit type casting of
+geo points.</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">mountain</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">longitude</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">as</span> <span class="s s-Name">&quot;lon&quot;</span><span class="p">,</span> <span class="n">latitude</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">as</span> <span class="s s-Name">&quot;lat&quot;</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">summits</span> <span class="k">order</span> <span class="k">by</span> <span class="n">height</span> <span class="k">desc</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+------------+--------+---------+---------+</span>
+<span class="go">| mountain   | height |     lon |     lat |</span>
+<span class="go">+------------+--------+---------+---------+</span>
+<span class="go">| Mont Blanc |   4808 | 6.86444 | 45.8325 |</span>
+<span class="go">+------------+--------+---------+---------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>Below is an example of the latitude/longitude functions which make use of the
+implicit type casting from strings to geo point:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">latitude</span><span class="p">(</span><span class="s1">&#39;POINT (10 20)&#39;</span><span class="p">),</span> <span class="n">longitude</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">]);</span>
+<span class="go">+---------------------------+------------------------+</span>
+<span class="go">| latitude(&#39;POINT (10 20)&#39;) | longitude([10.0,20.0]) |</span>
+<span class="go">+---------------------------+------------------------+</span>
+<span class="go">|                      20.0 |                   10.0 |</span>
+<span class="go">+---------------------------+------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="geohash-geo-point">
+<h3><a class="toc-backref" href="#id35"><code class="docutils literal"><span class="pre">geohash(geo_point)</span></code></a><a class="headerlink" href="#geohash-geo-point" title="Permalink to this headline">¶</a></h3>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>Returns a <a class="reference external" href="http://en.wikipedia.org/wiki/Geohash">GeoHash</a> representation
+based on full precision (12 characters) of the input point, or <code class="docutils literal"><span class="pre">NULL</span></code> if not
+available. The input has to be a column of type <code class="docutils literal"><span class="pre">geo_point</span></code>, a valid WKT
+string or a double-array.See <a class="reference internal" href="../ddl/data-types.html#geo-point-data-type"><span class="std std-ref">geo_point</span></a> for more information of
+the implicit type casting of geo points.</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">mountain</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">geohash</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">as</span> <span class="s s-Name">&quot;geohash&quot;</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="n">summits</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="n">height</span> <span class="k">desc</span> <span class="k">limit</span> <span class="mf">1</span><span class="p">;</span>
+<span class="go">+------------+--------+--------------+</span>
+<span class="go">| mountain   | height | geohash      |</span>
+<span class="go">+------------+--------+--------------+</span>
+<span class="go">| Mont Blanc |   4808 | u0huspw99j1r |</span>
+<span class="go">+------------+--------+--------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="mathematical-functions">
+<span id="id3"></span><h2><a class="toc-backref" href="#id36">Mathematical Functions</a><a class="headerlink" href="#mathematical-functions" title="Permalink to this headline">¶</a></h2>
+<p>All mathematical functions can be used within <code class="docutils literal"><span class="pre">WHERE</span></code> and <code class="docutils literal"><span class="pre">ORDER</span> <span class="pre">BY</span></code>
+clauses.</p>
+<div class="section" id="abs-number">
+<h3><a class="toc-backref" href="#id37"><code class="docutils literal"><span class="pre">abs(number)</span></code></a><a class="headerlink" href="#abs-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the absolute value of the given number in the datatype of the given
+number:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">abs</span><span class="p">(</span><span class="mf">214748.0998</span><span class="p">),</span> <span class="n">abs</span><span class="p">(</span><span class="mf">0</span><span class="p">),</span> <span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="mf">214748</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------------+--------+---------------+</span>
+<span class="go">| abs(214748.0998) | abs(0) | abs(- 214748) |</span>
+<span class="go">+------------------+--------+---------------+</span>
+<span class="go">|      214748.0998 |      0 |        214748 |</span>
+<span class="go">+------------------+--------+---------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ceil-number">
+<span id="scalar-ceil"></span><h3><a class="toc-backref" href="#id38"><code class="docutils literal"><span class="pre">ceil(number)</span></code></a><a class="headerlink" href="#ceil-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the smallest integer or long value that is not less than the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">long</span></code> or <code class="docutils literal"><span class="pre">integer</span></code></p>
+<p>Return value will be of type integer if the input value is an integer or float.
+If the input value is of type long or double the return value will be of type
+long:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">ceil</span><span class="p">(</span><span class="mf">29.9</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------+</span>
+<span class="go">| ceil(29.9) |</span>
+<span class="go">+------------+</span>
+<span class="go">|         30 |</span>
+<span class="go">+------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="floor-number">
+<span id="scalar-floor"></span><h3><a class="toc-backref" href="#id39"><code class="docutils literal"><span class="pre">floor(number)</span></code></a><a class="headerlink" href="#floor-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the largest integer or long value that is not greater than the
+argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">long</span></code> or <code class="docutils literal"><span class="pre">integer</span></code></p>
+<p>Return value will be an integer if the input value is an integer or a float. If
+the input value is of type long or double the return value will be of type
+long.</p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">floor</span><span class="p">(</span><span class="mf">29.9</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------+</span>
+<span class="go">| floor(29.9) |</span>
+<span class="go">+-------------+</span>
+<span class="go">|          29 |</span>
+<span class="go">+-------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ln-number">
+<h3><a class="toc-backref" href="#id40"><code class="docutils literal"><span class="pre">ln(number)</span></code></a><a class="headerlink" href="#ln-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the natural logarithm of given <code class="docutils literal"><span class="pre">number</span></code>.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">ln</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------+</span>
+<span class="go">| ln(1) |</span>
+<span class="go">+-------+</span>
+<span class="go">|   0.0 |</span>
+<span class="go">+-------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An error is returned for arguments which lead to undefined or illegal
+results. E.g. ln(0) results in <code class="docutils literal"><span class="pre">minus</span> <span class="pre">infinity</span></code>, and therefore, an error
+is returned.</p>
+</div>
+</div>
+<div class="section" id="log-x-number-b-number">
+<h3><a class="toc-backref" href="#id41"><code class="docutils literal"><span class="pre">log(x</span> <span class="pre">:</span> <span class="pre">number,</span> <span class="pre">b</span> <span class="pre">:</span> <span class="pre">number)</span></code></a><a class="headerlink" href="#log-x-number-b-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the logarithm of given <code class="docutils literal"><span class="pre">x</span></code> to base <code class="docutils literal"><span class="pre">b</span></code>.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example, which essentially is the same as above:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">log</span><span class="p">(</span><span class="mf">100</span><span class="p">,</span> <span class="mf">10</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------+</span>
+<span class="go">| log(100, 10) |</span>
+<span class="go">+--------------+</span>
+<span class="go">|          2.0 |</span>
+<span class="go">+--------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>The second argument (<code class="docutils literal"><span class="pre">b</span></code>) is optional. If not present, base 10 is used:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">log</span><span class="p">(</span><span class="mf">100</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+----------+</span>
+<span class="go">| log(100) |</span>
+<span class="go">+----------+</span>
+<span class="go">|      2.0 |</span>
+<span class="go">+----------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>An error is returned for arguments which lead to undefined or illegal
+results. E.g. log(0) results in <code class="docutils literal"><span class="pre">minus</span> <span class="pre">infinity</span></code>, and therefore, an error
+is returned.</p>
+<p class="last">The same is true for arguments which lead to a <code class="docutils literal"><span class="pre">division</span> <span class="pre">by</span> <span class="pre">zero</span></code>, as
+e.g. log(10, 1) does.</p>
+</div>
+</div>
+<div class="section" id="power-a-number-b-number">
+<h3><a class="toc-backref" href="#id42"><code class="docutils literal"><span class="pre">power(a:</span> <span class="pre">number,</span> <span class="pre">b:</span> <span class="pre">number)</span></code></a><a class="headerlink" href="#power-a-number-b-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the given argument <code class="docutils literal"><span class="pre">a</span></code> raised to the power of argument <code class="docutils literal"><span class="pre">b</span></code>.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>The return type of the power function is always double, even when both the
+inputs are integral types, in order to be consistent across positive and
+negative exponents (which will yield decimal types)</p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">power</span><span class="p">(</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------+</span>
+<span class="go">| power(2, 3) |</span>
+<span class="go">+-------------+</span>
+<span class="go">|         8.0 |</span>
+<span class="go">+-------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="random">
+<h3><a class="toc-backref" href="#id43"><code class="docutils literal"><span class="pre">random()</span></code></a><a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">random</span></code> function returns a random value in the range 0.0 &lt;= X &lt; 1.0.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Every call to <code class="docutils literal"><span class="pre">random</span></code> will yield a new random number.</p>
+</div>
+</div>
+<div class="section" id="round-number">
+<span id="scalar-round"></span><h3><a class="toc-backref" href="#id44"><code class="docutils literal"><span class="pre">round(number)</span></code></a><a class="headerlink" href="#round-number" title="Permalink to this headline">¶</a></h3>
+<p>If the input is of type double or long the result is the closest long to the
+argument, with ties rounding up.</p>
+<p>If the input is of type float or integer the result is the closest integer to
+the argument, with ties rounding up.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">long</span></code> or <code class="docutils literal"><span class="pre">integer</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">round</span><span class="p">(</span><span class="mf">42.2</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------+</span>
+<span class="go">| round(42.2) |</span>
+<span class="go">+-------------+</span>
+<span class="go">|          42 |</span>
+<span class="go">+-------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sqrt-number">
+<h3><a class="toc-backref" href="#id45"><code class="docutils literal"><span class="pre">sqrt(number)</span></code></a><a class="headerlink" href="#sqrt-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the square root of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">25.0</span><span class="p">)</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------+</span>
+<span class="go">| sqrt(25.0) |</span>
+<span class="go">+------------+</span>
+<span class="go">|        5.0 |</span>
+<span class="go">+------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sin-number">
+<h3><a class="toc-backref" href="#id46"><code class="docutils literal"><span class="pre">sin(number)</span></code></a><a class="headerlink" href="#sin-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the sine of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">sin</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">|             sin(1) |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| 0.8414709848078965 |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="asin-number">
+<h3><a class="toc-backref" href="#id47"><code class="docutils literal"><span class="pre">asin(number)</span></code></a><a class="headerlink" href="#asin-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the arcsine of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">asin</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">|            asin(1) |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| 1.5707963267948966 |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="cos-number">
+<h3><a class="toc-backref" href="#id48"><code class="docutils literal"><span class="pre">cos(number)</span></code></a><a class="headerlink" href="#cos-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the cosine of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">cos</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">|             cos(1) |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| 0.5403023058681398 |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="acos-number">
+<h3><a class="toc-backref" href="#id49"><code class="docutils literal"><span class="pre">acos(number)</span></code></a><a class="headerlink" href="#acos-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the arccosine of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">acos</span><span class="p">(</span><span class="o">-</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------------+</span>
+<span class="go">|         acos(- 1) |</span>
+<span class="go">+-------------------+</span>
+<span class="go">| 3.141592653589793 |</span>
+<span class="go">+-------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tan-number">
+<h3><a class="toc-backref" href="#id50"><code class="docutils literal"><span class="pre">tan(number)</span></code></a><a class="headerlink" href="#tan-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the tangent of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">tan</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">|             tan(1) |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| 1.5574077246549023 |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="atan-number">
+<h3><a class="toc-backref" href="#id51"><code class="docutils literal"><span class="pre">atan(number)</span></code></a><a class="headerlink" href="#atan-number" title="Permalink to this headline">¶</a></h3>
+<p>Returns the arctangent of the argument.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">double</span></code></p>
+<p>See below for an example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="n">atan</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">|            atan(1) |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| 0.7853981633974483 |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="regular-expression-functions">
+<span id="scalar-regexp"></span><h2><a class="toc-backref" href="#id52">Regular Expression Functions</a><a class="headerlink" href="#regular-expression-functions" title="Permalink to this headline">¶</a></h2>
+<p>The regular expression functions in CrateDB use <a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">Java Regular Expressions</a>.</p>
+<p>See the api documentation for more details.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Be aware that, in contrast to the functions, the <a class="reference internal" href="../dql/selects.html#sql-ddl-regexp"><span class="std std-ref">regular expression
+operator</span></a> is using <a class="reference external" href="http://lucene.apache.org/core/4_9_0/core/org/apache/lucene/util/automaton/RegExp.html">Lucene Regular Expressions</a>.</p>
+</div>
+<div class="section" id="regexp-matches-source-pattern-flags">
+<span id="scalar-regexp-matches"></span><h3><a class="toc-backref" href="#id53"><code class="docutils literal"><span class="pre">regexp_matches(source,</span> <span class="pre">pattern</span> <span class="pre">[,</span> <span class="pre">flags])</span></code></a><a class="headerlink" href="#regexp-matches-source-pattern-flags" title="Permalink to this headline">¶</a></h3>
+<p>This function uses the regular expression pattern in <code class="docutils literal"><span class="pre">pattern</span></code> to match
+against the <code class="docutils literal"><span class="pre">source</span></code> string.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string_array</span></code></p>
+<p>If <code class="docutils literal"><span class="pre">source</span></code> matches, an array of the matched regular expression groups is
+returned.</p>
+<p>If no regular expression group was used, the whole pattern is used as a group.</p>
+<p>If <code class="docutils literal"><span class="pre">source</span></code> does not match, this function returns <code class="docutils literal"><span class="pre">NULL</span></code>.</p>
+<p>A regular expression group is formed by a subexpression that is surrounded by
+parentheses.The position of a group is determined by the position of its
+opening parenthesis.</p>
+<p>For example when matching the pattern <code class="docutils literal"><span class="pre">\b([A-Z])</span></code> a match for the
+subexpression <code class="docutils literal"><span class="pre">([A-Z])</span></code> would create group No. 1. If you want to group stuff
+with parentheses, but without grouping, use <code class="docutils literal"><span class="pre">(?...)</span></code>.</p>
+<p>For example matching the regular expression <code class="docutils literal"><span class="pre">([Aa](.+)z)</span></code> against
+<code class="docutils literal"><span class="pre">alcatraz</span></code>, results in these groups:</p>
+<blockquote>
+<div><ul class="simple">
+<li>group 1: <code class="docutils literal"><span class="pre">alcatraz</span></code> (from first to last parenthesis or whole pattern)</li>
+<li>group 2: <code class="docutils literal"><span class="pre">lcatra</span></code> (beginning at second parenthesis)</li>
+</ul>
+</div></blockquote>
+<p>The <code class="docutils literal"><span class="pre">regexp_matches</span></code> function will return all groups as a string array:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">regexp_matches</span><span class="p">(</span><span class="s1">&#39;alcatraz&#39;</span><span class="p">,</span> <span class="s1">&#39;(a(.+)z)&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">matched</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------------------+</span>
+<span class="go">| matched                |</span>
+<span class="go">+------------------------+</span>
+<span class="go">| [&quot;alcatraz&quot;, &quot;lcatra&quot;] |</span>
+<span class="go">+------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">regexp_matches</span><span class="p">(</span><span class="s1">&#39;alcatraz&#39;</span><span class="p">,</span> <span class="s1">&#39;traz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">matched</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+----------+</span>
+<span class="go">| matched  |</span>
+<span class="go">+----------+</span>
+<span class="go">| [&quot;traz&quot;] |</span>
+<span class="go">+----------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>Through array element access functionality, a group can be selected directly.
+See <a class="reference internal" href="../dql/selects.html#sql-dql-object-arrays-select"><span class="std std-ref">Selecting Array Elements</span></a> for details.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">regexp_matches</span><span class="p">(</span><span class="s1">&#39;alcatraz&#39;</span><span class="p">,</span> <span class="s1">&#39;(a(.+)z)&#39;</span><span class="p">)[</span><span class="mf">2</span><span class="p">]</span> <span class="k">as</span> <span class="n">second_group</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------+</span>
+<span class="go">| second_group |</span>
+<span class="go">+--------------+</span>
+<span class="go">| lcatra       |</span>
+<span class="go">+--------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="section" id="flags">
+<span id="scalar-regexp-matches-flags"></span><h4><a class="toc-backref" href="#id54">Flags</a><a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h4>
+<p>This function takes a number of flags as optional third parameter. These flags
+are given as a string containing any of the characters listed below. Order does
+not matter.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>i</td>
+<td>enable case insensitive matching</td>
+</tr>
+<tr class="row-odd"><td>u</td>
+<td>enable unicode case folding when used together with <code class="docutils literal"><span class="pre">i</span></code></td>
+</tr>
+<tr class="row-even"><td>U</td>
+<td>enable unicode support for character classes like <code class="docutils literal"><span class="pre">\W</span></code></td>
+</tr>
+<tr class="row-odd"><td>s</td>
+<td>make <code class="docutils literal"><span class="pre">.</span></code> match line terminators, too</td>
+</tr>
+<tr class="row-even"><td>m</td>
+<td>make <code class="docutils literal"><span class="pre">^</span></code> and <code class="docutils literal"><span class="pre">$</span></code> match on the beginning or end of a line
+too.</td>
+</tr>
+<tr class="row-odd"><td>x</td>
+<td>permit whitespace and line comments starting with <code class="docutils literal"><span class="pre">#</span></code></td>
+</tr>
+<tr class="row-even"><td>d</td>
+<td>only <code class="docutils literal"><span class="pre">\n</span></code> is considered a line-terminator when using <code class="docutils literal"><span class="pre">^</span></code>, <code class="docutils literal"><span class="pre">$</span></code>
+and <code class="docutils literal"><span class="pre">.</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="examples">
+<h4><a class="toc-backref" href="#id55">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">regexp_matches</span><span class="p">(</span><span class="s1">&#39;foobar&#39;</span><span class="p">,</span> <span class="s1">&#39;^(a(.+)z)$&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">matched</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+---------+</span>
+<span class="go">| matched |</span>
+<span class="go">+---------+</span>
+<span class="go">| NULL    |</span>
+<span class="go">+---------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">regexp_matches</span><span class="p">(</span><span class="s1">&#39;99 bottles of beer on the wall&#39;</span><span class="p">,</span> <span class="s1">&#39;\d{2}\s(\w+).*&#39;</span><span class="p">,</span> <span class="s1">&#39;ixU&#39;</span><span class="p">)</span>
+<span class="mf">...</span> <span class="k">as</span> <span class="n">matched</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------+</span>
+<span class="go">| matched     |</span>
+<span class="go">+-------------+</span>
+<span class="go">| [&quot;bottles&quot;] |</span>
+<span class="go">+-------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="regexp-replace-source-pattern-replacement-flags">
+<h3><a class="toc-backref" href="#id56"><code class="docutils literal"><span class="pre">regexp_replace(source,</span> <span class="pre">pattern,</span> <span class="pre">replacement</span> <span class="pre">[,</span> <span class="pre">flags])</span></code></a><a class="headerlink" href="#regexp-replace-source-pattern-replacement-flags" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">regexp_replace</span></code> can be used to replace every (or only the first) occurence
+of a subsequence matching <code class="docutils literal"><span class="pre">pattern</span></code> in the <code class="docutils literal"><span class="pre">source</span></code> string with the
+<code class="docutils literal"><span class="pre">replacement</span></code> string. If no subsequence in <code class="docutils literal"><span class="pre">source</span></code> matches the regular
+expression <code class="docutils literal"><span class="pre">pattern</span></code>, <code class="docutils literal"><span class="pre">source</span></code> is returned unchanged.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p><code class="docutils literal"><span class="pre">pattern</span></code> is a java regular expression. For details on the regexp syntax, see
+<a class="reference external" href="http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">Java Regular Expressions</a>.</p>
+<p>The <code class="docutils literal"><span class="pre">replacement</span></code> string may contain expressions like <code class="docutils literal"><span class="pre">$N</span></code> where <code class="docutils literal"><span class="pre">N</span></code> is a
+digit between 0 and 9. It references the <em>N</em>th matched group of <code class="docutils literal"><span class="pre">pattern</span></code>
+and the matching subsequence of that group will be inserted in the returned
+string. The expression <code class="docutils literal"><span class="pre">$0</span></code> will insert the whole matching <code class="docutils literal"><span class="pre">source</span></code>.</p>
+<p>Per default, only the first occurrence of a subsequence matching <code class="docutils literal"><span class="pre">pattern</span></code>
+will be replaced. If all occurrences shall be replaced use the <code class="docutils literal"><span class="pre">g</span></code> flag.</p>
+<div class="section" id="id4">
+<h4><a class="toc-backref" href="#id57">Flags</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">regexp_replace</span></code> supports the same flags than <code class="docutils literal"><span class="pre">regexp_matches</span></code>, see
+<a class="reference internal" href="#scalar-regexp-matches-flags"><span class="std std-ref">regexp_matches Flags</span></a> and additionally the
+<code class="docutils literal"><span class="pre">g</span></code> flag:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>g</td>
+<td>replace all occurrences of a subsequence matching <code class="docutils literal"><span class="pre">pattern</span></code>,
+not only the first</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id5">
+<h4><a class="toc-backref" href="#id58">Examples</a><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">regexp_replace</span><span class="p">(</span><span class="k">name</span><span class="p">,</span> <span class="s1">&#39;(\w+)\s(\w+)+&#39;</span><span class="p">,</span> <span class="s1">&#39;$1 - $2&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">replaced</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="k">name</span> <span class="k">limit</span> <span class="mf">5</span><span class="p">;</span>
+<span class="go"> +---------------------+-----------------------+</span>
+<span class="go"> | name                | replaced              |</span>
+<span class="go"> +---------------------+-----------------------+</span>
+<span class="go"> |                     |                       |</span>
+<span class="go"> | Aldebaran           | Aldebaran             |</span>
+<span class="go"> | Algol               | Algol                 |</span>
+<span class="go"> | Allosimanius Syneca | Allosimanius - Syneca |</span>
+<span class="go"> | Alpha Centauri      | Alpha - Centauri      |</span>
+<span class="go"> +---------------------+-----------------------+</span>
+<span class="go"> SELECT 5 rows in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">regexp_replace</span><span class="p">(</span><span class="s1">&#39;alcatraz&#39;</span><span class="p">,</span> <span class="s1">&#39;(foo)(bar)+&#39;</span><span class="p">,</span> <span class="s1">&#39;$1baz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">replaced</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go"> +----------+</span>
+<span class="go"> | replaced |</span>
+<span class="go"> +----------+</span>
+<span class="go"> | alcatraz |</span>
+<span class="go"> +----------+</span>
+<span class="go"> SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">name</span><span class="p">,</span> <span class="n">regexp_replace</span><span class="p">(</span><span class="k">name</span><span class="p">,</span> <span class="s1">&#39;([A-Z]\w+) .+&#39;</span><span class="p">,</span> <span class="s1">&#39;$1&#39;</span><span class="p">,</span> <span class="s1">&#39;ig&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">replaced</span> <span class="k">from</span> <span class="n">locations</span>
+<span class="mf">...</span> <span class="k">order</span> <span class="k">by</span> <span class="k">name</span> <span class="k">limit</span> <span class="mf">5</span><span class="p">;</span>
+<span class="go"> +---------------------+--------------+</span>
+<span class="go"> | name                | replaced     |</span>
+<span class="go"> +---------------------+--------------+</span>
+<span class="go"> |                     |              |</span>
+<span class="go"> | Aldebaran           | Aldebaran    |</span>
+<span class="go"> | Algol               | Algol        |</span>
+<span class="go"> | Allosimanius Syneca | Allosimanius |</span>
+<span class="go"> | Alpha Centauri      | Alpha        |</span>
+<span class="go"> +---------------------+--------------+</span>
+<span class="go"> SELECT 5 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="array-functions">
+<h2><a class="toc-backref" href="#id59">Array Functions</a><a class="headerlink" href="#array-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="array-cat-first-array-second-array">
+<h3><a class="toc-backref" href="#id60"><code class="docutils literal"><span class="pre">array_cat(first_array,</span> <span class="pre">second_array)</span></code></a><a class="headerlink" href="#array-cat-first-array-second-array" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">array_cat</span></code> function concatenates two arrays into one array</p>
+<p>Returns: <code class="docutils literal"><span class="pre">array</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">array_cat</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">],[</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">])</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------------------------+</span>
+<span class="go">| array_cat([1,2,3], [3,4,5,6]) |</span>
+<span class="go">+-------------------------------+</span>
+<span class="go">| [1, 2, 3, 3, 4, 5, 6]         |</span>
+<span class="go">+-------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>It can be used to append elements to array fields</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">array_cat_example</span> <span class="p">(</span><span class="n">list</span> <span class="k">array</span><span class="p">(</span><span class="nb">integer</span><span class="p">));</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">array_cat_example</span> <span class="p">(</span><span class="n">list</span><span class="p">)</span> <span class="k">values</span> <span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">]);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">update</span> <span class="n">array_cat_example</span> <span class="k">set</span> <span class="n">list</span> <span class="o">=</span> <span class="n">array_cat</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="p">[</span><span class="mf">4</span><span class="p">,</span> <span class="mf">5</span><span class="p">,</span> <span class="mf">6</span><span class="p">]);</span>
+<span class="go">UPDATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">array_cat_example</span><span class="p">;</span>
+<span class="go">+--------------------+</span>
+<span class="go">| list               |</span>
+<span class="go">+--------------------+</span>
+<span class="go">| [1, 2, 3, 4, 5, 6] |</span>
+<span class="go">+--------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Appending to arrays with array_cat in updates is handy, but unfortunately
+not isolated. We use optimistic concurrency control to ensure that your
+update operation used the latest state of the row. But only 3 retry attempts
+are made by fetching the newest version again and if they all fail, the
+query fails.</p>
+</div>
+<p>You can also use the concat operator <code class="docutils literal"><span class="pre">||</span></code> with arrays</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="p">[</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">]</span> <span class="o">||</span> <span class="p">[</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">]</span> <span class="o">||</span> <span class="p">[</span><span class="mf">7</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">9</span><span class="p">]</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------------------------------------+</span>
+<span class="go">| concat(concat([1,2,3], [4,5,6]), [7,8,9]) |</span>
+<span class="go">+-------------------------------------------+</span>
+<span class="go">| [1, 2, 3, 4, 5, 6, 7, 8, 9]               |</span>
+<span class="go">+-------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="array-unique-first-array-second-array">
+<h3><a class="toc-backref" href="#id61"><code class="docutils literal"><span class="pre">array_unique(first_array,</span> <span class="pre">[</span> <span class="pre">second_array])</span></code></a><a class="headerlink" href="#array-unique-first-array-second-array" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">array_unique</span></code> function merges two arrays into one array with unique
+elements</p>
+<p>Returns: <code class="docutils literal"><span class="pre">array</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">array_unique</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">,</span> <span class="mf">3</span><span class="p">],</span> <span class="p">[</span><span class="mf">3</span><span class="p">,</span> <span class="mf">4</span><span class="p">,</span> <span class="mf">4</span><span class="p">])</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------------------+</span>
+<span class="go">| array_unique([1,2,3], [3,4,4]) |</span>
+<span class="go">+--------------------------------+</span>
+<span class="go">| [1, 2, 3, 4]                   |</span>
+<span class="go">+--------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>If the arrays have different types all elements will be cast to the element
+type of the first array with a defined type:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">array_unique</span><span class="p">([</span><span class="mf">10</span><span class="p">,</span> <span class="mf">20</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.2</span><span class="p">,</span> <span class="mf">20.3</span><span class="p">])</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+------------------------------------+</span>
+<span class="go">| array_unique([10,20], [10.2,20.3]) |</span>
+<span class="go">+------------------------------------+</span>
+<span class="go">| [10, 20]                           |</span>
+<span class="go">+------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="array-difference-first-array-second-array">
+<h3><a class="toc-backref" href="#id62"><code class="docutils literal"><span class="pre">array_difference(first_array,</span> <span class="pre">second_array)</span></code></a><a class="headerlink" href="#array-difference-first-array-second-array" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">array_difference</span></code> function removes elements from the first array that
+are contained in the second array.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">array</span></code></p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">array_difference</span><span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">9</span><span class="p">,</span><span class="mf">10</span><span class="p">],[</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">9</span><span class="p">,</span><span class="mf">15</span><span class="p">])</span> <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+--------------------------------------------------------+</span>
+<span class="go">| array_difference([1,2,3,4,5,6,7,8,9,10], [2,3,6,9,15]) |</span>
+<span class="go">+--------------------------------------------------------+</span>
+<span class="go">| [1, 4, 5, 7, 8, 10]                                    |</span>
+<span class="go">+--------------------------------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p>It can be used to remove elements from array fields.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">create</span> <span class="k">table</span> <span class="n">array_difference_example</span> <span class="p">(</span><span class="n">list</span> <span class="k">array</span><span class="p">(</span><span class="nb">integer</span><span class="p">));</span>
+<span class="go">CREATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">array_difference_example</span> <span class="p">(</span><span class="n">list</span><span class="p">)</span> <span class="k">values</span> <span class="p">([</span><span class="mf">1</span><span class="p">,</span><span class="mf">2</span><span class="p">,</span><span class="mf">3</span><span class="p">,</span><span class="mf">4</span><span class="p">,</span><span class="mf">5</span><span class="p">,</span><span class="mf">6</span><span class="p">,</span><span class="mf">7</span><span class="p">,</span><span class="mf">8</span><span class="p">,</span><span class="mf">9</span><span class="p">,</span><span class="mf">10</span><span class="p">]);</span>
+<span class="go">INSERT OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">update</span> <span class="n">array_difference_example</span> <span class="k">set</span> <span class="n">list</span> <span class="o">=</span> <span class="n">array_difference</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="p">[</span><span class="mf">6</span><span class="p">]);</span>
+<span class="go">UPDATE OK, 1 row affected (... sec)</span>
+</pre></div>
+</div>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">array_difference_example</span><span class="p">;</span>
+<span class="go">+------------------------------+</span>
+<span class="go">| list                         |</span>
+<span class="go">+------------------------------+</span>
+<span class="go">| [1, 2, 3, 4, 5, 7, 8, 9, 10] |</span>
+<span class="go">+------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="conditional-functions-and-expressions">
+<h2><a class="toc-backref" href="#id63">Conditional Functions and Expressions</a><a class="headerlink" href="#conditional-functions-and-expressions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="case-when-then-end">
+<h3><a class="toc-backref" href="#id64"><code class="docutils literal"><span class="pre">CASE</span> <span class="pre">WHEN</span> <span class="pre">...</span> <span class="pre">THEN</span> <span class="pre">...</span> <span class="pre">END</span></code></a><a class="headerlink" href="#case-when-then-end" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">case</span></code> expression is a generic conditional expression similar to if/else
+statements in other programming languages and can be used wherever an
+expression is valid.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">CASE</span> <span class="k">WHEN</span> <span class="n">condition</span> <span class="k">THEN</span> <span class="n">result</span>
+     <span class="p">[</span><span class="k">WHEN</span> <span class="mf">...</span><span class="p">]</span>
+     <span class="p">[</span><span class="k">ELSE</span> <span class="n">result</span><span class="p">]</span>
+<span class="k">END</span>
+</pre></div>
+</div>
+<p>Each <em>condition</em> expression must result in a boolean value. If the condition&#8217;s
+result is true, the value of the <em>result</em> expression that follows the condition
+will be the final result of the <code class="docutils literal"><span class="pre">case</span></code> expression and the subsequent <code class="docutils literal"><span class="pre">when</span></code>
+branches will not be processed. If the condition&#8217;s result is not true, any
+subsequent <code class="docutils literal"><span class="pre">when</span></code> clauses are examined in the same manner. If no <code class="docutils literal"><span class="pre">when</span></code>
+condition yields true, the value of the <code class="docutils literal"><span class="pre">case</span></code> expression is the result of
+the <code class="docutils literal"><span class="pre">else</span></code> clause. If the <code class="docutils literal"><span class="pre">else</span></code> clause is omitted and no condition is
+true, the result is null.</p>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">id</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="k">case</span> <span class="k">when</span> <span class="n">id</span> <span class="o">=</span> <span class="mf">0</span> <span class="k">then</span> <span class="s1">&#39;zero&#39;</span>
+<span class="mf">...</span>        <span class="k">when</span> <span class="n">id</span> <span class="o">%</span> <span class="mf">2</span> <span class="o">=</span> <span class="mf">0</span> <span class="k">then</span> <span class="s1">&#39;even&#39;</span>
+<span class="mf">...</span>        <span class="k">else</span> <span class="s1">&#39;odd&#39;</span>
+<span class="mf">...</span>   <span class="k">end</span> <span class="k">as</span> <span class="n">parity</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">case_example</span> <span class="k">order</span> <span class="k">by</span> <span class="n">id</span><span class="p">;</span>
+<span class="go">+----+--------+</span>
+<span class="go">| id | parity |</span>
+<span class="go">+----+--------+</span>
+<span class="go">|  0 | zero   |</span>
+<span class="go">|  1 | odd    |</span>
+<span class="go">|  2 | even   |</span>
+<span class="go">|  3 | odd    |</span>
+<span class="go">+----+--------+</span>
+<span class="go">SELECT 4 rows in set (... sec)</span>
+</pre></div>
+</div>
+<p>As a variant, a <code class="docutils literal"><span class="pre">case</span></code> expression can be written using the <em>simple</em> form:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">CASE</span> <span class="n">expression</span>
+     <span class="k">WHEN</span> <span class="k">value</span> <span class="k">THEN</span> <span class="n">result</span>
+     <span class="p">[</span><span class="k">WHEN</span> <span class="mf">...</span><span class="p">]</span>
+     <span class="p">[</span><span class="k">ELSE</span> <span class="n">result</span><span class="p">]</span>
+<span class="k">END</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">id</span><span class="p">,</span>
+<span class="mf">...</span>   <span class="k">case</span> <span class="n">id</span> <span class="k">when</span> <span class="mf">0</span> <span class="k">then</span> <span class="s1">&#39;zero&#39;</span>
+<span class="mf">...</span>           <span class="k">when</span> <span class="mf">1</span> <span class="k">then</span> <span class="s1">&#39;one&#39;</span>
+<span class="mf">...</span>           <span class="k">else</span> <span class="s1">&#39;other&#39;</span>
+<span class="mf">...</span>   <span class="k">end</span> <span class="k">as</span> <span class="n">description</span>
+<span class="mf">...</span> <span class="k">from</span> <span class="n">case_example</span> <span class="k">order</span> <span class="k">by</span> <span class="n">id</span><span class="p">;</span>
+<span class="go">+----+-------------+</span>
+<span class="go">| id | description |</span>
+<span class="go">+----+-------------+</span>
+<span class="go">|  0 | zero        |</span>
+<span class="go">|  1 | one         |</span>
+<span class="go">|  2 | other       |</span>
+<span class="go">|  3 | other       |</span>
+<span class="go">+----+-------------+</span>
+<span class="go">SELECT 4 rows in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All <em>result</em> expressions must be convertible to a single data type.</p>
+</div>
+</div>
+<div class="section" id="if-condition-result-default">
+<h3><a class="toc-backref" href="#id65"><code class="docutils literal"><span class="pre">if(condition,</span> <span class="pre">result</span> <span class="pre">[,</span> <span class="pre">default])</span></code></a><a class="headerlink" href="#if-condition-result-default" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">if</span></code> function is a conditional function comparing to <em>if</em> statements of
+most other programming languages. If the given <em>condition</em> expresion evaluates
+to <cite>true</cite>, the <em>result</em> expression is evaluated and it&#8217;s value is returned. If
+the <em>condition</em> evaluates to <cite>false</cite>, the <em>result</em> expression is not evaluated
+and the optional given <em>default</em> expression is evaluated instead and it&#8217;s value
+will be returned. If the <em>default</em> argument is omitted, NULL will be returned
+instead.</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="k">if</span><span class="p">(</span><span class="n">id</span> <span class="o">=</span> <span class="mf">0</span><span class="p">,</span> <span class="s1">&#39;zero&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">description</span> <span class="k">from</span> <span class="n">if_example</span> <span class="k">order</span> <span class="k">by</span> <span class="n">id</span><span class="p">;</span>
+<span class="go"> +----+-------------+</span>
+<span class="go"> | id | description |</span>
+<span class="go"> +----+-------------+</span>
+<span class="go"> |  0 | zero        |</span>
+<span class="go"> |  1 | other       |</span>
+<span class="go"> |  2 | other       |</span>
+<span class="go"> |  3 | other       |</span>
+<span class="go"> +----+-------------+</span>
+<span class="go"> SELECT 4 rows in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="coalesce-first-arg-second-arg">
+<h3><a class="toc-backref" href="#id66"><code class="docutils literal"><span class="pre">coalesce('first_arg',</span> <span class="pre">second_arg</span> <span class="pre">[,</span> <span class="pre">...</span> <span class="pre">])</span></code></a><a class="headerlink" href="#coalesce-first-arg-second-arg" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">coalesce</span></code> function takes one or more arguments of the same type and
+returns the first non-null value of these. The result will be NULL only if all
+the arguments evaluate to NULL.</p>
+<p>Returns: same type as arguments</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">coalesce</span><span class="p">(</span><span class="n">clustered_by</span><span class="p">,</span> <span class="s1">&#39;nothing&#39;</span><span class="p">)</span>
+<span class="mf">...</span>   <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="k">tables</span>
+<span class="mf">...</span>   <span class="k">where</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;nodes&#39;</span><span class="p">;</span>
+<span class="go">+-----------------------------------+</span>
+<span class="go">| coalesce(clustered_by, &#39;nothing&#39;) |</span>
+<span class="go">+-----------------------------------+</span>
+<span class="go">| nothing                           |</span>
+<span class="go">+-----------------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="greatest-first-arg-second-arg">
+<h3><a class="toc-backref" href="#id67"><code class="docutils literal"><span class="pre">greatest('first_arg',</span> <span class="pre">second_arg[</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a><a class="headerlink" href="#greatest-first-arg-second-arg" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">greatest</span></code> function takes one or more arguments of the same type and will
+return the largest value of these. NULL values in the arguments list are
+ignored. The result will be NULL only if all the arguments evaluate to NULL.</p>
+<p>Returns: same type as arguments</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">greatest</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">)</span>
+<span class="mf">...</span>   <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+----------------+</span>
+<span class="go">| greatest(1, 2) |</span>
+<span class="go">+----------------+</span>
+<span class="go">| 2              |</span>
+<span class="go">+----------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="least-first-arg-second-arg">
+<h3><a class="toc-backref" href="#id68"><code class="docutils literal"><span class="pre">least('first_arg',</span> <span class="pre">second_arg[</span> <span class="pre">,</span> <span class="pre">...</span> <span class="pre">])</span></code></a><a class="headerlink" href="#least-first-arg-second-arg" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">least</span></code> function takes one or more arguments of the same type and will
+return the smallest value of these. NULL values in the arguments list are
+ignored. The result will be NULL only if all the arguments evaluate to NULL.</p>
+<p>Returns: same type as arguments</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">least</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">2</span><span class="p">)</span>
+<span class="mf">...</span>   <span class="k">from</span> <span class="n">sys</span><span class="mf">.</span><span class="k">cluster</span><span class="p">;</span>
+<span class="go">+-------------+</span>
+<span class="go">| least(1, 2) |</span>
+<span class="go">+-------------+</span>
+<span class="go">| 1           |</span>
+<span class="go">+-------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="nullif-first-arg-second-arg">
+<h3><a class="toc-backref" href="#id69"><code class="docutils literal"><span class="pre">nullif('first_arg',</span> <span class="pre">second_arg)</span></code></a><a class="headerlink" href="#nullif-first-arg-second-arg" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">nullif</span></code> function compares two arguments of the same type and, if they
+have the same value, returns NULL; otherwise returns the first argument.</p>
+<p>Returns: same type as arguments</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">nullif</span><span class="p">(</span><span class="n">table_schema</span><span class="p">,</span> <span class="s1">&#39;sys&#39;</span><span class="p">)</span>
+<span class="mf">...</span>   <span class="k">from</span> <span class="n">information_schema</span><span class="mf">.</span><span class="k">tables</span>
+<span class="mf">...</span>   <span class="k">where</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;nodes&#39;</span><span class="p">;</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">| nullif(table_schema, &#39;sys&#39;) |</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">| NULL                        |</span>
+<span class="go">+-----------------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="system-information-functions">
+<h2><a class="toc-backref" href="#id70">System Information Functions</a><a class="headerlink" href="#system-information-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="current-schema">
+<h3><a class="toc-backref" href="#id71"><code class="docutils literal"><span class="pre">CURRENT_SCHEMA</span></code></a><a class="headerlink" href="#current-schema" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">CURRENT_SCHEMA</span></code> system information function returns the name of the
+current schema of the session. If no current schema is set, this function will
+return the default schema, which is <code class="docutils literal"><span class="pre">doc</span></code>.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>The default schema can be set when using the <a class="reference external" href="https://crate.io/docs/reference/jdbc/#jdbc-url-format">JDBC</a> and <a class="reference external" href="https://crate.io/docs/reference/protocols/http.html#default-schema">HTTP clients</a> such as
+<a class="reference external" href="https://crate.io/docs/reference/pdo/usage.html#dsn">CrateDB PDO</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">CURRENT_SCHEMA</span></code> function has a special SQL syntax, meaning that it
+must be called without trailing parenthesis (<code class="docutils literal"><span class="pre">()</span></code>). However, CrateDB also
+supports the optional parenthesis.</p>
+</div>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">CURRENT_SCHEMA</span> <span class="p">[</span> <span class="p">(</span> <span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="k">CURRENT_SCHEMA</span><span class="p">;</span>
+<span class="go">+----------------+</span>
+<span class="go">| current_schema |</span>
+<span class="go">+----------------+</span>
+<span class="go">|            doc |</span>
+<span class="go">+----------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="current-user">
+<span id="id6"></span><h3><a class="toc-backref" href="#id72"><code class="docutils literal"><span class="pre">CURRENT_USER</span></code></a><a class="headerlink" href="#current-user" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">CURRENT_USER</span></code> is an
+<a class="reference internal" href="../../enterprise/index.html#enterprise-features"><span class="std std-ref">enterprise feature</span></a>.</p>
+</div>
+<p>The <code class="docutils literal"><span class="pre">CURRENT_USER</span></code> system information function returns the name of the
+current connected user or NULL if the user management module is disabled.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">CURRENT_USER</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">current_user</span><span class="p">;</span>
+<span class="go">+--------------+</span>
+<span class="go">| current_user |</span>
+<span class="go">+--------------+</span>
+<span class="go">| crate        |</span>
+<span class="go">+--------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="user">
+<span id="id7"></span><h3><a class="toc-backref" href="#id73"><code class="docutils literal"><span class="pre">USER</span></code></a><a class="headerlink" href="#user" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">USER</span></code> is an
+<a class="reference internal" href="../../enterprise/index.html#enterprise-features"><span class="std std-ref">enterprise feature</span></a>.</p>
+</div>
+<p>Equivalent to <a class="reference internal" href="#current-user">CURRENT_USER</a>.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">USER</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">user</span><span class="p">;</span>
+<span class="go">+--------------+</span>
+<span class="go">| current_user |</span>
+<span class="go">+--------------+</span>
+<span class="go">| crate        |</span>
+<span class="go">+--------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="session-user">
+<span id="id8"></span><h3><a class="toc-backref" href="#id74"><code class="docutils literal"><span class="pre">SESSION_USER</span></code></a><a class="headerlink" href="#session-user" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">SESSION_USER</span></code> is an
+<a class="reference internal" href="../../enterprise/index.html#enterprise-features"><span class="std std-ref">enterprise feature</span></a>.</p>
+</div>
+<p>The <code class="docutils literal"><span class="pre">SESSION_USER</span></code> system information function returns the name of the
+current connected user or NULL if the user management module is disabled.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">string</span></code></p>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="k">SESSION_USER</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">session_user</span><span class="p">;</span>
+<span class="go">+--------------+</span>
+<span class="go">| session_user |</span>
+<span class="go">+--------------+</span>
+<span class="go">| crate        |</span>
+<span class="go">+--------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">CrateDB doesn&#8217;t currently support the switching of execution context. This
+makes <a class="reference internal" href="#session-user">SESSION_USER</a> functionally equivalent to <a class="reference internal" href="#current-user">CURRENT_USER</a>. We
+provide it as it&#8217;s part of the SQL standard.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference internal" href="#current-user">CURRENT_USER</a>, <a class="reference internal" href="#session-user">SESSION_USER</a> and <a class="reference internal" href="#user">USER</a> functions have a
+a special SQL syntax, meaning that they must be called without trailing
+parenthesis (<code class="docutils literal"><span class="pre">()</span></code>).</p>
+</div>
+</div>
+<div class="section" id="pg-backend-pid">
+<h3><a class="toc-backref" href="#id75"><code class="docutils literal"><span class="pre">pg_backend_pid()</span></code></a><a class="headerlink" href="#pg-backend-pid" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">pg_backend_pid()</span></code> system information function is implemented for
+enhanced compatibility with PostgreSQL. CrateDB will always return <code class="docutils literal"><span class="pre">-1</span></code> as
+there isn&#8217;t a single process attached to one query. This is different to
+PostgreSQL, where this represents the process ID of the server process
+attached to the current session.</p>
+<p>Returns: <code class="docutils literal"><span class="pre">integer</span></code></p>
+<p>Synopsis:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">pg_backend_pid</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-psql"><div class="highlight"><pre><span></span><span class="n">cr</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">pg_backend_pid</span><span class="p">();</span>
+<span class="go">+------------------+</span>
+<span class="go">| pg_backend_pid() |</span>
+<span class="go">+------------------+</span>
+<span class="go">|               -1 |</span>
+<span class="go">+------------------+</span>
+<span class="go">SELECT 1 row in set (... sec)</span>
+</pre></div>
+</div>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="mysql-docs" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td><a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/date-and-time-functions.html#function_date-format">http://dev.mysql.com/doc/refman/5.6/en/date-and-time-functions.html#function_date-format</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>

@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Fulltext Analyzers &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../../index.html" />
+    <link rel="up" title="Data Definition" href="index.html" />
+    <link rel="next" title="Show Create Table" href="show-create-table.html" />
+    <link rel="prev" title="Fulltext Indices" href="fulltext-indices.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">General Use</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Definition</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../appendices/index.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/release-notes/index.html">Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/release-notes/index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../appendices/sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="fulltext-analyzers">
+<span id="sql-analyzer"></span><h1>Fulltext Analyzers<a class="headerlink" href="#fulltext-analyzers" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Table of Contents</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#overview" id="id18">Overview</a></li>
+<li><a class="reference internal" href="#builtin-analyzer" id="id19">Builtin Analyzer</a><ul>
+<li><a class="reference internal" href="#standard" id="id20"><code class="docutils literal"><span class="pre">standard</span></code></a></li>
+<li><a class="reference internal" href="#default" id="id21"><code class="docutils literal"><span class="pre">default</span></code></a></li>
+<li><a class="reference internal" href="#simple" id="id22"><code class="docutils literal"><span class="pre">simple</span></code></a></li>
+<li><a class="reference internal" href="#whitespace" id="id23"><code class="docutils literal"><span class="pre">whitespace</span></code></a></li>
+<li><a class="reference internal" href="#stop" id="id24"><code class="docutils literal"><span class="pre">stop</span></code></a></li>
+<li><a class="reference internal" href="#keyword" id="id25"><code class="docutils literal"><span class="pre">keyword</span></code></a></li>
+<li><a class="reference internal" href="#pattern" id="id26"><code class="docutils literal"><span class="pre">pattern</span></code></a></li>
+<li><a class="reference internal" href="#language" id="id27"><code class="docutils literal"><span class="pre">language</span></code></a></li>
+<li><a class="reference internal" href="#snowball" id="id28"><code class="docutils literal"><span class="pre">snowball</span></code></a></li>
+<li><a class="reference internal" href="#fingerprint" id="id29"><code class="docutils literal"><span class="pre">fingerprint</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#builtin-tokenizer" id="id30">Builtin Tokenizer</a><ul>
+<li><a class="reference internal" href="#standard-tokenizer" id="id31"><code class="docutils literal"><span class="pre">standard</span></code></a></li>
+<li><a class="reference internal" href="#classic" id="id32"><code class="docutils literal"><span class="pre">classic</span></code></a></li>
+<li><a class="reference internal" href="#edge-ngram" id="id33"><code class="docutils literal"><span class="pre">edge_ngram</span></code></a></li>
+<li><a class="reference internal" href="#keyword-tokenizer" id="id34"><code class="docutils literal"><span class="pre">keyword</span></code></a></li>
+<li><a class="reference internal" href="#letter" id="id35"><code class="docutils literal"><span class="pre">letter</span></code></a></li>
+<li><a class="reference internal" href="#lowercase" id="id36"><code class="docutils literal"><span class="pre">lowercase</span></code></a></li>
+<li><a class="reference internal" href="#ngram" id="id37"><code class="docutils literal"><span class="pre">ngram</span></code></a></li>
+<li><a class="reference internal" href="#whitespace-tokenizer" id="id38"><code class="docutils literal"><span class="pre">whitespace</span></code></a></li>
+<li><a class="reference internal" href="#pattern-tokenizer" id="id39"><code class="docutils literal"><span class="pre">pattern</span></code></a></li>
+<li><a class="reference internal" href="#thai" id="id40"><code class="docutils literal"><span class="pre">thai</span></code></a></li>
+<li><a class="reference internal" href="#uax-url-email" id="id41"><code class="docutils literal"><span class="pre">uax_url_email</span></code></a></li>
+<li><a class="reference internal" href="#path-hierarchy" id="id42"><code class="docutils literal"><span class="pre">path_hierarchy</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#builtin-token-filter" id="id43">Builtin Token Filter</a><ul>
+<li><a class="reference internal" href="#standard-tokenfilter" id="id44"><code class="docutils literal"><span class="pre">standard</span></code></a></li>
+<li><a class="reference internal" href="#classic-tokenfilter" id="id45"><code class="docutils literal"><span class="pre">classic</span></code></a></li>
+<li><a class="reference internal" href="#apostrophe" id="id46"><code class="docutils literal"><span class="pre">apostrophe</span></code></a></li>
+<li><a class="reference internal" href="#asciifolding" id="id47"><code class="docutils literal"><span class="pre">asciifolding</span></code></a></li>
+<li><a class="reference internal" href="#length" id="id48"><code class="docutils literal"><span class="pre">length</span></code></a></li>
+<li><a class="reference internal" href="#lowercase-tokenfilter" id="id49"><code class="docutils literal"><span class="pre">lowercase</span></code></a></li>
+<li><a class="reference internal" href="#ngram-tokenfilter" id="id50"><code class="docutils literal"><span class="pre">ngram</span></code></a></li>
+<li><a class="reference internal" href="#edgengram-tokenfilter" id="id51"><code class="docutils literal"><span class="pre">edge_ngram</span></code></a></li>
+<li><a class="reference internal" href="#porter-stem" id="id52"><code class="docutils literal"><span class="pre">porter_stem</span></code></a></li>
+<li><a class="reference internal" href="#shingle" id="id53"><code class="docutils literal"><span class="pre">shingle</span></code></a></li>
+<li><a class="reference internal" href="#stop-tokenfilter" id="id54"><code class="docutils literal"><span class="pre">stop</span></code></a></li>
+<li><a class="reference internal" href="#word-delimiter" id="id55"><code class="docutils literal"><span class="pre">word_delimiter</span></code></a></li>
+<li><a class="reference internal" href="#stemmer" id="id56"><code class="docutils literal"><span class="pre">stemmer</span></code></a></li>
+<li><a class="reference internal" href="#keyword-marker" id="id57"><code class="docutils literal"><span class="pre">keyword_marker</span></code></a></li>
+<li><a class="reference internal" href="#kstem" id="id58"><code class="docutils literal"><span class="pre">kstem</span></code></a></li>
+<li><a class="reference internal" href="#snowball-tokenfilter" id="id59"><code class="docutils literal"><span class="pre">snowball</span></code></a></li>
+<li><a class="reference internal" href="#synonym" id="id60"><code class="docutils literal"><span class="pre">synonym</span></code></a></li>
+<li><a class="reference internal" href="#decompounder" id="id61"><code class="docutils literal"><span class="pre">*_decompounder</span></code></a></li>
+<li><a class="reference internal" href="#reverse" id="id62"><code class="docutils literal"><span class="pre">reverse</span></code></a></li>
+<li><a class="reference internal" href="#elision" id="id63"><code class="docutils literal"><span class="pre">elision</span></code></a></li>
+<li><a class="reference internal" href="#truncate" id="id64"><code class="docutils literal"><span class="pre">truncate</span></code></a></li>
+<li><a class="reference internal" href="#unique" id="id65"><code class="docutils literal"><span class="pre">unique</span></code></a></li>
+<li><a class="reference internal" href="#pattern-capture" id="id66"><code class="docutils literal"><span class="pre">pattern_capture</span></code></a></li>
+<li><a class="reference internal" href="#pattern-replace" id="id67"><code class="docutils literal"><span class="pre">pattern_replace</span></code></a></li>
+<li><a class="reference internal" href="#trim" id="id68"><code class="docutils literal"><span class="pre">trim</span></code></a></li>
+<li><a class="reference internal" href="#limit" id="id69"><code class="docutils literal"><span class="pre">limit</span></code></a></li>
+<li><a class="reference internal" href="#hunspell" id="id70"><code class="docutils literal"><span class="pre">hunspell</span></code></a></li>
+<li><a class="reference internal" href="#common-grams" id="id71"><code class="docutils literal"><span class="pre">common_grams</span></code></a></li>
+<li><a class="reference internal" href="#normalization" id="id72"><code class="docutils literal"><span class="pre">*_normalization</span></code></a></li>
+<li><a class="reference internal" href="#scandinavian-folding" id="id73"><code class="docutils literal"><span class="pre">scandinavian_folding</span></code></a></li>
+<li><a class="reference internal" href="#delimited-payload-filter" id="id74"><code class="docutils literal"><span class="pre">delimited_payload_filter</span></code></a></li>
+<li><a class="reference internal" href="#keep" id="id75"><code class="docutils literal"><span class="pre">keep</span></code></a></li>
+<li><a class="reference internal" href="#stemmer-override" id="id76"><code class="docutils literal"><span class="pre">stemmer_override</span></code></a></li>
+<li><a class="reference internal" href="#cjk-bigram" id="id77"><code class="docutils literal"><span class="pre">cjk_bigram</span></code></a></li>
+<li><a class="reference internal" href="#cjk-width" id="id78"><code class="docutils literal"><span class="pre">cjk_width</span></code></a></li>
+<li><a class="reference internal" href="#stem" id="id79"><code class="docutils literal"><span class="pre">*_stem</span></code></a></li>
+<li><a class="reference internal" href="#decimal-digit" id="id80"><code class="docutils literal"><span class="pre">decimal_digit</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#builtin-char-filter" id="id81">Builtin Char Filter</a><ul>
+<li><a class="reference internal" href="#mapping" id="id82"><code class="docutils literal"><span class="pre">mapping</span></code></a></li>
+<li><a class="reference internal" href="#html-strip" id="id83"><code class="docutils literal"><span class="pre">html_strip</span></code></a></li>
+<li><a class="reference internal" href="#patternreplace-charfilter" id="id84"><code class="docutils literal"><span class="pre">pattern_replace</span></code></a></li>
+<li><a class="reference internal" href="#keep-types" id="id85"><code class="docutils literal"><span class="pre">keep_types</span></code></a></li>
+<li><a class="reference internal" href="#min-hash" id="id86"><code class="docutils literal"><span class="pre">min_hash</span></code></a></li>
+<li><a class="reference internal" href="#fingerprint-tokenfilter" id="id87"><code class="docutils literal"><span class="pre">fingerprint</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<span id="analyzer-overview"></span><h2><a class="toc-backref" href="#id18">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Analyzers are used for creating fulltext-indexes. They take the content of a
+field and split it into tokens, which are then searched. Analyzers filter,
+reorder and/or transform the content of a field before it becomes the final
+stream of tokens.</p>
+<p>An analyzer consists of one tokenizer, zero or more token-filters, and zero or
+more char-filters.</p>
+<p>When a field-content is analyzed to become a stream of tokens, the char-filter
+is applied at first. It is used to filter some special chars from the stream of
+characters that make up the content.</p>
+<p>Tokenizers split the possibly filtered stream of characters into tokens.</p>
+<p>Token-filters can add tokens, delete tokens or transform them.</p>
+<p>With these elements in place, analyzer provide fine-grained control over
+building a token stream used for fulltext search. For example you can use
+language specific analyzers, tokenizers and token-filters to get proper search
+results for data provided in a certain language.</p>
+<p>Below the builtin analyzers, tokenizers, token-filters and char-filters are
+listed. They can be used as is or can be extended.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p><a class="reference internal" href="fulltext-indices.html#fulltext-indices"><span class="std std-ref">Fulltext Indices</span></a> for examples showing how to create tables which make
+use of analyzers.</p>
+<p><a class="reference internal" href="fulltext-indices.html#create-custom-analyzer"><span class="std std-ref">Create a Custom Analyzer</span></a> for an example showing how to create a custom
+analyzer.</p>
+<p class="last"><a class="reference internal" href="../../sql/statements/create-analyzer.html#ref-create-analyzer"><span class="std std-ref">CREATE ANALYZER</span></a> for the syntax reference.</p>
+</div>
+</div>
+<div class="section" id="builtin-analyzer">
+<span id="id1"></span><h2><a class="toc-backref" href="#id19">Builtin Analyzer</a><a class="headerlink" href="#builtin-analyzer" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="standard">
+<span id="standard-analyzer"></span><h3><a class="toc-backref" href="#id20"><code class="docutils literal"><span class="pre">standard</span></code></a><a class="headerlink" href="#standard" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='standard'</span></code></p>
+<p>An analyzer of type standard is built using the <a class="reference internal" href="#standard-tokenizer"><span class="std std-ref">standard</span></a>
+Tokenizer with the <a class="reference internal" href="#standard-tokenfilter"><span class="std std-ref">standard</span></a> Token Filter,
+<a class="reference internal" href="#lowercase-tokenfilter"><span class="std std-ref">lowercase</span></a> Token Filter, and <a class="reference internal" href="#stop-tokenfilter"><span class="std std-ref">stop</span></a> Token
+Filter.</p>
+<p>Lowercase all Tokens, uses <em>NO</em> stopwords and excludes tokens longer than 255
+characters. This analyzer uses unicode text segmentation, which is defined by
+<a class="reference external" href="http://www.unicode.org/reports/tr29/">UAX#29</a>.</p>
+<p>For example, the standard analyzer converts the sentence</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">quick</span> <span class="n">brown</span> <span class="n">fox</span> <span class="n">jumps</span> <span class="n">Over</span> <span class="n">the</span> <span class="n">lAzY</span> <span class="n">DOG</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>into the following tokens</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">quick</span><span class="p">,</span> <span class="n">brown</span><span class="p">,</span> <span class="n">fox</span><span class="p">,</span> <span class="n">jumps</span><span class="p">,</span> <span class="n">lazy</span><span class="p">,</span> <span class="n">dog</span>
+</pre></div>
+</div>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>stopwords</dt>
+<dd>A list of stopwords to initialize the <a class="reference internal" href="#stop-tokenfilter"><span class="std std-ref">stop</span></a> filter with.
+Defaults to the english stop words.</dd>
+<dt>max_token_length</dt>
+<dd>The maximum token length. If a token is seen that exceeds this length then
+it is discarded. Defaults to <code class="docutils literal"><span class="pre">255</span></code>.</dd>
+</dl>
+</div>
+<div class="section" id="default">
+<span id="default-analyzer"></span><h3><a class="toc-backref" href="#id21"><code class="docutils literal"><span class="pre">default</span></code></a><a class="headerlink" href="#default" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='default'</span></code></p>
+<p>This is the same as the <a class="reference internal" href="#standard-analyzer">standard-analyzer</a> analyzer.</p>
+</div>
+<div class="section" id="simple">
+<span id="simple-analyzer"></span><h3><a class="toc-backref" href="#id22"><code class="docutils literal"><span class="pre">simple</span></code></a><a class="headerlink" href="#simple" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='simple'</span></code></p>
+<p>Uses the <a class="reference internal" href="#lowercase-tokenizer"><span class="std std-ref">lowercase</span></a> tokenizer.</p>
+</div>
+<div class="section" id="whitespace">
+<span id="whitespace-analyzer"></span><h3><a class="toc-backref" href="#id23"><code class="docutils literal"><span class="pre">whitespace</span></code></a><a class="headerlink" href="#whitespace" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='whitespace'</span></code></p>
+<p>Uses a <a class="reference internal" href="#whitespace-tokenizer"><span class="std std-ref">whitespace</span></a> tokenizer</p>
+</div>
+<div class="section" id="stop">
+<span id="stop-analyzer"></span><h3><a class="toc-backref" href="#id24"><code class="docutils literal"><span class="pre">stop</span></code></a><a class="headerlink" href="#stop" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='stop'</span></code></p>
+<p>Uses a <a class="reference internal" href="#lowercase-tokenizer"><span class="std std-ref">lowercase</span></a> Tokenizer, with <a class="reference internal" href="#stop-tokenfilter"><span class="std std-ref">stop</span></a> Token
+Filter.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>stopwords</dt>
+<dd>A list of stopwords to initialize the :ref:&#8217;stop-tokenfilter` filter with.
+Defaults to the english stop words.</dd>
+<dt>stopwords_path</dt>
+<dd>A path (either relative to config location, or absolute) to a stopwords
+file configuration.</dd>
+</dl>
+</div>
+<div class="section" id="keyword">
+<span id="keyword-analyzer"></span><h3><a class="toc-backref" href="#id25"><code class="docutils literal"><span class="pre">keyword</span></code></a><a class="headerlink" href="#keyword" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type=keyword</span></code></p>
+<p>Creates one single token from the field-contents.</p>
+</div>
+<div class="section" id="pattern">
+<span id="pattern-analyzer"></span><h3><a class="toc-backref" href="#id26"><code class="docutils literal"><span class="pre">pattern</span></code></a><a class="headerlink" href="#pattern" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='pattern'</span></code></p>
+<p>An analyzer of type pattern that can flexibly separate text into terms via a
+regular expression.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>lowercase</dt>
+<dd>Should terms be lowercased or not. Defaults to true.</dd>
+<dt>pattern</dt>
+<dd>The regular expression pattern, defaults to W+.</dd>
+<dt>flags</dt>
+<dd>The regular expression flags.</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The regular expression should match the token separators, not the tokens
+themselves.</p>
+</div>
+<p>Flags should be pipe-separated, eg <code class="docutils literal"><span class="pre">CASE_INSENSITIVE|COMMENTS</span></code>. Check <a class="reference external" href="http://download.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html#field_summary">Java
+Pattern API</a> for more details about flags options.</p>
+</div>
+<div class="section" id="language">
+<span id="language-analyzer"></span><h3><a class="toc-backref" href="#id27"><code class="docutils literal"><span class="pre">language</span></code></a><a class="headerlink" href="#language" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='&lt;language-name&gt;'</span></code></p>
+<p>The following types are supported:</p>
+<p><code class="docutils literal"><span class="pre">arabic</span></code>, <code class="docutils literal"><span class="pre">armenian</span></code>, <code class="docutils literal"><span class="pre">basque</span></code>, <code class="docutils literal"><span class="pre">brazilian</span></code>, <code class="docutils literal"><span class="pre">bulgarian</span></code>,
+<code class="docutils literal"><span class="pre">catalan</span></code>, <code class="docutils literal"><span class="pre">chinese</span></code>, <code class="docutils literal"><span class="pre">cjk</span></code>, <code class="docutils literal"><span class="pre">czech</span></code>, <code class="docutils literal"><span class="pre">danish</span></code>, <code class="docutils literal"><span class="pre">dutch</span></code>,
+<code class="docutils literal"><span class="pre">english</span></code>, <code class="docutils literal"><span class="pre">finnish</span></code>, <code class="docutils literal"><span class="pre">french</span></code>, <code class="docutils literal"><span class="pre">galician</span></code>, <code class="docutils literal"><span class="pre">german</span></code>, <code class="docutils literal"><span class="pre">greek</span></code>,
+<code class="docutils literal"><span class="pre">hindi</span></code>, <code class="docutils literal"><span class="pre">hungarian</span></code>, <code class="docutils literal"><span class="pre">indonesian</span></code>, <code class="docutils literal"><span class="pre">italian</span></code>,  <code class="docutils literal"><span class="pre">latvian</span></code>,
+<code class="docutils literal"><span class="pre">lithuanian</span></code>, <code class="docutils literal"><span class="pre">norwegian</span></code>, <code class="docutils literal"><span class="pre">persian</span></code>, <code class="docutils literal"><span class="pre">portuguese</span></code>, <code class="docutils literal"><span class="pre">romanian</span></code>,
+<code class="docutils literal"><span class="pre">russian</span></code>, <code class="docutils literal"><span class="pre">sorani</span></code>, <code class="docutils literal"><span class="pre">spanish</span></code>, <code class="docutils literal"><span class="pre">swedish</span></code>, <code class="docutils literal"><span class="pre">turkish</span></code>, <code class="docutils literal"><span class="pre">thai</span></code>.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>stopwords</dt>
+<dd>A list of stopwords to initialize the stop filter with. Defaults to the
+english stop words.</dd>
+<dt>stopwords_path</dt>
+<dd>A path (either relative to config location, or absolute) to a stopwords
+file configuration.</dd>
+</dl>
+<p>The following analyzers support setting custom <code class="docutils literal"><span class="pre">stem_exclusion</span></code> list:</p>
+<p><code class="docutils literal"><span class="pre">arabic</span></code>, <code class="docutils literal"><span class="pre">armenian</span></code>, <code class="docutils literal"><span class="pre">basque</span></code>, <code class="docutils literal"><span class="pre">brazilian</span></code>, <code class="docutils literal"><span class="pre">bulgarian</span></code>,
+<code class="docutils literal"><span class="pre">catalan</span></code>, <code class="docutils literal"><span class="pre">czech</span></code>, <code class="docutils literal"><span class="pre">danish</span></code>, <code class="docutils literal"><span class="pre">dutch</span></code>, <code class="docutils literal"><span class="pre">english</span></code>, <code class="docutils literal"><span class="pre">finnish</span></code>,
+<code class="docutils literal"><span class="pre">french</span></code>, <code class="docutils literal"><span class="pre">galician</span></code>, <code class="docutils literal"><span class="pre">german</span></code>, <code class="docutils literal"><span class="pre">hindi</span></code>, <code class="docutils literal"><span class="pre">hungarian</span></code>, <code class="docutils literal"><span class="pre">indonesian</span></code>,
+<code class="docutils literal"><span class="pre">italian</span></code>, <code class="docutils literal"><span class="pre">latvian</span></code>, <code class="docutils literal"><span class="pre">lithuanian</span></code>, <code class="docutils literal"><span class="pre">norwegian</span></code>, <code class="docutils literal"><span class="pre">portuguese</span></code>,
+<code class="docutils literal"><span class="pre">romanian</span></code>, <code class="docutils literal"><span class="pre">russian</span></code>, <code class="docutils literal"><span class="pre">spanish</span></code>, <code class="docutils literal"><span class="pre">swedish</span></code>, <code class="docutils literal"><span class="pre">turkish</span></code>.</p>
+</div>
+<div class="section" id="snowball">
+<span id="snowball-analyzer"></span><h3><a class="toc-backref" href="#id28"><code class="docutils literal"><span class="pre">snowball</span></code></a><a class="headerlink" href="#snowball" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='snowball'</span></code></p>
+<p>Uses the <a class="reference internal" href="#standard-tokenizer"><span class="std std-ref">standard</span></a> Tokenizer, with <a class="reference internal" href="#standard-tokenfilter"><span class="std std-ref">standard</span></a>
+filter, <a class="reference internal" href="#lowercase-tokenfilter"><span class="std std-ref">lowercase</span></a> filter, <a class="reference internal" href="#stop-tokenfilter"><span class="std std-ref">stop</span></a> filter,
+and <a class="reference internal" href="#snowball-tokenfilter"><span class="std std-ref">snowball</span></a> filter.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>stopwords</dt>
+<dd>A list of stopwords to initialize the stop filter with. Defaults to the
+english stop words.</dd>
+<dt>language</dt>
+<dd>See the language-parameter of <a class="reference internal" href="#snowball-tokenfilter"><span class="std std-ref">snowball</span></a>.</dd>
+</dl>
+</div>
+<div class="section" id="fingerprint">
+<span id="fingerprint-analyzer"></span><h3><a class="toc-backref" href="#id29"><code class="docutils literal"><span class="pre">fingerprint</span></code></a><a class="headerlink" href="#fingerprint" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='fingerprint'</span></code></p>
+<p>The fingerprint analyzer implements a fingerprinting algorithm which is used by
+the OpenRefine project to assist in clustering. Input text is lowercased,
+normalized to remove extended characters, sorted, deduplicated and concatenated
+into a single token. If a stopword list is configured, stop words will also be
+removed. It uses the <a class="reference internal" href="#standard-tokenizer"><span class="std std-ref">standard</span></a> Tokenizer and the following
+filters: <a class="reference internal" href="#lowercase-tokenfilter"><span class="std std-ref">lowercase</span></a>, <a class="reference internal" href="#asciifolding-tokenfilter"><span class="std std-ref">asciifolding</span></a>,
+<a class="reference internal" href="#fingerprint-tokenfilter"><span class="std std-ref">fingerprint</span></a> and ref:<cite>stop-tokenfilter</cite>.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>separator</dt>
+<dd>The character to use to concatenate the terms. Defaults to a space.</dd>
+<dt>max_output_size</dt>
+<dd>The maximum token size to emit, tokens larger than this size will be
+discarded. Defaults to <code class="docutils literal"><span class="pre">255</span></code>.</dd>
+<dt>stopwords</dt>
+<dd>A pre-defined stop words list like _english_ or an array containing a list
+of stop words. Defaults to <code class="docutils literal"><span class="pre">\_none_</span></code>.</dd>
+<dt>stopwords_path</dt>
+<dd>The path to a file containing stop words.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="builtin-tokenizer">
+<span id="id2"></span><h2><a class="toc-backref" href="#id30">Builtin Tokenizer</a><a class="headerlink" href="#builtin-tokenizer" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="standard-tokenizer">
+<span id="id3"></span><h3><a class="toc-backref" href="#id31"><code class="docutils literal"><span class="pre">standard</span></code></a><a class="headerlink" href="#standard-tokenizer" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='standard'</span></code></p>
+<p>A tokenizer of type standard providing a grammar based tokenizer, which is a
+good tokenizer for most European language documents. The tokenizer implements
+the Unicode Text Segmentation algorithm, as specified in Unicode Standard Annex
+#29.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>max_token_length</dt>
+<dd>The maximum token length. If a token is seen that exceeds this length then
+it is discarded. Defaults to <code class="docutils literal"><span class="pre">255</span></code>.</dd>
+</dl>
+</div>
+<div class="section" id="classic">
+<span id="classic-tokenizer"></span><h3><a class="toc-backref" href="#id32"><code class="docutils literal"><span class="pre">classic</span></code></a><a class="headerlink" href="#classic" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='classic'</span></code></p>
+<p>This tokenizer is a grammar based tokenizer that is good for English language
+documents. This tokenizer has heuristics for special treatment of acronyms,
+company names, email addresses, and internet host names. However, these rules
+don&#8217;t always work, and the tokenizer doesn&#8217;t work well for most languages other
+than English.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>max_token_length</dt>
+<dd>The maximum token length. If a token is seen that exceeds this length then
+it is split at max_token_length intervals. Defaults to <code class="docutils literal"><span class="pre">255</span></code>.</dd>
+</dl>
+</div>
+<div class="section" id="edge-ngram">
+<span id="edgengram-tokenizer"></span><h3><a class="toc-backref" href="#id33"><code class="docutils literal"><span class="pre">edge_ngram</span></code></a><a class="headerlink" href="#edge-ngram" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='edge_ngram'</span></code></p>
+<p>This tokenizer is very similar to <a class="reference internal" href="#ngram-tokenizer"><span class="std std-ref">ngram</span></a> but only keeps n-grams
+which start at the beginning of a token.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>min_gram</dt>
+<dd>Minimum size in codepoints of a single n-gram. default: 1</dd>
+<dt>max_gram</dt>
+<dd>Maximum size in codepoints of a single n-gram. default: 2</dd>
+<dt>token_chars</dt>
+<dd><p class="first">Characters classes to keep in the tokens, will split on characters that
+don&#8217;t belong to any of these classes. default: [] (Keep all characters).</p>
+<p class="last"><strong>Classes:</strong> letter, digit, whitespace, punctuation, symbol</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="keyword-tokenizer">
+<span id="id4"></span><h3><a class="toc-backref" href="#id34"><code class="docutils literal"><span class="pre">keyword</span></code></a><a class="headerlink" href="#keyword-tokenizer" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='keyword'</span></code></p>
+<p>Emits the entire input as a single token.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>buffer_size</dt>
+<dd>The term buffer size. Defaults to <code class="docutils literal"><span class="pre">256</span></code>.</dd>
+</dl>
+</div>
+<div class="section" id="letter">
+<span id="letter-tokenizer"></span><h3><a class="toc-backref" href="#id35"><code class="docutils literal"><span class="pre">letter</span></code></a><a class="headerlink" href="#letter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='letter'</span></code></p>
+<p>Divides text at non-letters.</p>
+</div>
+<div class="section" id="lowercase">
+<span id="lowercase-tokenizer"></span><h3><a class="toc-backref" href="#id36"><code class="docutils literal"><span class="pre">lowercase</span></code></a><a class="headerlink" href="#lowercase" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='lowercase'</span></code></p>
+<p>Performs the function of <a class="reference internal" href="#letter-tokenizer"><span class="std std-ref">letter</span></a> and
+<a class="reference internal" href="#lowercase-tokenfilter"><span class="std std-ref">lowercase</span></a> together. It divides text at non-letters and
+converts them to lower case.</p>
+</div>
+<div class="section" id="ngram">
+<span id="ngram-tokenizer"></span><h3><a class="toc-backref" href="#id37"><code class="docutils literal"><span class="pre">ngram</span></code></a><a class="headerlink" href="#ngram" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='ngram'</span></code></p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>min_gram</dt>
+<dd>Minimum size in codepoints of a single n-gram. default 1.</dd>
+<dt>max_gram</dt>
+<dd>Maximum size in codepoints of a single n-gram. default 2.</dd>
+<dt>token_chars</dt>
+<dd><p class="first">Characters classes to keep in the tokens, will split on characters that
+don&#8217;t belong to any of these classes. default: [] (Keep all characters).</p>
+<p class="last"><strong>Classes:</strong> letter, digit, whitespace, punctuation, symbol</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="whitespace-tokenizer">
+<span id="id5"></span><h3><a class="toc-backref" href="#id38"><code class="docutils literal"><span class="pre">whitespace</span></code></a><a class="headerlink" href="#whitespace-tokenizer" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='whitespace'</span></code></p>
+<p>Divides text at whitespace.</p>
+</div>
+<div class="section" id="pattern-tokenizer">
+<span id="id6"></span><h3><a class="toc-backref" href="#id39"><code class="docutils literal"><span class="pre">pattern</span></code></a><a class="headerlink" href="#pattern-tokenizer" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='pattern'</span></code></p>
+<p>Separates text into terms via a regular expression.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>pattern</dt>
+<dd>The regular expression pattern, defaults to \W+.</dd>
+<dt>flags</dt>
+<dd>The regular expression flags.</dd>
+<dt>group</dt>
+<dd>Which group to extract into tokens. Defaults to -1 (split).</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The regular expression should match the token separators, not the tokens
+themselves.</p>
+</div>
+<p>Flags should be pipe-separated, eg <code class="docutils literal"><span class="pre">CASE_INSENSITIVE|COMMENTS</span></code>. Check <a class="reference external" href="http://download.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html#field_summary">Java
+Pattern API</a> for more details about flags options.</p>
+</div>
+<div class="section" id="thai">
+<span id="thai-tokenizer"></span><h3><a class="toc-backref" href="#id40"><code class="docutils literal"><span class="pre">thai</span></code></a><a class="headerlink" href="#thai" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='thai'</span></code></p>
+<p>Splits Thai text correctly, treats all other languages like the
+<a class="reference internal" href="#standard-tokenizer">standard-tokenizer</a> does.</p>
+</div>
+<div class="section" id="uax-url-email">
+<span id="uaxemailurl-tokenizer"></span><h3><a class="toc-backref" href="#id41"><code class="docutils literal"><span class="pre">uax_url_email</span></code></a><a class="headerlink" href="#uax-url-email" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='uax_url_email'</span></code></p>
+<p>Exactly like the <a class="reference internal" href="#standard-tokenizer"><span class="std std-ref">standard</span></a>, but tokenizes emails and urls as
+single tokens.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>max_token_length</dt>
+<dd>The maximum token length. If a token is seen that exceeds this length then
+it is discarded. Defaults to <code class="docutils literal"><span class="pre">255</span></code>.</dd>
+</dl>
+</div>
+<div class="section" id="path-hierarchy">
+<span id="pathhierarchy-tokenizer"></span><h3><a class="toc-backref" href="#id42"><code class="docutils literal"><span class="pre">path_hierarchy</span></code></a><a class="headerlink" href="#path-hierarchy" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='path_hierarchy'</span></code></p>
+<p>Takes something like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">something</span><span class="o">/</span><span class="n">something</span><span class="o">/</span><span class="k">else</span>
+</pre></div>
+</div>
+<p>And produces tokens:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">something</span>
+<span class="o">/</span><span class="n">something</span><span class="o">/</span><span class="n">something</span>
+<span class="o">/</span><span class="n">something</span><span class="o">/</span><span class="n">something</span><span class="o">/</span><span class="k">else</span>
+</pre></div>
+</div>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>delimiter</dt>
+<dd>The character delimiter to use, defaults to /.</dd>
+<dt>replacement</dt>
+<dd>An optional replacement character to use. Defaults to the delimiter.</dd>
+<dt>buffer_size</dt>
+<dd>The buffer size to use, defaults to 1024.</dd>
+<dt>reverse</dt>
+<dd>Generates tokens in reverse order, defaults to false.</dd>
+<dt>skip</dt>
+<dd>Controls initial tokens to skip, defaults to 0.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="builtin-token-filter">
+<span id="id7"></span><h2><a class="toc-backref" href="#id43">Builtin Token Filter</a><a class="headerlink" href="#builtin-token-filter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="standard-tokenfilter">
+<span id="id8"></span><h3><a class="toc-backref" href="#id44"><code class="docutils literal"><span class="pre">standard</span></code></a><a class="headerlink" href="#standard-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='standard'</span></code></p>
+<p>Normalizes tokens extracted with the <a class="reference internal" href="#standard-tokenizer"><span class="std std-ref">standard</span></a> Tokenizer.</p>
+</div>
+<div class="section" id="classic-tokenfilter">
+<span id="id9"></span><h3><a class="toc-backref" href="#id45"><code class="docutils literal"><span class="pre">classic</span></code></a><a class="headerlink" href="#classic-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='classic'</span></code></p>
+<p>Does optional post-processing of terms that are generated by the classic
+tokenizer. It removes the english possessive from the end of words, and it
+removes dots from acronyms.</p>
+</div>
+<div class="section" id="apostrophe">
+<span id="apostrophe-tokenfilter"></span><h3><a class="toc-backref" href="#id46"><code class="docutils literal"><span class="pre">apostrophe</span></code></a><a class="headerlink" href="#apostrophe" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='apostrophe'</span></code></p>
+<p>Strips all characters after an apostrophe, and the apostrophe itself.</p>
+</div>
+<div class="section" id="asciifolding">
+<span id="asciifolding-tokenfilter"></span><h3><a class="toc-backref" href="#id47"><code class="docutils literal"><span class="pre">asciifolding</span></code></a><a class="headerlink" href="#asciifolding" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='asciifolding'</span></code></p>
+<p>Converts alphabetic, numeric, and symbolic Unicode characters which are not in
+the first 127 ASCII characters (the &#8220;Basic Latin&#8221; Unicode block) into their
+ASCII equivalents, if one exists.</p>
+</div>
+<div class="section" id="length">
+<span id="length-tokenfilter"></span><h3><a class="toc-backref" href="#id48"><code class="docutils literal"><span class="pre">length</span></code></a><a class="headerlink" href="#length" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='length'</span></code></p>
+<p>Removes words that are too long or too short for the stream.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>min</dt>
+<dd>The minimum number. Defaults to 0.</dd>
+<dt>max</dt>
+<dd>The maximum number. Defaults to Integer.MAX_VALUE.</dd>
+</dl>
+</div>
+<div class="section" id="lowercase-tokenfilter">
+<span id="id10"></span><h3><a class="toc-backref" href="#id49"><code class="docutils literal"><span class="pre">lowercase</span></code></a><a class="headerlink" href="#lowercase-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='lowercase'</span></code></p>
+<p>Normalizes token text to lower case.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>language</dt>
+<dd>For options, see <a class="reference internal" href="#language-analyzer"><span class="std std-ref">language</span></a> Analyzer.</dd>
+</dl>
+</div>
+<div class="section" id="ngram-tokenfilter">
+<span id="id11"></span><h3><a class="toc-backref" href="#id50"><code class="docutils literal"><span class="pre">ngram</span></code></a><a class="headerlink" href="#ngram-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='ngram'</span></code></p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>min_gram</dt>
+<dd>Defaults to 1.</dd>
+<dt>max_gram</dt>
+<dd>Defaults to 2.</dd>
+</dl>
+</div>
+<div class="section" id="edgengram-tokenfilter">
+<span id="id12"></span><h3><a class="toc-backref" href="#id51"><code class="docutils literal"><span class="pre">edge_ngram</span></code></a><a class="headerlink" href="#edgengram-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='edge_ngram'</span></code></p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>min_gram</dt>
+<dd>Defaults to 1.</dd>
+<dt>max_gram</dt>
+<dd>Defaults to 2.</dd>
+<dt>side</dt>
+<dd>Either front or back. Defaults to front.</dd>
+</dl>
+</div>
+<div class="section" id="porter-stem">
+<span id="porterstem-tokenfilter"></span><h3><a class="toc-backref" href="#id52"><code class="docutils literal"><span class="pre">porter_stem</span></code></a><a class="headerlink" href="#porter-stem" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='porter_stem'</span></code></p>
+<p>Transforms the token stream as per the Porter stemming algorithm.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The input to the stemming filter must already be in lower case, so you will
+need to use Lower Case Token Filter or Lower Case Tokenizer farther down
+the Tokenizer chain in order for this to work properly! For example, when
+using custom analyzer, make sure the lowercase filter comes before the
+porterStem filter in the list of filters.</p>
+</div>
+</div>
+<div class="section" id="shingle">
+<span id="shingle-tokenfilter"></span><h3><a class="toc-backref" href="#id53"><code class="docutils literal"><span class="pre">shingle</span></code></a><a class="headerlink" href="#shingle" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='shingle'</span></code></p>
+<p>Constructs shingles (token n-grams), combinations of tokens as a single token,
+from a token stream.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>max_shingle_size</dt>
+<dd>The maximum shingle size. Defaults to 2.</dd>
+<dt>min_shingle_sizes</dt>
+<dd>The minimum shingle size. Defaults to 2.</dd>
+<dt>output_unigrams</dt>
+<dd>If true the output will contain the input tokens (unigrams) as well as the
+shingles. Defaults to true.</dd>
+<dt>output_unigrams_if_no_shingles</dt>
+<dd>If output_unigrams is false the output will contain the input tokens
+(unigrams) if no shingles are available. Note if output_unigrams is set to
+true this setting has no effect. Defaults to false.</dd>
+<dt>token_separator</dt>
+<dd>The string to use when joining adjacent tokens to form a shingle. Defaults
+to &#8221; &#8221;.</dd>
+</dl>
+</div>
+<div class="section" id="stop-tokenfilter">
+<span id="id13"></span><h3><a class="toc-backref" href="#id54"><code class="docutils literal"><span class="pre">stop</span></code></a><a class="headerlink" href="#stop-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='stop'</span></code></p>
+<p>Removes stop words from token streams.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>stopwords</dt>
+<dd>A list of stop words to use. Defaults to english stop words.</dd>
+<dt>stopwords_path</dt>
+<dd>A path (either relative to config location, or absolute) to a stopwords
+file configuration. Each stop word should be in its own &#8220;line&#8221; (separated
+by a line break). The file must be UTF-8 encoded.</dd>
+<dt>ignore_case</dt>
+<dd>Set to true to lower case all words first. Defaults to false.</dd>
+<dt>remove_trailing</dt>
+<dd>Set to false in order to not ignore the last term of a search if it is a
+stop word. Defaults to true</dd>
+</dl>
+</div>
+<div class="section" id="word-delimiter">
+<span id="worddelimiter-tokenfilter"></span><h3><a class="toc-backref" href="#id55"><code class="docutils literal"><span class="pre">word_delimiter</span></code></a><a class="headerlink" href="#word-delimiter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='word_delimiter'</span></code></p>
+<p>Splits words into subwords and performs optional transformations on subword
+groups.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>generate_word_parts</dt>
+<dd>If true causes parts of words to be generated: &#8220;PowerShot&#8221; ⇒ &#8220;Power&#8221;
+&#8220;Shot&#8221;. Defaults to true.</dd>
+<dt>generate_number_parts</dt>
+<dd>If true causes number subwords to be generated: &#8220;500-42&#8221; ⇒ &#8220;500&#8221; &#8220;42&#8221;.
+Defaults to true.</dd>
+<dt>catenate_words</dt>
+<dd>If true causes maximum runs of word parts to be catenated: &#8220;wi-fi&#8221; ⇒
+&#8220;wifi&#8221;. Defaults to false.</dd>
+<dt>catenate_numbers</dt>
+<dd>If true causes maximum runs of number parts to be catenated: &#8220;500-42&#8221; ⇒
+&#8220;50042&#8221;. Defaults to false.</dd>
+<dt>catenate_all</dt>
+<dd>If true causes all subword parts to be catenated: &#8220;wi-fi-4000&#8221; ⇒
+&#8220;wifi4000&#8221;. Defaults to false.</dd>
+<dt>split_on_case_change</dt>
+<dd>If true causes &#8220;PowerShot&#8221; to be two tokens; (&#8220;Power-Shot&#8221; remains two
+parts regards). Defaults to true.</dd>
+<dt>preserve_original</dt>
+<dd>If true includes original words in subwords: &#8220;500-42&#8221; ⇒ &#8220;500-42&#8221; &#8220;500&#8221;
+&#8220;42&#8221;. Defaults to false.</dd>
+<dt>split_on_numerics</dt>
+<dd>If true causes &#8220;j2se&#8221; to be three tokens; &#8220;j&#8221; &#8220;2&#8221; &#8220;se&#8221;. Defaults to true.</dd>
+<dt>stem_english_possessive</dt>
+<dd>If true causes trailing &#8220;&#8216;s&#8221; to be removed for each subword: &#8220;O&#8217;Neil&#8217;s&#8221; ⇒
+&#8220;O&#8221;, &#8220;Neil&#8221;. Defaults to true.</dd>
+<dt>protected_words</dt>
+<dd>A list of words protected from being delimiter.</dd>
+<dt>protected_words_path</dt>
+<dd>A relative or absolute path to a file configured with protected words (one
+on each line). If relative, automatically resolves to <code class="docutils literal"><span class="pre">config/</span></code> based
+location if exists.</dd>
+<dt>type_table</dt>
+<dd>A custom type mapping table</dd>
+</dl>
+</div>
+<div class="section" id="stemmer">
+<span id="stemmer-tokenfilter"></span><h3><a class="toc-backref" href="#id56"><code class="docutils literal"><span class="pre">stemmer</span></code></a><a class="headerlink" href="#stemmer" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='stemmer'</span></code></p>
+<p>A filter that stems words (similar to <a class="reference internal" href="#snowball-tokenfilter"><span class="std std-ref">snowball</span></a>, but with
+more options).</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>language/name</dt>
+<dd>arabic, armenian, basque, brazilian, bulgarian, catalan, czech, danish,
+dutch, english, finnish, french, german, german2, greek, hungarian,
+italian, kp, kstem, lovins, latvian, norwegian, minimal_norwegian, porter,
+portuguese, romanian, russian, spanish, swedish, turkish, minimal_english,
+possessive_english, light_finnish, light_french, minimal_french,
+light_german, minimal_german, hindi, light_hungarian, indonesian,
+light_italian, light_portuguese, minimal_portuguese, portuguese,
+light_russian, light_spanish, light_swedish.</dd>
+</dl>
+</div>
+<div class="section" id="keyword-marker">
+<span id="keywordmarker-tokenfilter"></span><h3><a class="toc-backref" href="#id57"><code class="docutils literal"><span class="pre">keyword_marker</span></code></a><a class="headerlink" href="#keyword-marker" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='keyword_marker'</span></code></p>
+<p>Protects words from being modified by stemmers. Must be placed before any
+stemming filters.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>keywords</dt>
+<dd>A list of words to use.</dd>
+<dt>keywords_path</dt>
+<dd>A path (either relative to config location, or absolute) to a list of
+words.</dd>
+<dt>ignore_case</dt>
+<dd>Set to true to lower case all words first. Defaults to false.</dd>
+</dl>
+</div>
+<div class="section" id="kstem">
+<span id="kstem-tokenfilter"></span><h3><a class="toc-backref" href="#id58"><code class="docutils literal"><span class="pre">kstem</span></code></a><a class="headerlink" href="#kstem" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='kstem'</span></code></p>
+<p>High performance filter for english.</p>
+<p>All terms must already be lowercased (use <a class="reference internal" href="#lowercase-tokenfilter"><span class="std std-ref">lowercase</span></a> filter)
+for this filter to work correctly.</p>
+</div>
+<div class="section" id="snowball-tokenfilter">
+<span id="id14"></span><h3><a class="toc-backref" href="#id59"><code class="docutils literal"><span class="pre">snowball</span></code></a><a class="headerlink" href="#snowball-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='snowball'</span></code></p>
+<p>A filter that stems words using a Snowball-generated stemmer.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>language</dt>
+<dd>Possible values: Armenian, Basque, Catalan, Danish, Dutch, English,
+Finnish, French, German, German2, Hungarian, Italian, Kp, Lovins,
+Norwegian, Porter, Portuguese, Romanian, Russian, Spanish, Swedish,
+Turkish.</dd>
+</dl>
+</div>
+<div class="section" id="synonym">
+<span id="synonym-tokenfilter"></span><h3><a class="toc-backref" href="#id60"><code class="docutils literal"><span class="pre">synonym</span></code></a><a class="headerlink" href="#synonym" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='synonym'</span></code></p>
+<p>Allows to easily handle synonyms during the analysis process. Synonyms are
+configured using a configuration file.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>synonyms_path</dt>
+<dd>Path to synonyms configuration file</dd>
+<dt>ignore_case</dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">false</span></code></dd>
+<dt>expand</dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">true</span></code></dd>
+</dl>
+</div>
+<div class="section" id="decompounder">
+<span id="compoundword-tokenfilter"></span><h3><a class="toc-backref" href="#id61"><code class="docutils literal"><span class="pre">*_decompounder</span></code></a><a class="headerlink" href="#decompounder" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='dictionary_decompounder'</span></code> or <code class="docutils literal"><span class="pre">type='hyphenation_decompounder'</span></code></p>
+<p>Decomposes compound words.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>word_list</dt>
+<dd>A list of words to use.</dd>
+<dt>word_list_path</dt>
+<dd>A path (either relative to config location, or absolute) to a list of
+words.</dd>
+<dt>min_word_size</dt>
+<dd>Minimum word size(Integer). Defaults to 5.</dd>
+<dt>min_subword_size</dt>
+<dd>Minimum subword size(Integer). Defaults to 2.</dd>
+<dt>max_subword_size</dt>
+<dd>Maximum subword size(Integer). Defaults to 15.</dd>
+<dt>only_longest_match</dt>
+<dd>Only matching the longest(Boolean). Defaults to false</dd>
+</dl>
+</div>
+<div class="section" id="reverse">
+<span id="reverse-tokenfilter"></span><h3><a class="toc-backref" href="#id62"><code class="docutils literal"><span class="pre">reverse</span></code></a><a class="headerlink" href="#reverse" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='reverse'</span></code></p>
+<p>Reverses each token.</p>
+</div>
+<div class="section" id="elision">
+<span id="elision-tokenfilter"></span><h3><a class="toc-backref" href="#id63"><code class="docutils literal"><span class="pre">elision</span></code></a><a class="headerlink" href="#elision" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='elision'</span></code></p>
+<p>Removes elisions.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>articles</dt>
+<dd>A set of stop words articles, for example <code class="docutils literal"><span class="pre">['j',</span> <span class="pre">'l']</span></code> for content like
+<code class="docutils literal"><span class="pre">J'aime</span> <span class="pre">l'odeur.</span></code></dd>
+</dl>
+</div>
+<div class="section" id="truncate">
+<span id="truncate-tokenfilter"></span><h3><a class="toc-backref" href="#id64"><code class="docutils literal"><span class="pre">truncate</span></code></a><a class="headerlink" href="#truncate" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='truncate'</span></code></p>
+<p>Truncates tokens to a specific length.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>length</dt>
+<dd>Number of characters to truncate to. default 10</dd>
+</dl>
+</div>
+<div class="section" id="unique">
+<span id="unique-tokenfilter"></span><h3><a class="toc-backref" href="#id65"><code class="docutils literal"><span class="pre">unique</span></code></a><a class="headerlink" href="#unique" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='unique'</span></code></p>
+<p>Used to only index unique tokens during analysis. By default it is applied on
+all the token stream.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>only_on_same_position</dt>
+<dd>If set to true, it will only remove duplicate tokens on the same position.</dd>
+</dl>
+</div>
+<div class="section" id="pattern-capture">
+<span id="patterncapture-tokenfilter"></span><h3><a class="toc-backref" href="#id66"><code class="docutils literal"><span class="pre">pattern_capture</span></code></a><a class="headerlink" href="#pattern-capture" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='pattern_capture'</span></code></p>
+<p>Emits a token for every capture group in the regular expression</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>preserve_original</dt>
+<dd>If set to true (the default) then it would also emit the original token</dd>
+</dl>
+</div>
+<div class="section" id="pattern-replace">
+<span id="patternreplace-tokenfilter"></span><h3><a class="toc-backref" href="#id67"><code class="docutils literal"><span class="pre">pattern_replace</span></code></a><a class="headerlink" href="#pattern-replace" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='pattern_replace'</span></code></p>
+<p>Handle string replacements based on a regular expression.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>pattern</dt>
+<dd>Regular expression whose matches will be replaced.</dd>
+<dt>replacement</dt>
+<dd>The replacement, can reference the original text with <code class="docutils literal"><span class="pre">$1</span></code>-like (the
+first matched group) references.</dd>
+</dl>
+</div>
+<div class="section" id="trim">
+<span id="trim-tokenfilter"></span><h3><a class="toc-backref" href="#id68"><code class="docutils literal"><span class="pre">trim</span></code></a><a class="headerlink" href="#trim" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='trim'</span></code></p>
+<p>Trims the whitespace surrounding a token.</p>
+</div>
+<div class="section" id="limit">
+<span id="limittokencount-tokenfilter"></span><h3><a class="toc-backref" href="#id69"><code class="docutils literal"><span class="pre">limit</span></code></a><a class="headerlink" href="#limit" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='limit'</span></code></p>
+<p>Limits the number of tokens that are indexed per document and field.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>max_token_count</dt>
+<dd>The maximum number of tokens that should be indexed per document and field.
+The default is 1</dd>
+<dt>consume_all_tokens</dt>
+<dd>If set to true the filter exhaust the stream even if max_token_count tokens
+have been consumed already. The default is false.</dd>
+</dl>
+</div>
+<div class="section" id="hunspell">
+<span id="hunspell-tokenfilter"></span><h3><a class="toc-backref" href="#id70"><code class="docutils literal"><span class="pre">hunspell</span></code></a><a class="headerlink" href="#hunspell" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='hunspell'</span></code></p>
+<p>Basic support for Hunspell stemming. Hunspell dictionaries will be picked up
+from the dedicated directory <code class="docutils literal"><span class="pre">&lt;path.conf&gt;/hunspell</span></code>. Each dictionary is
+expected to have its own directory named after its associated locale
+(language). This dictionary directory is expected to hold both the *.aff and
+*.dic files (all of which will automatically be picked up).</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>ignore_case</dt>
+<dd>If true, dictionary matching will be case insensitive (defaults to false)</dd>
+<dt>strict_affix_parsing</dt>
+<dd>Determines whether errors while reading a affix rules file will cause
+exception or simply be ignored (defaults to true)</dd>
+<dt>locale</dt>
+<dd>A locale for this filter. If this is unset, the lang or language are used
+instead - so one of these has to be set.</dd>
+<dt>dictionary</dt>
+<dd>The name of a dictionary contained in <code class="docutils literal"><span class="pre">&lt;path.conf&gt;/hunspell</span></code>.</dd>
+<dt>dedup</dt>
+<dd>If only unique terms should be returned, this needs to be set to true.
+Defaults to true.</dd>
+<dt>recursion_level</dt>
+<dd>Configures the recursion level a stemmer can go into. Defaults to 2. Some
+languages (for example czech) give better results when set to 1 or 0, so
+you should test it out.</dd>
+</dl>
+</div>
+<div class="section" id="common-grams">
+<span id="commongrams-tokenfilter"></span><h3><a class="toc-backref" href="#id71"><code class="docutils literal"><span class="pre">common_grams</span></code></a><a class="headerlink" href="#common-grams" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='common_grams'</span></code></p>
+<p>Generates bigrams for frequently occuring terms. Single terms are still
+indexed. It can be used as an alternative to the <a class="reference internal" href="#stop-tokenfilter"><span class="std std-ref">stop</span></a> Token
+filter when we don&#8217;t want to completely ignore common terms.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>common_words</dt>
+<dd>A list of common words to use.</dd>
+<dt>common_words_path</dt>
+<dd>A path (either relative to config location, or absolute) to a list of
+common words. Each word should be in its own &#8220;line&#8221; (separated by a line
+break). The file must be UTF-8 encoded.</dd>
+<dt>ignore_case</dt>
+<dd>If true, common words matching will be case insensitive (defaults to
+false).</dd>
+<dt>query_mode</dt>
+<dd>Generates bigrams then removes common words and single terms followed by a
+common word (defaults to false).</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Either <code class="docutils literal"><span class="pre">common_words</span></code> or <code class="docutils literal"><span class="pre">common_words_path</span></code> must be given.</p>
+</div>
+</div>
+<div class="section" id="normalization">
+<span id="normalization-tokenfilter"></span><h3><a class="toc-backref" href="#id72"><code class="docutils literal"><span class="pre">*_normalization</span></code></a><a class="headerlink" href="#normalization" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='&lt;language&gt;_normalization'</span></code></p>
+<p>Normalizes special characters of several languages.</p>
+<p>Available languages:</p>
+<ul class="simple">
+<li>arabic</li>
+<li>german</li>
+<li>hindi</li>
+<li>indic</li>
+<li>persian</li>
+<li>scandinavian</li>
+<li>serbian</li>
+<li>sorani</li>
+</ul>
+</div>
+<div class="section" id="scandinavian-folding">
+<span id="scandinavian-folding-tokenfilter"></span><h3><a class="toc-backref" href="#id73"><code class="docutils literal"><span class="pre">scandinavian_folding</span></code></a><a class="headerlink" href="#scandinavian-folding" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='scandinavian_folding'</span></code></p>
+<p><em>Folds</em> scandinavian characters like <code class="docutils literal"><span class="pre">ø</span></code> to <code class="docutils literal"><span class="pre">o</span></code> or <code class="docutils literal"><span class="pre">å</span></code> to <code class="docutils literal"><span class="pre">a</span></code>.</p>
+<p>Though this might result in different words, it is easier to match different
+scandinavian languages using this folding algorithm.</p>
+</div>
+<div class="section" id="delimited-payload-filter">
+<span id="delimited-payload-tokenfilter"></span><h3><a class="toc-backref" href="#id74"><code class="docutils literal"><span class="pre">delimited_payload_filter</span></code></a><a class="headerlink" href="#delimited-payload-filter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='delimited_payload_filter'</span></code></p>
+<p>Split tokens up by delimiter (default <code class="docutils literal"><span class="pre">|</span></code>) into the real token being indexed
+and the payload stored additionally into the index. For example
+<code class="docutils literal"><span class="pre">Trillian|65535</span></code> will be indexed as <code class="docutils literal"><span class="pre">Trillian</span></code> with <code class="docutils literal"><span class="pre">65535</span></code> as payload.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>encoding</dt>
+<dd>How the payload should be interpreted, possible values are <code class="docutils literal"><span class="pre">float</span></code> for
+float values, <code class="docutils literal"><span class="pre">int</span></code> for integer values and <code class="docutils literal"><span class="pre">identity</span></code> for keeping the
+payload as byte array (string).</dd>
+<dt>delimiter</dt>
+<dd>The string used to separate the token and its payload.</dd>
+</dl>
+</div>
+<div class="section" id="keep">
+<span id="keep-tokenfilter"></span><h3><a class="toc-backref" href="#id75"><code class="docutils literal"><span class="pre">keep</span></code></a><a class="headerlink" href="#keep" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='keep'</span></code></p>
+<p>Only keep tokens defined within the settings of this filter <code class="docutils literal"><span class="pre">keep_words</span></code> and
+variations.</p>
+<p>All other tokens will be filtered. This filter works like an inverse
+<a class="reference internal" href="#stop-tokenfilter">stop-tokenfilter</a> filter.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>keep_words</dt>
+<dd>A list of words to keep and index as tokens.</dd>
+<dt>keep_words_path</dt>
+<dd><p class="first">A path (either relative to config location, or absolute) to a list of words
+to keep and index.</p>
+<p class="last">Each word should be in its own &#8220;line&#8221; (separated by a line break). The file
+must be UTF-8 encoded.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="stemmer-override">
+<span id="stemmer-override-tokenfilter"></span><h3><a class="toc-backref" href="#id76"><code class="docutils literal"><span class="pre">stemmer_override</span></code></a><a class="headerlink" href="#stemmer-override" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='stemmer_override'</span></code></p>
+<p>Override any previous stemmer that recognizes keywords with a custom mapping,
+defined by <code class="docutils literal"><span class="pre">rules</span></code> or <code class="docutils literal"><span class="pre">rules_path</span></code>. One of these settings has to be set.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>rules</dt>
+<dd>A list of rules for overriding, in the form of <code class="docutils literal"><span class="pre">[&lt;source&gt;=&gt;&lt;replacement&gt;]</span>
+<span class="pre">e.g.</span> <span class="pre">&quot;foo=&gt;bar&quot;</span></code></dd>
+<dt>rules_path</dt>
+<dd>A path to a file with one rule per line, like above.</dd>
+</dl>
+</div>
+<div class="section" id="cjk-bigram">
+<span id="cjk-bigram-tokenfilter"></span><h3><a class="toc-backref" href="#id77"><code class="docutils literal"><span class="pre">cjk_bigram</span></code></a><a class="headerlink" href="#cjk-bigram" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='cjk_bigram'</span></code></p>
+<p>Handle Chinese, Japanese and Korean (CJK) bigrams.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>output_bigrams</dt>
+<dd><p class="first">Boolean flag to enable a combined unigram+bigram approach.</p>
+<p>Default is <code class="docutils literal"><span class="pre">false</span></code>, so single CJK characters that do not form a bigram
+are passed as unigrams.</p>
+<p class="last">All non CJK characters are output unmodified.</p>
+</dd>
+<dt>ignored_scripts</dt>
+<dd>Scripts to ignore. possible values: <code class="docutils literal"><span class="pre">han</span></code>, <code class="docutils literal"><span class="pre">hiragana</span></code>, <code class="docutils literal"><span class="pre">katakana</span></code>,
+<code class="docutils literal"><span class="pre">hangul</span></code></dd>
+</dl>
+</div>
+<div class="section" id="cjk-width">
+<h3><a class="toc-backref" href="#id78"><code class="docutils literal"><span class="pre">cjk_width</span></code></a><a class="headerlink" href="#cjk-width" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='cjk_width'</span></code></p>
+<p>A filter that normalizes CJK.</p>
+</div>
+<div class="section" id="stem">
+<h3><a class="toc-backref" href="#id79"><code class="docutils literal"><span class="pre">*_stem</span></code></a><a class="headerlink" href="#stem" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">type='arabic_stem'</span></code> or</div>
+<div class="line"><code class="docutils literal"><span class="pre">type='brazilian_stem'</span></code> or</div>
+<div class="line"><code class="docutils literal"><span class="pre">type='czech_stem'</span></code> or</div>
+<div class="line"><code class="docutils literal"><span class="pre">type='dutch_stem'</span></code> or</div>
+<div class="line"><code class="docutils literal"><span class="pre">type='french_stem'</span></code> or</div>
+<div class="line"><code class="docutils literal"><span class="pre">type='german_stem'</span></code> or</div>
+<div class="line"><code class="docutils literal"><span class="pre">type='russian_stem'</span></code></div>
+</div>
+<p>A group of filters that applies language specific stemmers to the token stream.
+To prevent terms from being stemmed put a <a class="reference internal" href="#keywordmarker-tokenfilter">keywordmarker-tokenfilter</a> before
+this filter into the <code class="docutils literal"><span class="pre">token_filter</span></code> chain.</p>
+</div>
+<div class="section" id="decimal-digit">
+<h3><a class="toc-backref" href="#id80"><code class="docutils literal"><span class="pre">decimal_digit</span></code></a><a class="headerlink" href="#decimal-digit" title="Permalink to this headline">¶</a></h3>
+<p>A token filter that folds unicode digits to <cite>0-9</cite></p>
+</div>
+</div>
+<div class="section" id="builtin-char-filter">
+<span id="id15"></span><h2><a class="toc-backref" href="#id81">Builtin Char Filter</a><a class="headerlink" href="#builtin-char-filter" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mapping">
+<span id="mapping-charfilter"></span><h3><a class="toc-backref" href="#id82"><code class="docutils literal"><span class="pre">mapping</span></code></a><a class="headerlink" href="#mapping" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='mapping'</span></code></p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>mappings</dt>
+<dd>A list of mappings as strings of the form <code class="docutils literal"><span class="pre">[&lt;source&gt;=&gt;&lt;replacement&gt;]</span> <span class="pre">e.g.</span>
+<span class="pre">&quot;ph=&gt;f&quot;</span></code></dd>
+<dt>mappings_path</dt>
+<dd>A path to a file with one mapping per line, like above.</dd>
+</dl>
+</div>
+<div class="section" id="html-strip">
+<span id="htmlstrip-charfilter"></span><h3><a class="toc-backref" href="#id83"><code class="docutils literal"><span class="pre">html_strip</span></code></a><a class="headerlink" href="#html-strip" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='html_strip'</span></code></p>
+<p>Strips out HTML elements from an analyzed text.</p>
+</div>
+<div class="section" id="patternreplace-charfilter">
+<span id="id16"></span><h3><a class="toc-backref" href="#id84"><code class="docutils literal"><span class="pre">pattern_replace</span></code></a><a class="headerlink" href="#patternreplace-charfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='pattern_replace'</span></code></p>
+<p>Manipulates the characters in a string before analysis with a regex.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>pattern</dt>
+<dd>Regex whose matches will be replaced</dd>
+<dt>replacement</dt>
+<dd>Replacement string, can reference replaced text by <code class="docutils literal"><span class="pre">$1</span></code> like references
+(first matched element)</dd>
+</dl>
+</div>
+<div class="section" id="keep-types">
+<span id="keeptypes-tokenfilter"></span><h3><a class="toc-backref" href="#id85"><code class="docutils literal"><span class="pre">keep_types</span></code></a><a class="headerlink" href="#keep-types" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='keep_types'</span></code></p>
+<p>Keeps only the tokens with a token type contained in a predefined set.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>types</dt>
+<dd>A list of token types to keep.</dd>
+</dl>
+</div>
+<div class="section" id="min-hash">
+<span id="minhash-tokenfilter"></span><h3><a class="toc-backref" href="#id86"><code class="docutils literal"><span class="pre">min_hash</span></code></a><a class="headerlink" href="#min-hash" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='min_hash'</span></code></p>
+<p>Hashes each token of the token stream and divides the resulting hashes into
+buckets, keeping the lowest-valued hashes per bucket. It then returns these
+hashes as tokens.</p>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>hash_count</dt>
+<dd>The number of hashes to hash the token stream with. Defaults to <code class="docutils literal"><span class="pre">1</span></code>.</dd>
+<dt>bucket_count</dt>
+<dd>The number of buckets to divide the minhashes into. Defaults to <code class="docutils literal"><span class="pre">512</span></code>.</dd>
+<dt>hash_set_size</dt>
+<dd>The number of minhashes to keep per bucket. Defaults to <code class="docutils literal"><span class="pre">1</span></code>.</dd>
+<dt>with_rotation</dt>
+<dd>Whether or not to fill empty buckets with the value of the first non-empty
+bucket to its circular right. Only takes effect if hash_set_size is equal
+to one. Defaults to <code class="docutils literal"><span class="pre">true</span></code> if bucket_count is greater than <code class="docutils literal"><span class="pre">1</span></code>, else
+<code class="docutils literal"><span class="pre">false</span></code>.</dd>
+</dl>
+</div>
+<div class="section" id="fingerprint-tokenfilter">
+<span id="id17"></span><h3><a class="toc-backref" href="#id87"><code class="docutils literal"><span class="pre">fingerprint</span></code></a><a class="headerlink" href="#fingerprint-tokenfilter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">type='fingerprint'</span></code></p>
+<blockquote>
+<div>Emits a single token which is useful for fingerprinting a body of text, and/or
+providing a token that can be clustered on. It does this by sorting the
+tokens, deduplicating and then concatenating them back into a single token.</div></blockquote>
+<p class="rubric">Parameters</p>
+<dl class="docutils">
+<dt>separator</dt>
+<dd>Separator which is used for concatenating the tokens. Defaults to a space.</dd>
+<dt>max_output_size</dt>
+<dd>If the concatenated fingerprint grows larger than max_output_size, the
+token filter will exit and will not emit a token. Defaults to <code class="docutils literal"><span class="pre">255</span></code>.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>

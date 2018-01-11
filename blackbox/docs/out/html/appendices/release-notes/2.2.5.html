@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Version 2.2.5 &mdash; CrateDB  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/basic.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/normalize.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/bootstrap.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/mmenu.all.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/components.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/crateio-rtd.css?ver=1.1" type="text/css" />
+    <link rel="stylesheet" href="../../_static/css/custom.css?ver=1.1" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+    <script type="text/javascript" src="https://cdn.crate.io/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/modernizr.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/underscore.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/doctools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/searchtools.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/webflow.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/bootstrap.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/mmenu.all.min.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/fontawesome.js?ver=1.1"></script>
+    <script type="text/javascript" src="../../_static/js/custom.js?ver=1.1"></script>
+    <link rel="top" title="CrateDB  documentation" href="../../index.html" />
+    <link rel="up" title="Release Notes" href="index.html" />
+    <link rel="next" title="Version 2.2.4" href="2.2.4.html" />
+    <link rel="prev" title="Version 2.3.0" href="2.3.0.html" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  </head>
+  <body>
+  <header class="header-nav">
+  <div class="container">
+    <div class="navbar w-nav" data-animation="default" data-collapse="small" data-contain="1" data-duration="400">
+      <a class="brand w-nav-brand" href="https://crate.io">
+        <img src="../../_static/images/logo-crate.png" width="217">
+      </a>
+      <nav class="w-nav-menu main-nav" role="navigation">
+        <div class="dropdownBackground">
+          <span class="arrow"></span>
+        </div>
+        <ul id="menu-top-navigation" class="menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </nav>
+
+      <div id="mobile-nav" class="mm-menu">
+        <ul class="offcanvas-menu">
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/overview/">CrateDB</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a href="https://crate.io/cratedb-solutions/">Use Cases</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/customers/">Customers</a></li>
+              <li class="menu-item"><a href="https://crate.io/iot-sensor-solutions/">IoT &amp; Sensor Data</a></li>
+              <li class="menu-item"><a href="https://crate.io/geospatial-analytics/">Geospatial Analytics</a></li>
+              <li class="menu-item"><a href="https://crate.io/cyber-security/">Cyber Security</a></li>
+              <li class="menu-item"><a href="https://crate.io/time-series/">Time Series</a></li>
+            </ul>
+          </li>
+          <li class="navlink w-nav-link menu-item"><a href="https://crate.io/pricing/">Pricing</a></li>
+          <li class="navlink w-nav-link menu-item menu-item-has-children"><a>Resources</a>
+            <ul class="sub-menu">
+              <li class="menu-item"><a href="https://crate.io/docs/">Documentation</a></li>
+              <li class="menu-item"><a href="https://crate.io/resources/">Resource Library</a></li>
+              <li class="menu-item"><a href="https://crate.io/blog/">Blog</a></li>
+              <li class="menu-item"><a href="https://crate.io/community/">Community</a></li>
+            </ul>
+          </li>
+          <li class="btn-link w-nav-link menu-item"><a href="https://crate.io/download/">Download</a></li>
+        </ul>
+      </div>
+
+      <a href="#mobile-nav" class="fa fa-bars mobile-nav-button"></a>
+    </div>
+  </div>
+</header>
+
+  <div class="w-section section border-top">
+    <div class="w-container w-hidden-main margin-bottom-32">
+      <div class="section" style="margin: 0px">
+        <a href="#" id="mobile-menu-toggler" class="w-button">Toggle Doc Menu</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-lg-3">
+          <aside class="wrapper-navleft"><div role="complementary" class="bs-docs-sidebar hidden-print" id="nav-affix">
+  <div class="search-link">
+    <a href="../../search.html" class="btn btn-primary">Search Documentation</a>
+  </div>
+  <ul class="bs-docs-sidenav bs-sidenav nav" role="complementary">
+
+    
+
+    
+      <ul class="toctree nav nav-list">
+  <li class="navleft-item">CrateDB</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/crate/getting-started/">Getting Started</a></li>
+    
+    
+    <li class="current">
+      <a class="current-active" href="../../index.html" title="CrateDB">Reference</a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../run.html">Running CrateDB</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../run.html#signal-handling">Signal Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config/node.html">Node Specific Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#node-types">Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#read-only-node">Read-only node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#hosts">Hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#paths">Paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#memory">Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#garbage-collection">Garbage Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#elasticsearch-http-rest-api">Elasticsearch HTTP REST API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#cross-origin-resource-sharing-cors">Cross-Origin Resource Sharing (CORS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#blobs">Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#queries">Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/node.html#custom-attributes">Custom Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/cluster.html">Cluster Wide Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#non-runtime-cluster-wide-settings">Non-Runtime Cluster Wide Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#collecting-stats">Collecting Stats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#usage-data-collector">Usage Data Collector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#graceful-stop">Graceful Stop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#discovery">Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#routing-allocation">Routing Allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#recovery">Recovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#store-level-throttling">Store Level Throttling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#query-circuit-breaker">Query Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#field-data-circuit-breaker">Field Data Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#request-circuit-breaker">Request Circuit Breaker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#thread-pools">Thread Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/cluster.html#metadata">Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/session.html">Session Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/logging.html#settings">Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/environment.html">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-home"><code class="docutils literal"><span class="pre">CRATE_HOME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-java-opts"><code class="docutils literal"><span class="pre">CRATE_JAVA_OPTS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/environment.html#crate-heap-size"><code class="docutils literal"><span class="pre">CRATE_HEAP_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/system.html">Operating System Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/system.html#virtual-memory">Virtual Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config/enterprise.html">Enterprise Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#enterprise-license">Enterprise License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#javascript-language">Javascript Language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/enterprise.html#secured-communications-ssl-tls">Secured Communications (SSL/TLS)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/index.html">General Use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../general/ddl/index.html">Data Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/create-table.html">Creating Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/data-types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/system-columns.html">System Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/generated-columns.html">Generated Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/storage.html">Storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/partitioned-tables.html">Partitioned Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/sharding.html">Sharding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/replication.html">Replication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/column-policy.html">Column Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/fulltext-indices.html">Fulltext Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/analyzers.html">Fulltext Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/show-create-table.html">Show Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/ddl/alter-table.html">Altering Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/dml.html">Data Manipulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#inserting-data">Inserting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#updating-data">Updating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#deleting-data">Deleting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dml.html#import-and-export">Import and Export</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/dql/index.html">Querying Crate</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/selects.html">Selecting Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/joins.html">Joins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/union.html">Union All</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/refresh.html">Refresh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/fulltext.html">Fulltext Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/dql/geo.html">Geo Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/builtins/index.html">Built-in Functions and Operators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/scalar.html">Scalar Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/aggregation.html">Aggregation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/arithmetic.html">Arithmetic Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/table-functions.html">Table Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/operators.html">Comparison Operators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/array-comparisons.html">Array Comparisons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/builtins/subquery-expressions.html">Subquery Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/user-defined-functions.html">User-Defined Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#create-or-replace"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">OR</span> <span class="pre">REPLACE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#supported-types">Supported Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#overloading">Overloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#determinism">Determinism</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#drop-function"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/user-defined-functions.html#supported-languages">Supported Languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/blobs.html">Blobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#creating-a-table-for-blobs">Creating a Table for Blobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#custom-location-for-storing-blob-data">Custom Location for Storing Blob Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#list">List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#altering-a-blob-table">Altering a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#deleting-a-blob-table">Deleting a Blob Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/blobs.html#using-blob-tables">Using Blob Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/occ.html">Optimistic Concurrency Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#optimistic-update">Optimistic Update</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#optimistic-delete">Optimistic Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/occ.html#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../general/information-schema.html">Information Schema</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../general/information-schema.html#access">Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../general/information-schema.html#virtual-tables">Virtual Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/system-information.html">System Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster">Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#node-checks">Node Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shards">Shards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#jobs-operations-and-logs">Jobs, Operations, and Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#cluster-checks">Cluster Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#repositories">Repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#snapshots">Snapshots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#summits">Summits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#users">Users</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#allocations">Allocations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/system-information.html#shard-table-permissions">Shard Table Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/runtime-config.html">Runtime Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/user-management.html">User Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#create-user"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#alter-user"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#drop-user"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/user-management.html#list-users">List Users</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/privileges.html">Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#privilege-types">Privilege Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#hierarchical-inheritance-of-privileges">Hierarchical Inheritance of Privileges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#behavior-of-grant-deny-and-revoke">Behavior of <code class="docutils literal"><span class="pre">GRANT</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code> and <code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/privileges.html#list-privileges">List Privileges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/auth/index.html">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/methods.html">Authentication Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/auth/hba.html">Host Based Authentication (HBA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ssl.html">Secured Communications (SSL/TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#ssl-tls-configuration">SSL/TLS Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ssl.html#setting-up-a-keystore-truststore-with-a-certificate-chain">Setting up a Keystore/Truststore With a Certificate Chain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/ingestion/index.html">Ingestion Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/sources/index.html">Ingestion Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/ingestion/rules.html">Ingestion Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/optimization.html">Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#multiple-table-optimization">Multiple Table Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#partition-optimization">Partition Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/optimization.html#segments-upgrade">Segments Upgrade</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/jobs-management.html">Jobs Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/monitoring.html">JMX Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#using-docker">Using Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/monitoring.html#jmx-beans">JMX Beans</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/snapshots.html">Snapshots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#snapshot">Snapshot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#restore">Restore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#cleanup">Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/snapshots.html#requirements-for-using-hdfs-repositories">Requirements for Using HDFS Repositories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/discovery.html">Cloud Discovery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#amazon-ec2-discovery">Amazon EC2 Discovery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/discovery.html#microsoft-azure-discovery">Microsoft Azure Discovery</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../admin/udc.html">Usage Data Collector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#technical-information">Technical Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#admin-ui-tracking">Admin UI Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../admin/udc.html#how-to-disable-udc">How to Disable UDC</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql/index.html">SQL Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/general/index.html">General SQL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/constraints.html">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/value-expressions.html">Value Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/general/lexical-structure.html">Lexical Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql/statements/index.html">SQL Statements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-cluster.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">CLUSTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-table.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/alter-user.html"><code class="docutils literal"><span class="pre">ALTER</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-from.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">FROM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/copy-to.html"><code class="docutils literal"><span class="pre">COPY</span> <span class="pre">TO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-analyzer.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">ANALYZER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-blob-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">BLOB</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-function.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-ingest-rule.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-repository.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-snapshot.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-table.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/create-user.html"><code class="docutils literal"><span class="pre">CREATE</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/delete.html"><code class="docutils literal"><span class="pre">DELETE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/deny.html"><code class="docutils literal"><span class="pre">DENY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-function.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">FUNCTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-ingest-rule.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">INGEST</span> <span class="pre">RULE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-repository.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">REPOSITORY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-snapshot.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-table.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/drop-user.html"><code class="docutils literal"><span class="pre">DROP</span> <span class="pre">USER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/explain.html"><code class="docutils literal"><span class="pre">EXPLAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/grant.html"><code class="docutils literal"><span class="pre">GRANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/insert.html"><code class="docutils literal"><span class="pre">INSERT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/kill.html"><code class="docutils literal"><span class="pre">KILL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/optimize.html"><code class="docutils literal"><span class="pre">OPTIMIZE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/refresh.html"><code class="docutils literal"><span class="pre">REFRESH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/restore-snapshot.html"><code class="docutils literal"><span class="pre">RESTORE</span> <span class="pre">SNAPSHOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/revoke.html"><code class="docutils literal"><span class="pre">REVOKE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/select.html"><code class="docutils literal"><span class="pre">SELECT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set.html"><code class="docutils literal"><span class="pre">SET</span></code> and <code class="docutils literal"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/set-transaction.html"><code class="docutils literal"><span class="pre">SET</span> <span class="pre">TRANSACTION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-columns.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">COLUMNS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-create-table.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">CREATE</span> <span class="pre">TABLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-schemas.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">SCHEMAS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/show-tables.html"><code class="docutils literal"><span class="pre">SHOW</span> <span class="pre">TABLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sql/statements/update.html"><code class="docutils literal"><span class="pre">UPDATE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Client Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/http.html">HTTP Endpoint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#parameter-substitution">Parameter Substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#default-schema">Default Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#column-types">Column Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#bulk-operations">Bulk Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/http.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/postgres.html">PostgreSQL Wire Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#server-compatibility-and-implementation-status">Server Compatibility and Implementation Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#client-compatibility">Client Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces/postgres.html#implementation-differences">Implementation Differences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../enterprise/index.html">Enterprise Features</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Appendices</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#x">2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#id6">1.x</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sql-compliance.html">Standard SQL Compliance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#data-types">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#create-table">Create Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#alter-table">Alter Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#insert-update-and-delete">Insert, Update, and Delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#system-information-tables">System Information Tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#blob-support">BLOB Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#transactions-begin-commit-and-rollback">Transactions (<code class="docutils literal"><span class="pre">BEGIN</span></code>, <code class="docutils literal"><span class="pre">COMMIT</span></code>, and <code class="docutils literal"><span class="pre">ROLLBACK</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sql-compliance.html#unsupported-features-and-functions">Unsupported Features and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../supported-features.html">Supported Features</a></li>
+</ul>
+</li>
+</ul>
+
+    </li>
+    
+    
+    <li class="navleft-item"><a href="/docs/crate/guide">Guide</a></li>
+    
+  </ul>
+  <li class="navleft-item">CrateDB Clients</li>
+  <ul>
+    
+    <li class="navleft-item"><a href="/docs/clients/crash">The CrateDB Shell</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/python">Python</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/jdbc">JDBC</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/dbal">PHP DBAL</a></li>
+    
+    
+    <li class="navleft-item"><a href="/docs/clients/pdo">PHP PDO</a></li>
+    
+  </ul>
+
+  <li class="navleft-item border-top"><a href="https://github.com/crate/crate-sample-apps">Sample Applications</a></li>
+  <li class="navleft-item"><a href="/docs/support/">Support</a></li>
+</ul>
+    
+
+    
+      
+      
+    
+
+    
+    
+
+    
+      <li></li>
+    
+
+  </ul>
+</div>
+            
+          </aside>
+        </div>
+        <div class="col-md-8 col-lg-9">
+          <div class="wrapper-content-right">
+            
+  <div class="section" id="version-2-2-5">
+<span id="id1"></span><h1>Version 2.2.5<a class="headerlink" href="#version-2-2-5" title="Permalink to this headline">¶</a></h1>
+<p>Released on 2017/12/14.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you are upgrading a cluster, you must be running CrateDB
+<a class="reference internal" href="1.1.3.html#version-1-1-3"><span class="std std-ref">Version 1.1.3</span></a> or higher before you upgrade to 2.2.5.</p>
+<p class="last">If you want to perform a <a class="reference external" href="http://crate.io/docs/crate/guide/best_practices/rolling_upgrade.html">rolling upgrade</a>, your current CrateDB version
+number must be <a class="reference internal" href="2.2.0.html#version-2-2-0"><span class="std std-ref">Version 2.2.0</span></a>.  If you want to upgrade from a version
+prior to this, the upgrade will introduce all of the breaking changes listed
+for <a class="reference internal" href="2.2.0.html#version-2-2-0"><span class="std std-ref">Version 2.2.0</span></a>, and will require a <a class="reference external" href="http://crate.io/docs/crate/guide/best_practices/full_restart_upgrade.html">full restart upgrade</a>.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Before upgrading, you should <a class="reference external" href="https://crate.io/a/backing-up-and-restoring-crate/">back up your data</a>.</p>
+</div>
+<div class="section" id="changelog">
+<h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Fixed an issue that caused an exception when trying to query the
+<code class="docutils literal"><span class="pre">thread_pools['name']</span></code> field of the <code class="docutils literal"><span class="pre">sys.nodes</span></code> table and the
+<code class="docutils literal"><span class="pre">settings['write']['wait_for_active_shards']</span></code> field of the
+<code class="docutils literal"><span class="pre">information_schema.tables</span></code> table.</p>
+</li>
+<li><p class="first">Removed the horizontal scroll from the console editor in the Admin UI.</p>
+</li>
+<li><p class="first">Reset the pagination of the console results in the Admin UI after each
+execution.</p>
+</li>
+<li><p class="first">Calculate &#8220;idle&#8221; process CPU usage correctly for the &#8220;CrateDB CPU Usage&#8221;
+graph in the Admin UI.</p>
+</li>
+<li><p class="first">Fixed an issue that caused the Admin UI to not display any tables when the
+file system data is not available.</p>
+</li>
+<li><p class="first">Refresh the cluster information after query execution in the console view of
+the Admin UI, to ensure that the cluster info is always up-to-date.</p>
+</li>
+<li><p class="first">Fixed an issue that caused incorrect results for collapsable subselects which
+contained a <code class="docutils literal"><span class="pre">WHERE</span></code> clause that resulted in no match. E.g.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="p">(</span>
+  <span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="n">t</span>
+  <span class="n">WHERE</span> <span class="n">false</span>
+<span class="p">)</span> <span class="n">vt</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Fixed a performance regression introduced in <code class="docutils literal"><span class="pre">2.2.0</span></code> that caused <code class="docutils literal"><span class="pre">SELECT</span></code>
+statements with <code class="docutils literal"><span class="pre">ORDER</span> <span class="pre">BY</span></code> and <code class="docutils literal"><span class="pre">LIMIT</span></code> to execute significantly slower
+than before.</p>
+</li>
+<li><p class="first">Fixed support for subscript expressions on the <code class="docutils literal"><span class="pre">values</span></code> column of
+<code class="docutils literal"><span class="pre">information_schema.table_partitions</span></code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><footer class="footer">
+  <div class="w-container">
+    <div class="w-clearfix">
+      <div class="w-row mobileAlign">
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Product</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/overview/">Overview</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/download/">Download</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/use-cases/">Use Cases</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/customers/">Customers</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Resources</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new"><a href="https://crate.io/resources/">Resource Library</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/">Documentation</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/docs/support/">Support</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/events/">Events</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/blog/">Blog</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3 footer-menu">
+          <p class="menu-Label">Company</p>
+          <ul class="vertical-menu">
+            <li class="footer-listitem-new "><a href="https://crate.io/about/">About</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/jobs/">Jobs</a></li>
+            <li class="footer-listitem-new "><a href="https://crate.io/partners/">Partners</a></li>
+            <li class="footer-listitem-new"><a href="https://crate.io/in-the-news/">In the News</a></li>
+          </ul>
+        </div>
+        <div class="w-col w-col-3">
+          <ul class="footer-list w-list-unstyled" style="margin-top: 0; padding-left: 0;">
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.facebook.com/crate.io" target="_blank" style="padding-left: 0;">
+                <img src="../../_static/images/f-logo-facebook.png" width="12">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://twitter.com/Crateio" target="_blank">
+                <img src="../../_static/images/f-logo-twitter.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://plus.google.com/105753392254543335997" target="_blank">
+                <img src="../../_static/images/f-logo-google.png" width="23">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.linkedin.com/company/crateio" target="_blank">
+                <img src="../../_static/images/f-logo-linkedin.png" width="22">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://www.youtube.com/channel/UCcp_IqjXaejmwBcwg51n1AA" target="_blank">
+                <img src="../../_static/images/f-logo-youtube.png" width="24">
+              </a>
+            </li>
+            <li class="footer-listitem">
+              <a class="footer-link-connect w-inline-block" href="https://github.com/crate">
+                <img src="../../_static/images/f-logo-github.png" width="22">
+              </a>
+            </li>
+            <div class="mobileHoriztonalMenu">
+              <li class="footer-listitem-new"><a href="https://crate.io/contact/">Contact</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/">Legal</a></li>
+              <li class="footer-listitem-new"><a href="https://crate.io/legal/imprint/">Imprint</a></li>
+            </div>
+            <li class="footer-listitem link-list">
+              <a class="footer-link-eu w-inline-block" href="/erdf/">
+                <img class="logo-eu" sizes="100px" src="../../_static/images/logo-eu-optimized-1.jpg" width="101">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-row">
+        <a class="brand footer-brand w-inline-block" href="/">
+          <img src="../../_static/images/logo-crate.png" width="217">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var $navAffix = $('#nav-affix');
+  var $contentEl = $('.wrapper-content-right');
+  // Desktop only
+  if( !$('#mobile-menu-toggler').is(':visible') ) {
+
+    // Only if the content is taller than the sidebar,
+    // to avoid scroll jerk
+    if ( $contentEl.height() > $navAffix.height() ) {
+      // Init
+      $navAffix.affix({
+        offset: {
+          top: 100,
+          bottom: function () {
+            return (this.bottom = $('footer').outerHeight(true) + 200)
+          }
+        }
+      });
+      // Recalculate the sidebar
+      $(window).resize(function() {
+        $navAffix.affix('checkPosition');
+      });
+    }
+
+    $('body').scrollspy();
+
+  } else {
+
+    $('.wrapper-navleft').hide();
+    $('#mobile-menu-toggler').click(function() {
+      $('.wrapper-navleft').toggle();
+    });
+
+  }
+
+  $(document).ready(function() {
+    window.setTimeout(function() {$('body').append('<a href="https://crate.io/docs/support/slackin/" style="z-index: 10; position: fixed; bottom: 20px; right: ' + ($('#intercom-launcher').is(':visible') ? '90' : '20') + 'px; box-shadow: 0 6px 13px 0 rgba(0, 0, 0, .23)"><img src="../../_static/images/slack.png" id="slack-container" /></a>'); }, 2000);
+  });
+  </script>
+
+  <!-- Segment -->
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","setAnonymousId"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+      analytics.load("FToR4cE5lXyQziQirvt0kSnFQj0rAgu9");
+      analytics.setAnonymousId($.cookie('uid'));
+      analytics.page();
+      analytics.track('visited_section_docs', {
+        project: 'crate',
+        version: ''
+      });
+    }}();
+  </script>
+  </body>
+</html>
