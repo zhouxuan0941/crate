@@ -24,10 +24,10 @@ package io.crate.execution.engine.collect.collectors;
 
 import io.crate.analyze.OrderBy;
 import io.crate.analyze.symbol.Symbol;
+import io.crate.execution.engine.sort.SortSymbolVisitor;
 import io.crate.lucene.FieldTypeLookup;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
-import io.crate.execution.expression.reference.doc.lucene.LuceneMissingValue;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldDoc;
@@ -55,7 +55,8 @@ public class OptimizeQueryForSearchAfter implements Function<FieldDoc, Query> {
         this.queryShardContext = queryShardContext;
         this.fieldTypeLookup = fieldTypeLookup;
         for (int i = 0; i < orderBy.orderBySymbols().size(); i++) {
-            missingValues[i] = LuceneMissingValue.missingValue(orderBy, i);
+            missingValues[i] = SortSymbolVisitor.missingValue(
+                orderBy.orderBySymbols().get(i).valueType(), orderBy.reverseFlags()[i], orderBy.nullsFirst()[i]);
         }
     }
 

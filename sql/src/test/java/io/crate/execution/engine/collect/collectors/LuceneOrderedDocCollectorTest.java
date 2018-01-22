@@ -27,16 +27,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import io.crate.analyze.OrderBy;
 import io.crate.data.Row;
+import io.crate.execution.expression.reference.doc.lucene.CollectorContext;
+import io.crate.execution.expression.reference.doc.lucene.LuceneCollectorExpression;
+import io.crate.execution.expression.reference.doc.lucene.ScoreCollectorExpression;
 import io.crate.metadata.Reference;
 import io.crate.metadata.ReferenceIdent;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.Schemas;
 import io.crate.metadata.TableIdent;
 import io.crate.metadata.doc.DocSysColumns;
-import io.crate.execution.expression.reference.doc.lucene.CollectorContext;
-import io.crate.execution.expression.reference.doc.lucene.LuceneCollectorExpression;
-import io.crate.execution.expression.reference.doc.lucene.LuceneMissingValue;
-import io.crate.execution.expression.reference.doc.lucene.ScoreCollectorExpression;
 import io.crate.types.DataTypes;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -77,6 +76,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
+import static io.crate.execution.engine.sort.SortSymbolVisitor.missingValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
@@ -137,7 +137,7 @@ public class LuceneOrderedDocCollectorTest extends RandomizedTest {
             new Boolean[]{nullFirst});
 
         SortField sortField = new SortedNumericSortField("value", SortField.Type.LONG, reverseFlag);
-        Long missingValue = (Long) LuceneMissingValue.missingValue(orderBy, 0);
+        Long missingValue = (Long) missingValue(DataTypes.LONG, reverseFlag, nullFirst);
         sortField.setMissingValue(missingValue);
         Sort sort = new Sort(sortField);
 
@@ -187,7 +187,7 @@ public class LuceneOrderedDocCollectorTest extends RandomizedTest {
         // reverseOrdering = false, nulls First = false
         // 1  2  null null
         //       ^
-        afterDoc = new FieldDoc(0, 0, new Object[]{LuceneMissingValue.missingValue(false, null, SortField.Type.LONG)});
+        afterDoc = new FieldDoc(0, 0, new Object[]{missingValue(DataTypes.LONG, false, null)});
         result = nextPageQuery(reader, afterDoc, false, null);
         assertThat(result, is(new Long[]{null, null}));
 
@@ -201,7 +201,7 @@ public class LuceneOrderedDocCollectorTest extends RandomizedTest {
         // reverseOrdering = true, nulls First = false
         // 2  1  null null
         //       ^
-        afterDoc = new FieldDoc(0, 0, new Object[]{LuceneMissingValue.missingValue(true, false, SortField.Type.LONG)});
+        afterDoc = new FieldDoc(0, 0, new Object[]{missingValue(DataTypes.LONG, true, false)});
         result = nextPageQuery(reader, afterDoc, true, false);
         assertThat(result, is(new Long[]{null, null}));
 
@@ -224,7 +224,7 @@ public class LuceneOrderedDocCollectorTest extends RandomizedTest {
         // reverseOrdering = false, nulls First = true
         // null, null, 1, 2
         //       ^
-        afterDoc = new FieldDoc(0, 0, new Object[]{LuceneMissingValue.missingValue(false, true, SortField.Type.LONG)});
+        afterDoc = new FieldDoc(0, 0, new Object[]{missingValue(DataTypes.LONG, false, true)});
         result = nextPageQuery(reader, afterDoc, false, true);
         assertThat(result, is(new Long[]{null, null, 1L, 2L}));
 
@@ -238,7 +238,7 @@ public class LuceneOrderedDocCollectorTest extends RandomizedTest {
         // reverseOrdering = true, nulls First = true
         // null, null, 2, 1
         //       ^
-        afterDoc = new FieldDoc(0, 0, new Object[]{LuceneMissingValue.missingValue(true, true, SortField.Type.LONG)});
+        afterDoc = new FieldDoc(0, 0, new Object[]{missingValue(DataTypes.LONG, true, true)});
         result = nextPageQuery(reader, afterDoc, true, true);
         assertThat(result, is(new Long[]{null, null, 2L, 1L}));
 
