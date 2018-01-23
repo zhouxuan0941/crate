@@ -28,18 +28,23 @@ import io.crate.data.join.CombinedRow;
 import io.crate.data.join.NestedLoopBatchIterator;
 import io.crate.testing.TestingBatchIterators;
 import io.crate.testing.TestingRowConsumer;
+import javafx.util.Pair;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.annotations.TearDown;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -47,7 +52,7 @@ import java.util.function.Supplier;
 public class JoinBenchmark {
 
     private static final Predicate<Row> joinCondition = row -> Objects.equals(row.get(0), row.get(1));
-//
+    //
 //    @Benchmark
 //    public void measurePlainNL_leftSmall(Blackhole blackhole) throws Exception {
 //        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.plainNL(
@@ -130,29 +135,113 @@ public class JoinBenchmark {
 //        blackhole.consume(consumer.getResult());
 //    }
 
-    @Benchmark
-    public void measureSortedMerge_leftSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.merge(
-            TestingBatchIterators.range(2500, 7500),
-            TestingBatchIterators.range(0, 10000),
-            new CombinedRow(1, 1),
-            joinCondition
-        );
-        TestingRowConsumer consumer = new TestingRowConsumer();
-        consumer.accept(it.get(), null);
-        blackhole.consume(consumer.getResult());
+    private static class RowComparator implements Comparator<Row> {
+
+        @Override
+        public int compare(Row r1, Row r2) {
+            return (Integer) r1.get(0) - (Integer) r2.get(0);
+        }
+    }
+
+    private static final RowComparator ROW_COMPARATOR = new RowComparator();
+
+    @State(Scope.Thread)
+    public static class IteratorAndResultState {
+
+        BatchIterator<Row> leftSmallIterator;
+        BatchIterator<Row> shuffleLeftSmallIterator;
+        BatchIterator<Row> shuffleRightSmallIterator;
+        BatchIterator<Row> rightSmallIterator;
+        TestingRowConsumer consumer;
+        List<Object[]> result;
+        List<? extends Row> leftSmallLeftItems;
+        List<? extends Row> leftSmallRightItems;
+        List<? extends Row> rightSmallLeftItems;
+        List<? extends Row> rightSmallRightItems;
+
+        @Setup(Level.Invocation)
+        public void setup() {
+            leftSmallIterator = NestedLoopBatchIterator.merge(
+                TestingBatchIterators.range(2500, 7500),
+                TestingBatchIterators.range(0, 10000),
+                new CombinedRow(1, 1),
+                joinCondition);
+
+            Pair<BatchIterator<Row>, List<? extends Row>> leftSmallShuffleLeftPair = TestingBatchIterators.shuffleRange(2500, 7500);
+            leftSmallLeftItems = leftSmallShuffleLeftPair.getValue();
+            Pair<BatchIterator<Row>, List<? extends Row>> leftSmallShffleRightPair = TestingBatchIterators.shuffleRange(0, 10000);
+            leftSmallRightItems = leftSmallShffleRightPair.getValue();
+
+            shuffleLeftSmallIterator = NestedLoopBatchIterator.merge(
+                leftSmallShuffleLeftPair.getKey(),
+                leftSmallShffleRightPair.getKey(),
+                new CombinedRow(1, 1),
+                joinCondition);
+
+            rightSmallIterator = NestedLoopBatchIterator.merge(
+                TestingBatchIterators.range(0, 10000),
+                TestingBatchIterators.range(2500, 7500),
+                new CombinedRow(1, 1),
+                joinCondition
+            );
+
+            Pair<BatchIterator<Row>, List<? extends Row>> rightSmallShuffleLeftPair = TestingBatchIterators.shuffleRange(0, 10000);
+            rightSmallLeftItems = rightSmallShuffleLeftPair.getValue();
+            Pair<BatchIterator<Row>, List<? extends Row>> rightSmallShuffleRightPair = TestingBatchIterators.shuffleRange(2500, 7500);
+            rightSmallRightItems = rightSmallShuffleRightPair.getValue();
+            shuffleRightSmallIterator = NestedLoopBatchIterator.merge(
+                rightSmallShuffleLeftPair.getKey(),
+                rightSmallShuffleRightPair.getKey(),
+                new CombinedRow(1, 1),
+                joinCondition
+            );
+            consumer = new TestingRowConsumer();
+        }
+
+        @TearDown(Level.Invocation)
+        public void tearDown() {
+            leftSmallIterator = null;
+            leftSmallLeftItems = null;
+            leftSmallRightItems = null;
+
+            rightSmallIterator = null;
+            rightSmallLeftItems = null;
+            rightSmallRightItems = null;
+
+            consumer = null;
+            result = null;
+        }
     }
 
     @Benchmark
-    public void measureSortedMerge_rightSmall(Blackhole blackhole) throws Exception {
-        Supplier<BatchIterator<Row>> it = () -> NestedLoopBatchIterator.merge(
-            TestingBatchIterators.range(0, 10000),
-            TestingBatchIterators.range(2500, 7500),
-            new CombinedRow(1, 1),
-            joinCondition
-        );
-        TestingRowConsumer consumer = new TestingRowConsumer();
-        consumer.accept(it.get(), null);
-        blackhole.consume(consumer.getResult());
+    public void measureSortedMerge_leftSmall(IteratorAndResultState state) throws Exception {
+        state.consumer.accept(state.leftSmallIterator, null);
+        state.result = state.consumer.getResult();
+    }
+
+    @Benchmark
+    public void measureSortedMerge_rightSmall(IteratorAndResultState state) throws Exception {
+        state.consumer.accept(state.rightSmallIterator, null);
+        state.result = state.consumer.getResult();
+    }
+
+    @Benchmark
+    public void measureSortedMerge_shuffleLeftSmall(IteratorAndResultState state) throws Exception {
+        Collections.sort(state.leftSmallLeftItems, ROW_COMPARATOR);
+        Collections.sort(state.leftSmallRightItems, ROW_COMPARATOR);
+        // need to get a java.util.Iterator from the new shuffled lists inside the InMemoryBatchIterator
+        state.shuffleLeftSmallIterator.moveToStart();
+        state.consumer.accept(state.shuffleLeftSmallIterator, null);
+        state.result = state.consumer.getResult();
+    }
+
+    @Benchmark
+    public void measureSortedMerge_shuffleRightSmall(IteratorAndResultState state) throws Exception {
+        Collections.sort(state.rightSmallLeftItems, ROW_COMPARATOR);
+        Collections.sort(state.rightSmallRightItems, ROW_COMPARATOR);
+        // need to get a java.util.Iterator from the new shuffled lists inside the InMemoryBatchIterator
+        state.shuffleRightSmallIterator.moveToStart();
+        state.consumer.accept(state.shuffleRightSmallIterator, null);
+        state.result = state.consumer.getResult();
     }
 }

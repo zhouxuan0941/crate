@@ -25,7 +25,13 @@ package io.crate.testing;
 import io.crate.data.BatchIterator;
 import io.crate.data.InMemoryBatchIterator;
 import io.crate.data.Row;
+import io.crate.data.RowN;
+import javafx.util.Pair;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import static io.crate.data.SentinelRow.SENTINEL;
@@ -37,6 +43,15 @@ public class TestingBatchIterators {
      */
     public static BatchIterator<Row> range(int startInclusive, int endExclusive) {
         return InMemoryBatchIterator.of(RowGenerator.range(startInclusive, endExclusive), SENTINEL);
+    }
+
+    public static Pair<BatchIterator<Row>, List<? extends Row>> shuffleRange(int startInclusive, int endExclusive) {
+        List<Integer> integers = IntStream.range(startInclusive, endExclusive)
+            .boxed()
+            .collect(Collectors.toList());
+        Collections.shuffle(integers);
+        List<RowN> rows = integers.stream().map(i -> new RowN(new Object[]{i})).collect(Collectors.toList());
+        return InMemoryBatchIterator.ofList(rows, SENTINEL);
     }
 
     /**

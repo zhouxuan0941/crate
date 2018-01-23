@@ -24,11 +24,13 @@ package io.crate.data;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.crate.concurrent.CompletableFutures;
+import javafx.util.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -55,6 +57,10 @@ public class InMemoryBatchIterator<T> implements BatchIterator<T> {
      */
     public static <T> BatchIterator<T> of(Iterable<? extends T> items, @Nullable T sentinel) {
         return new CloseAssertingBatchIterator<>(new InMemoryBatchIterator<>(items, sentinel));
+    }
+
+    public static <T> Pair<BatchIterator<T>, List<? extends T>> ofList(List<? extends T> items, @Nullable T sentinel) {
+        return new Pair<>(new CloseAssertingBatchIterator<>(new InMemoryBatchIterator<>(items, sentinel)), items);
     }
 
     @VisibleForTesting
