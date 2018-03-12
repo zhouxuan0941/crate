@@ -24,10 +24,9 @@ package io.crate.execution.dsl.projection;
 import com.carrotsearch.hppc.IntSet;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
-import io.crate.expression.symbol.Symbol;
-import io.crate.collections.Lists2;
-import io.crate.metadata.TableIdent;
 import io.crate.data.Paging;
+import io.crate.expression.symbol.Symbol;
+import io.crate.metadata.TableIdent;
 import io.crate.planner.ExplainLeaf;
 import io.crate.planner.node.fetch.FetchSource;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.Function;
 
 public class FetchProjection extends Projection {
 
@@ -122,11 +120,6 @@ public class FetchProjection extends Projection {
 
     public Map<String, TableIdent> indicesToIdents() {
         return indicesToIdents;
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        Lists2.replaceItems(outputSymbols, replaceFunction);
     }
 
     @Override

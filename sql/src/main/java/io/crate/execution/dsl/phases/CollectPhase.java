@@ -22,12 +22,11 @@
 
 package io.crate.execution.dsl.phases;
 
-import io.crate.expression.symbol.Symbol;
 import io.crate.execution.dsl.projection.Projection;
+import io.crate.expression.symbol.Symbol;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 public interface CollectPhase extends UpstreamPhase {
 
@@ -38,6 +37,4 @@ public interface CollectPhase extends UpstreamPhase {
     List<Projection> projections();
 
     void addProjection(Projection projection);
-
-    void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction);
 }

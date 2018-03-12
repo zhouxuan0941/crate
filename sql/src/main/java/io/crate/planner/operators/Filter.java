@@ -93,6 +93,7 @@ class Filter extends OneInputPlan {
                                Map<SelectSymbol, Object> subQueryValues) {
         ExecutionPlan executionPlan = source.build(
             plannerContext, projectionBuilder, limit, offset, order, pageSizeHint, params, subQueryValues);
+        queryClause.replace(new SubQueryAndParamBinder(params, subQueryValues));
         FilterProjection filterProjection = ProjectionBuilder.filterProjection(source.outputs(), queryClause);
         if (executionPlan.resultDescription().executesOnShard()) {
             filterProjection.requiredGranularity(RowGranularity.SHARD);

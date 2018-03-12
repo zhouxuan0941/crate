@@ -21,10 +21,9 @@
 
 package io.crate.execution.dsl.projection;
 
+import io.crate.execution.dsl.projection.builder.InputColumns;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.Symbols;
-import io.crate.collections.Lists2;
-import io.crate.execution.dsl.projection.builder.InputColumns;
 import io.crate.metadata.ColumnIdent;
 import io.crate.metadata.Reference;
 import io.crate.metadata.TableIdent;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class ColumnIndexWriterProjection extends AbstractIndexWriterProjection {
 
@@ -117,16 +115,6 @@ public class ColumnIndexWriterProjection extends AbstractIndexWriterProjection {
     @Override
     public <C, R> R accept(ProjectionVisitor<C, R> visitor, C context) {
         return visitor.visitColumnIndexWriterProjection(this, context);
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        Lists2.replaceItems(columnSymbols, replaceFunction);
-        if (onDuplicateKeyAssignments != null && !onDuplicateKeyAssignments.isEmpty()) {
-            for (Map.Entry<Reference, Symbol> entry : onDuplicateKeyAssignments.entrySet()) {
-                entry.setValue(replaceFunction.apply(entry.getValue()));
-            }
-        }
     }
 
     @Override

@@ -242,13 +242,17 @@ class FetchOrEval extends OneInputPlan {
             return executionPlan;
         }
 
+        List<Symbol> fetchOutputs = Lists2.copyAndReplace(outputs, new SubQueryAndParamBinder(params, subQueryValues));
         if (doFetch && Symbols.containsColumn(sourceOutputs, DocSysColumns.FETCHID)) {
-            return planWithFetch(plannerContext, executionPlan, sourceOutputs);
+            return planWithFetch(plannerContext, executionPlan, sourceOutputs, fetchOutputs);
         }
         return planWithEvalProjection(plannerContext, executionPlan, sourceOutputs);
     }
 
-    private ExecutionPlan planWithFetch(PlannerContext plannerContext, ExecutionPlan executionPlan, List<Symbol> sourceOutputs) {
+    private ExecutionPlan planWithFetch(PlannerContext plannerContext,
+                                        ExecutionPlan executionPlan,
+                                        List<Symbol> sourceOutputs,
+                                        List<Symbol> wantedOutputs) {
         executionPlan = Merge.ensureOnHandler(executionPlan, plannerContext);
         Map<TableIdent, FetchSource> fetchSourceByTableId = new HashMap<>();
         LinkedHashSet<Reference> allFetchRefs = new LinkedHashSet<>();
@@ -267,8 +271,8 @@ class FetchOrEval extends OneInputPlan {
             }
             fetchSource.addFetchIdColumn(fetchInputColumnsByTable.get(rel));
         };
-        List<Symbol> fetchOutputs = new ArrayList<>(outputs.size());
-        for (Symbol output : outputs) {
+        List<Symbol> fetchOutputs = new ArrayList<>(wantedOutputs.size());
+        for (Symbol output : wantedOutputs) {
             fetchOutputs.add(toInputColOrFetchRef(
                 output, sourceOutputs, fetchInputColumnsByTable, allocateFetchRef, source.expressionMapping()));
         }
@@ -411,11 +415,13 @@ class FetchOrEval extends OneInputPlan {
         });
     }
 
-    private ExecutionPlan planWithEvalProjection(PlannerContext plannerContext, ExecutionPlan executionPlan, List<Symbol> sourceOutputs) {
+    private ExecutionPlan planWithEvalProjection(PlannerContext plannerContext,
+                                                 ExecutionPlan executionPlan,
+                                                 List<Symbol> sourceOutputs) {
         PositionalOrderBy orderBy = executionPlan.resultDescription().orderBy();
         PositionalOrderBy newOrderBy = null;
         if (orderBy != null) {
-            newOrderBy = orderBy.tryMapToNewOutputs(sourceOutputs, outputs);
+            newOrderBy = orderBy.tryMapToNewOutputs(sourceOutputs, this.outputs);
             if (newOrderBy == null) {
                 executionPlan = Merge.ensureOnHandler(executionPlan, plannerContext);
             }

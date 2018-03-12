@@ -298,9 +298,6 @@ public class LogicalPlanner {
         ExecutionPlan executionPlan = logicalPlan.build(
             plannerContext, executor.projectionBuilder(), -1, 0, null, null, params, subQueryValues);
 
-        // Ideally we'd include the binding into the `build` step and avoid the after-the-fact symbol mutation
-        ExecutionPlanSymbolMapper.map(executionPlan, new SubQueryAndParamBinder(params, subQueryValues));
-
         NodeOperationTree nodeOpTree = NodeOperationTreeGenerator.fromPlan(executionPlan, executor.localNodeId());
         executor.phasesTaskFactory()
             .create(plannerContext.jobId(), Collections.singletonList(nodeOpTree))

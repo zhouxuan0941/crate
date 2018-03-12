@@ -23,10 +23,10 @@
 package io.crate.execution.dsl.phases;
 
 import com.google.common.base.MoreObjects;
+import io.crate.execution.dsl.projection.Projection;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.Symbols;
 import io.crate.planner.distribution.DistributionInfo;
-import io.crate.execution.dsl.projection.Projection;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 

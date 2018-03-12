@@ -27,7 +27,6 @@ import io.crate.analyze.OrderBy;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.SymbolVisitors;
 import io.crate.expression.symbol.Symbols;
-import io.crate.collections.Lists2;
 import io.crate.planner.ExplainLeaf;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -38,7 +37,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class OrderedTopNProjection extends Projection {
 
@@ -109,12 +107,6 @@ public class OrderedTopNProjection extends Projection {
 
     public Boolean[] nullsFirst() {
         return nullsFirst;
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        Lists2.replaceItems(outputs, replaceFunction);
-        Lists2.replaceItems(orderBy, replaceFunction);
     }
 
     @Override

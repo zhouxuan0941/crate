@@ -22,21 +22,21 @@
 
 package io.crate.execution.dsl.phases;
 
-import io.crate.expression.eval.EvaluatingNormalizer;
 import io.crate.analyze.OrderBy;
 import io.crate.analyze.WhereClause;
+import io.crate.auth.user.User;
+import io.crate.collections.Lists2;
+import io.crate.data.Paging;
+import io.crate.execution.dsl.projection.Projection;
+import io.crate.expression.eval.EvaluatingNormalizer;
 import io.crate.expression.symbol.Field;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.SymbolVisitors;
 import io.crate.expression.symbol.Symbols;
-import io.crate.collections.Lists2;
 import io.crate.metadata.Routing;
 import io.crate.metadata.RowGranularity;
 import io.crate.metadata.TransactionContext;
-import io.crate.data.Paging;
-import io.crate.auth.user.User;
 import io.crate.planner.distribution.DistributionInfo;
-import io.crate.execution.dsl.projection.Projection;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 
@@ -92,16 +92,6 @@ public class RoutedCollectPhase extends AbstractProjectionsPhase implements Coll
         this.distributionInfo = distributionInfo;
         this.user = user;
         this.outputTypes = extractOutputTypes(toCollect, projections);
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        super.replaceSymbols(replaceFunction);
-        whereClause.replace(replaceFunction);
-        Lists2.replaceItems(toCollect, replaceFunction);
-        if (orderBy != null) {
-            orderBy.replace(replaceFunction);
-        }
     }
 
     @Override

@@ -26,7 +26,6 @@ import io.crate.expression.symbol.AggregateMode;
 import io.crate.expression.symbol.Aggregation;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.Symbols;
-import io.crate.collections.Lists2;
 import io.crate.metadata.RowGranularity;
 import io.crate.planner.ExplainLeaf;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -36,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class GroupProjection extends Projection {
 
@@ -66,12 +64,6 @@ public class GroupProjection extends Projection {
             values.add((Aggregation) Symbols.fromStream(in));
         }
         requiredGranularity = RowGranularity.fromStream(in);
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        Lists2.replaceItems(keys, replaceFunction);
-        Lists2.replaceItems(outputs, replaceFunction);
     }
 
     public List<Symbol> keys() {

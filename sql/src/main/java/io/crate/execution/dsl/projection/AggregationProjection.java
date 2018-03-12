@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * A projection which aggregates all inputs to a single row
@@ -68,10 +67,6 @@ public class AggregationProjection extends Projection {
     @Override
     public RowGranularity requiredGranularity() {
         return contextGranularity;
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
     }
 
     public List<Aggregation> aggregations() {

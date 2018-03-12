@@ -24,7 +24,6 @@ package io.crate.execution.dsl.phases;
 
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.Symbols;
-import io.crate.collections.Lists2;
 import io.crate.metadata.ColumnIdent;
 import io.crate.planner.distribution.DistributionInfo;
 import io.crate.planner.operators.PKAndVersion;
@@ -41,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 
 public final class PKLookupPhase extends AbstractProjectionsPhase implements CollectPhase {
 
@@ -121,12 +119,6 @@ public final class PKLookupPhase extends AbstractProjectionsPhase implements Col
         for (ColumnIdent partitionedByColumn : partitionedByColumns) {
             partitionedByColumn.writeTo(out);
         }
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        super.replaceSymbols(replaceFunction);
-        Lists2.replaceItems(toCollect, replaceFunction);
     }
 
     @Override

@@ -26,6 +26,7 @@ import io.crate.analyze.OrderBy;
 import io.crate.analyze.relations.DocTableRelation;
 import io.crate.analyze.relations.QueriedDocTable;
 import io.crate.analyze.where.DocKeys;
+import io.crate.collections.Lists2;
 import io.crate.data.Row;
 import io.crate.execution.dsl.phases.PKLookupPhase;
 import io.crate.execution.dsl.projection.builder.ProjectionBuilder;
@@ -123,7 +124,7 @@ public class Get extends ZeroInputPlan {
                 plannerContext.jobId(),
                 plannerContext.nextExecutionPhaseId(),
                 docTableInfo.partitionedBy(),
-                outputs,
+                Lists2.copyAndReplace(outputs, new SubQueryAndParamBinder(params, subQueryValues)),
                 idsByShardByNode
             ),
             TopN.NO_LIMIT,

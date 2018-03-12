@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.SymbolVisitors;
 import io.crate.expression.symbol.Symbols;
-import io.crate.collections.Lists2;
 import io.crate.metadata.RowGranularity;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
@@ -35,7 +34,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 public class FilterProjection extends Projection {
 
@@ -59,12 +57,6 @@ public class FilterProjection extends Projection {
     @Override
     public RowGranularity requiredGranularity() {
         return requiredGranularity;
-    }
-
-    @Override
-    public void replaceSymbols(Function<? super Symbol, ? extends Symbol> replaceFunction) {
-        query = replaceFunction.apply(query);
-        Lists2.replaceItems(outputs, replaceFunction);
     }
 
     public void requiredGranularity(RowGranularity requiredRowGranularity) {
