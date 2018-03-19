@@ -25,6 +25,7 @@ import io.crate.expression.symbol.Field;
 import io.crate.expression.symbol.Function;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.SymbolVisitor;
+import io.crate.expression.symbol.Symbols;
 import io.crate.expression.symbol.format.SymbolFormatter;
 import io.crate.metadata.FunctionInfo;
 
@@ -65,7 +66,7 @@ public class OrderByWithAggregationValidator {
 
         @Override
         public Void visitFunction(Function symbol, ValidatorContext context) {
-            if (context.outputSymbols.contains(symbol)) {
+            if (Symbols.contains(context.outputSymbols, symbol)) {
                 return null;
             } else if (context.isDistinct) {
                 throw new UnsupportedOperationException(SymbolFormatter.format(INVALID_FIELD_IN_DISTINCT_TEMPLATE, symbol));
@@ -84,7 +85,7 @@ public class OrderByWithAggregationValidator {
 
         @Override
         public Void visitField(Field field, ValidatorContext context) {
-            if (context.outputSymbols.contains(field)) {
+            if (Symbols.contains(context.outputSymbols, field)) {
                 return null;
             } else {
                 String template = context.isDistinct ? INVALID_FIELD_IN_DISTINCT_TEMPLATE : INVALID_FIELD_TEMPLATE;

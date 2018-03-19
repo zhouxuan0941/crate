@@ -64,6 +64,18 @@ public class Symbols {
         return streamers;
     }
 
+    public static boolean contains(Iterable<? extends Symbol> symbols, Symbol symbol) {
+        for (Symbol s : symbols) {
+            if (s.equals(symbol)) {
+                return true;
+            }
+            if (s instanceof AliasedSymbol && ((AliasedSymbol) s).symbol().equals(symbol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * returns true if the symbol contains the given columnIdent.

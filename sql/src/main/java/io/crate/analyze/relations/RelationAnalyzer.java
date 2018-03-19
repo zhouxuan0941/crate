@@ -47,10 +47,12 @@ import io.crate.exceptions.RelationUnknown;
 import io.crate.exceptions.RelationValidationException;
 import io.crate.exceptions.UnsupportedFeatureException;
 import io.crate.expression.symbol.Aggregations;
+import io.crate.expression.symbol.AliasedSymbol;
 import io.crate.expression.symbol.Field;
 import io.crate.expression.symbol.Function;
 import io.crate.expression.symbol.Literal;
 import io.crate.expression.symbol.Symbol;
+import io.crate.expression.symbol.Symbols;
 import io.crate.expression.symbol.format.SymbolPrinter;
 import io.crate.metadata.FunctionIdent;
 import io.crate.metadata.FunctionImplementation;
@@ -437,7 +439,10 @@ public class RelationAnalyzer extends DefaultTraversalVisitor<AnalyzedRelation, 
                                                      List<Symbol> groupBy) throws IllegalArgumentException {
         for (int i = 0; i < outputSymbols.size(); i++) {
             Symbol output = outputSymbols.get(i);
-            if (groupBy == null || !groupBy.contains(output)) {
+            if (output instanceof AliasedSymbol) {
+                output = ((AliasedSymbol) output).symbol();
+            }
+            if (groupBy == null || !Symbols.contains(groupBy, output)) {
                 if (output.symbolType().isValueSymbol()) {
                     // values are allowed even if not present in group by
                     continue;

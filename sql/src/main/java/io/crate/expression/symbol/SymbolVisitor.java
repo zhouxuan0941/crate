@@ -83,5 +83,9 @@ public class SymbolVisitor<C, R> {
     public R visitSelectSymbol(SelectSymbol selectSymbol, C context) {
         return visitSymbol(selectSymbol, context);
     }
+
+    public R visitAliasedSymbol(AliasedSymbol aliasedSymbol, C context) {
+        return aliasedSymbol.symbol().accept(this, context);
+    }
 }
 

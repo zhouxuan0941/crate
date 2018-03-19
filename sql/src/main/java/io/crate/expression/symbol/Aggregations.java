@@ -22,8 +22,8 @@
 
 package io.crate.expression.symbol;
 
-import io.crate.metadata.FunctionInfo;
 import io.crate.expression.scalar.arithmetic.ArrayFunction;
+import io.crate.metadata.FunctionInfo;
 
 import java.util.List;
 
@@ -109,7 +109,7 @@ public final class Aggregations {
 
         @Override
         protected Boolean visitSymbol(Symbol symbol, List<Symbol> context) {
-            return context.contains(symbol);
+            return Symbols.contains(context, symbol);
         }
 
         @Override
@@ -119,7 +119,7 @@ public final class Aggregations {
 
         @Override
         public Boolean visitFunction(Function symbol, List<Symbol> context) {
-            if (context.contains(symbol)) {
+            if (Symbols.contains(context, symbol)) {
                 return true;
             }
 
