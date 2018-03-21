@@ -1,0 +1,8 @@
+apply from: "$rootDir/gradle/javaModule.gradle"
+
+
+dependencies {
+    compile project(':sql-parser')
+    compile "junit:junit:${versions.junit}"
+    compile "org.hamcrest:hamcrest-library:${versions.hamcrest}"
+}
