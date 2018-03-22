@@ -28,6 +28,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 
 public class FetchReference extends Symbol {
 
@@ -79,5 +80,10 @@ public class FetchReference extends Symbol {
     @Override
     public String representation() {
         return "Fetch{" + fetchId.representation() + ", " + ref.representation() + '}';
+    }
+
+    @Override
+    public boolean testRecursive(Predicate<Symbol> predicate) {
+        return predicate.test(this) || ref.testRecursive(predicate);
     }
 }

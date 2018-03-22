@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 
 public class Function extends Symbol implements Cloneable {
 
@@ -101,6 +102,19 @@ public class Function extends Symbol implements Cloneable {
             new FunctionInfo(new FunctionIdent(info.ident().name(), Symbols.typeView(newArgs)), newDataType),
             newArgs
         );
+    }
+
+    @Override
+    public boolean testRecursive(Predicate<Symbol> predicate) {
+        if (predicate.test(this)) {
+            return true;
+        }
+        for (Symbol argument : arguments) {
+            if (argument.testRecursive(predicate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

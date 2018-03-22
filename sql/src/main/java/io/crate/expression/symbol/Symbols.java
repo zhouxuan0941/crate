@@ -41,7 +41,6 @@ import java.util.function.Predicate;
 
 public class Symbols {
 
-    private static final HasColumnVisitor HAS_COLUMN_VISITOR = new HasColumnVisitor();
     private static final AllLiteralsMatcher ALL_LITERALS_MATCHER = new AllLiteralsMatcher();
 
     public static final Predicate<Symbol> IS_COLUMN = s -> s instanceof Field || s instanceof Reference;
@@ -69,7 +68,8 @@ public class Symbols {
         if (symbol == null) {
             return false;
         }
-        return HAS_COLUMN_VISITOR.process(symbol, path);
+        return symbol.testRecursive(s -> (s instanceof Reference && ((Reference) s).column().equals(path))
+               || s instanceof Field && ((Field) s).path().outputName().equals(path.outputName()));
     }
 
     /**
@@ -116,42 +116,6 @@ public class Symbols {
             return ((Reference) symbol).column();
         }
         return new OutputName(SymbolPrinter.INSTANCE.printUnqualified(symbol));
-    }
-
-    private static class HasColumnVisitor extends SymbolVisitor<Path, Boolean> {
-
-        @Override
-        protected Boolean visitSymbol(Symbol symbol, Path column) {
-            return false;
-        }
-
-        @Override
-        public Boolean visitFunction(Function symbol, Path column) {
-            for (Symbol arg : symbol.arguments()) {
-                if (process(arg, column)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public Boolean visitFetchReference(FetchReference fetchReference, Path column) {
-            if (process(fetchReference.fetchId(), column)) {
-                return true;
-            }
-            return process(fetchReference.ref(), column);
-        }
-
-        @Override
-        public Boolean visitField(Field field, Path column) {
-            return field.path().equals(column) || field.path().outputName().equals(column.outputName());
-        }
-
-        @Override
-        public Boolean visitReference(Reference symbol, Path column) {
-            return column.equals(symbol.column());
-        }
     }
 
     /**

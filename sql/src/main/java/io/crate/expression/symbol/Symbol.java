@@ -27,6 +27,8 @@ import io.crate.types.DataType;
 import io.crate.types.UndefinedType;
 import org.elasticsearch.common.io.stream.Writeable;
 
+import java.util.function.Predicate;
+
 public abstract class Symbol implements FuncArg, Writeable, ExplainLeaf {
 
     public static boolean isLiteral(Symbol symbol, DataType expectedType) {
@@ -50,6 +52,7 @@ public abstract class Symbol implements FuncArg, Writeable, ExplainLeaf {
         return cast(newDataType, false);
     }
 
+
     /**
      * Casts this Symbol to a new {@link DataType} by wrapping a cast function around it.
      * Sublasses of this class may provide another cast methods.
@@ -59,6 +62,14 @@ public abstract class Symbol implements FuncArg, Writeable, ExplainLeaf {
      */
     public Symbol cast(DataType newDataType, boolean tryCast) {
         return CastFunctionResolver.generateCastFunction(this, newDataType, tryCast);
+    }
+
+    public boolean contains(Symbol symbol) {
+        return testRecursive(symbol::equals);
+    }
+
+    public boolean testRecursive(Predicate<Symbol> predicate) {
+        return predicate.test(this);
     }
 
     @Override
