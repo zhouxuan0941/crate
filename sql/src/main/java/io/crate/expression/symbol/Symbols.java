@@ -35,16 +35,20 @@ import org.elasticsearch.common.io.stream.StreamOutput;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Symbols {
+public final class Symbols {
 
     private static final AllLiteralsMatcher ALL_LITERALS_MATCHER = new AllLiteralsMatcher();
 
     public static final Predicate<Symbol> IS_COLUMN = s -> s instanceof Field || s instanceof Reference;
     public static final Predicate<Symbol> IS_GENERATED_COLUMN = input -> input instanceof GeneratedReference;
+    public static final Symbols EMPTY = new Symbols(Collections.emptyList());
+
+    private final List<Symbol> symbols;
 
     public static List<DataType> typeView(List<? extends Symbol> symbols) {
         return Lists.transform(symbols, Symbol::valueType);
@@ -116,6 +120,14 @@ public class Symbols {
             return ((Reference) symbol).column();
         }
         return new OutputName(SymbolPrinter.INSTANCE.printUnqualified(symbol));
+    }
+
+    public Symbols(List<Symbol> symbols) {
+        this.symbols = symbols;
+    }
+
+    public int size() {
+        return symbols.size();
     }
 
     /**

@@ -21,16 +21,16 @@
 
 package io.crate.analyze;
 
-import io.crate.expression.symbol.Symbol;
 import io.crate.collections.Lists2;
 import io.crate.expression.scalar.cast.CastFunctionResolver;
+import io.crate.expression.symbol.Symbol;
+import io.crate.expression.symbol.Symbols;
 import io.crate.types.DataType;
 import io.crate.types.DataTypes;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -40,9 +40,9 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 
 public class QuerySpec {
 
-    private List<Symbol> outputs = Collections.emptyList();
+    private Symbols outputs = Symbols.EMPTY;
     private WhereClause where = WhereClause.MATCH_ALL;
-    private List<Symbol> groupBy = Collections.emptyList();
+    private Symbols groupBy = Symbols.EMPTY;
     private HavingClause having = null;
     private OrderBy orderBy = null;
 
@@ -54,12 +54,12 @@ public class QuerySpec {
 
     private boolean hasAggregates = false;
 
-    public QuerySpec groupBy(@Nullable List<Symbol> groupBy) {
-        this.groupBy = firstNonNull(groupBy, Collections.emptyList());
+    public QuerySpec groupBy(@Nullable Symbols symbols) {
+        this.groupBy = firstNonNull(groupBy, Symbols.EMPTY);
         return this;
     }
 
-    public List<Symbol> groupBy() {
+    public Symbols groupBy() {
         return groupBy;
     }
 
@@ -120,11 +120,11 @@ public class QuerySpec {
         return this;
     }
 
-    public List<Symbol> outputs() {
+    public Symbols outputs() {
         return outputs;
     }
 
-    public QuerySpec outputs(List<Symbol> outputs) {
+    public QuerySpec outputs(Symbols outputs) {
         this.outputs = outputs;
         return this;
     }
