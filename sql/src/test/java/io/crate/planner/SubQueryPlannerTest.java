@@ -182,12 +182,12 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("ConstantConditions")
     public void testJoinOnSubSelectsWithLimitAndOffset() throws Exception {
         Join nl = e.plan("select * from " +
-                         " (select i, a from t1 order by a limit 10 offset 2) t1 " +
+                         " (select i, a from t1 order by a limit 5 offset 2) t1 " +
                          "join" +
-                         " (select i from t2 order by b limit 5 offset 5) t2 " +
+                         " (select i from t2 order by b limit 10 offset 5) t2 " +
                          "on t1.i = t2.i");
         assertThat(nl.joinPhase().projections().size(), is(1));
         assertThat(nl.joinPhase().projections().get(0), instanceOf(EvalProjection.class));
@@ -198,24 +198,25 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat("1 node, otherwise mergePhases would be required", left.nodeIds().size(), is(1));
         assertThat(left.orderBy(), isSQL("OrderByPositions{indices=[1], reverseFlags=[false], nullsFirst=[null]}"));
         assertThat(left.collectPhase().projections(), contains(
-            isTopN(10, 2)
+            isTopN(5, 2)
         ));
         Collect right = (Collect) nl.right();
         assertThat("1 node, otherwise mergePhases would be required", right.nodeIds().size(), is(1));
         assertThat(((RoutedCollectPhase) right.collectPhase()).orderBy(), isSQL("doc.t2.b"));
         assertThat(right.collectPhase().projections(), contains(
-            isTopN(5, 5),
+            isTopN(10, 5),
             instanceOf(EvalProjection.class) // strips `b` used in order by from the outputs
         ));
     }
 
+
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("ConstantConditions")
     public void testJoinWithAggregationOnSubSelectsWithLimitAndOffset() throws Exception {
         Join nl = e.plan("select t1.a, count(*) from " +
-                         " (select i, a from t1 order by a limit 10 offset 2) t1 " +
+                         " (select i, a from t1 order by a limit 5 offset 2) t1 " +
                          "join" +
-                         " (select i from t2 order by i desc limit 5 offset 5) t2 " +
+                         " (select i from t2 order by i desc limit 10 offset 5) t2 " +
                          "on t1.i = t2.i " +
                          "group by t1.a");
         assertThat(nl.joinPhase().leftMergePhase(), nullValue());
@@ -225,8 +226,7 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat("1 node, otherwise mergePhases would be required", left.nodeIds().size(), is(1));
         assertThat(((RoutedCollectPhase) left.collectPhase()).orderBy(), isSQL("doc.t1.a"));
         assertThat(left.collectPhase().projections(), contains(
-            isTopN(10, 2),
-            instanceOf(EvalProjection.class)
+            isTopN(5, 2)
         ));
         assertThat(left.collectPhase().toCollect(), isSQL("doc.t1.i, doc.t1.a"));
 
@@ -235,7 +235,7 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat("1 node, otherwise mergePhases would be required", right.nodeIds().size(), is(1));
         assertThat(((RoutedCollectPhase) right.collectPhase()).orderBy(), isSQL("doc.t2.i DESC"));
         assertThat(right.collectPhase().projections(), contains(
-            isTopN(5, 5)
+            isTopN(10, 5)
         ));
 
 
@@ -247,12 +247,12 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("ConstantConditions")
     public void testJoinWithGlobalAggregationOnSubSelectsWithLimitAndOffset() throws Exception {
         Join nl = e.plan("select count(*) from " +
-                         " (select i, a from t1 order by a limit 10 offset 2) t1 " +
+                         " (select i, a from t1 order by a limit 5 offset 2) t1 " +
                          "join" +
-                         " (select i from t2 order by i desc limit 5 offset 5) t2 " +
+                         " (select i from t2 order by i desc limit 10 offset 5) t2 " +
                          "on t1.i = t2.i");
 
         assertThat(nl.joinPhase().leftMergePhase(), nullValue());
@@ -263,7 +263,7 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat(left.collectPhase().toCollect(), isSQL("doc.t1.i, doc.t1.a"));
         assertThat(((RoutedCollectPhase) left.collectPhase()).orderBy(), isSQL("doc.t1.a"));
         assertThat(left.collectPhase().projections(), contains(
-            isTopN(10, 2),
+            isTopN(5, 2),
             instanceOf(EvalProjection.class)
         ));
 
@@ -272,7 +272,7 @@ public class SubQueryPlannerTest extends CrateDummyClusterServiceUnitTest {
         assertThat("1 node, otherwise mergePhases would be required", right.nodeIds().size(), is(1));
         assertThat(((RoutedCollectPhase) right.collectPhase()).orderBy(), isSQL("doc.t2.i DESC"));
         assertThat(right.collectPhase().projections(), contains(
-            isTopN(5, 5)
+            isTopN(10, 5)
         ));
 
 

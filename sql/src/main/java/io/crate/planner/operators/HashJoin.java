@@ -35,6 +35,7 @@ import io.crate.execution.dsl.projection.builder.InputColumns;
 import io.crate.execution.dsl.projection.builder.ProjectionBuilder;
 import io.crate.execution.engine.join.JoinOperations;
 import io.crate.execution.engine.pipeline.TopN;
+import io.crate.expression.symbol.InputColumn;
 import io.crate.expression.symbol.SelectSymbol;
 import io.crate.expression.symbol.Symbol;
 import io.crate.expression.symbol.Symbols;
@@ -45,7 +46,6 @@ import io.crate.planner.TableStats;
 import io.crate.planner.distribution.DistributionInfo;
 import io.crate.planner.node.dql.join.Join;
 import io.crate.planner.node.dql.join.JoinType;
-import org.elasticsearch.common.collect.Tuple;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -63,15 +63,19 @@ class HashJoin extends TwoInputPlan {
     private final Symbol joinCondition;
     private final TableStats tableStats;
     @VisibleForTesting
-    final AnalyzedRelation concreteRelation;
+    AnalyzedRelation topMostLeftRelation;
+    @VisibleForTesting
+    AnalyzedRelation rightRelation;
 
     HashJoin(LogicalPlan lhs,
              LogicalPlan rhs,
              Symbol joinCondition,
-             AnalyzedRelation concreteRelation,
+             AnalyzedRelation topMostLeftRelation,
+             AnalyzedRelation rightRelation,
              TableStats tableStats) {
         super(lhs, rhs, new ArrayList<>());
-        this.concreteRelation = concreteRelation;
+        this.topMostLeftRelation = topMostLeftRelation;
+        this.rightRelation = rightRelation;
         this.joinCondition = joinCondition;
         this.outputs.addAll(lhs.outputs());
         this.outputs.addAll(rhs.outputs());
@@ -103,35 +107,18 @@ class HashJoin extends TwoInputPlan {
                                Row params,
                                Map<SelectSymbol, Object> subQueryValues) {
 
-
-        ExecutionPlan leftExecutionPlan = lhs.build(
+        ExecutionPlan left = lhs.build(
             plannerContext, projectionBuilder, NO_LIMIT, 0, null, null, params, subQueryValues);
-        ExecutionPlan rightExecutionPlan = rhs.build(
+        ExecutionPlan right = rhs.build(
             plannerContext, projectionBuilder, NO_LIMIT, 0, null, null, params, subQueryValues);
 
-        LogicalPlan leftLogicalPlan = lhs;
-        LogicalPlan rightLogicalPlan = rhs;
-
-        boolean tablesSwitched = false;
-        // We move smaller table to the right side since benchmarking
-        // revealed that this improves performance in most cases.
-        if (lhs.numExpectedRows() < rhs.numExpectedRows()) {
-            tablesSwitched = true;
-            leftLogicalPlan = rhs;
-            rightLogicalPlan = lhs;
-
-            ExecutionPlan tmp = leftExecutionPlan;
-            leftExecutionPlan = rightExecutionPlan;
-            rightExecutionPlan = tmp;
-        }
-
-        ResultDescription leftResultDesc = leftExecutionPlan.resultDescription();
-        ResultDescription rightResultDesc = rightExecutionPlan.resultDescription();
+        ResultDescription leftResultDesc = left.resultDescription();
+        ResultDescription rightResultDesc = right.resultDescription();
         Collection<String> nlExecutionNodes = ImmutableSet.of(plannerContext.handlerNode());
 
         MergePhase leftMerge = null;
         MergePhase rightMerge = null;
-        leftExecutionPlan.setDistributionInfo(DistributionInfo.DEFAULT_BROADCAST);
+        left.setDistributionInfo(DistributionInfo.DEFAULT_BROADCAST);
         if (JoinOperations.isMergePhaseNeeded(nlExecutionNodes, leftResultDesc, false)) {
             leftMerge = JoinOperations.buildMergePhaseForJoin(plannerContext, leftResultDesc, nlExecutionNodes);
         }
@@ -141,50 +128,51 @@ class HashJoin extends TwoInputPlan {
             // if the left and the right plan are executed on the same single node the mergePhase
             // should be omitted. This is the case if the left and right table have only one shards which
             // are on the same node
-            rightExecutionPlan.setDistributionInfo(DistributionInfo.DEFAULT_SAME_NODE);
+            right.setDistributionInfo(DistributionInfo.DEFAULT_SAME_NODE);
         } else {
             if (JoinOperations.isMergePhaseNeeded(nlExecutionNodes, rightResultDesc, false)) {
                 rightMerge = JoinOperations.buildMergePhaseForJoin(plannerContext, rightResultDesc, nlExecutionNodes);
             }
-            rightExecutionPlan.setDistributionInfo(DistributionInfo.DEFAULT_BROADCAST);
+            right.setDistributionInfo(DistributionInfo.DEFAULT_BROADCAST);
         }
 
-        Symbol joinConditionInput = InputColumns.create(
-            joinCondition,
-            Lists2.concat(leftLogicalPlan.outputs(), rightLogicalPlan.outputs()));
-        Tuple<List<Symbol>, List<Symbol>> hashInputs =
-            extractHashJoinInputsFromJoinSymbolsAndSplitPerSide(tablesSwitched);
-
-
-        List<Symbol> joinOutputs = Lists2.concat(leftLogicalPlan.outputs(), rightLogicalPlan.outputs());
-        // The projection operates on the the outputs of the join operation, which may be inverted due to a table switch,
-        // and must produce outputs that match the order of the original outputs, because a "parent" (eg. GROUP BY)
-        // operator of the join expects the original outputs order.
-        List<Symbol> projectionOutputs = InputColumns.create(
-                outputs,
-                new InputColumns.SourceSymbols(joinOutputs));
+        Symbol joinInput = InputColumns.create(joinCondition, Lists2.concat(lhs.outputs(), rhs.outputs()));
+        Map<AnalyzedRelation, List<Symbol>> hashJoinSymbols = HashJoinConditionSymbolsExtractor.extract(joinCondition);
+        List<Symbol> rightHashJoinSymbols = hashJoinSymbols.remove(rightRelation);
+        List<Symbol> rightHashInputs = new ArrayList<>(rightHashJoinSymbols.size());
+        for (Symbol symbol : rightHashJoinSymbols) {
+            rightHashInputs.add(InputColumns.create(symbol, rhs.outputs()));
+        }
+        // All leftover extracted symbols belong to the left relation, the left relation might not be
+        // a concrete table  as the HashJoin can be nested further down a Join tree.
+        List<Symbol> leftHashJoinSymbols =
+            hashJoinSymbols.values().stream().flatMap(List::stream).collect(Collectors.toList());
+        List<Symbol> leftHashInputs = new ArrayList<>(leftHashJoinSymbols.size());
+        for (Symbol symbol : leftHashJoinSymbols) {
+            leftHashInputs.add(InputColumns.create(symbol, lhs.outputs()));
+        }
 
         HashJoinPhase joinPhase = new HashJoinPhase(
             plannerContext.jobId(),
             plannerContext.nextExecutionPhaseId(),
             "hash-join",
             // JoinPhase ctor wants at least one projection
-            Collections.singletonList(new EvalProjection(projectionOutputs)),
+            Collections.singletonList(new EvalProjection(InputColumn.fromSymbols(outputs))),
             leftMerge,
             rightMerge,
-            leftLogicalPlan.outputs().size(),
-            rightLogicalPlan.outputs().size(),
+            lhs.outputs().size(),
+            rhs.outputs().size(),
             nlExecutionNodes,
-            joinConditionInput,
-            hashInputs.v1(),
-            hashInputs.v2(),
-            Symbols.typeView(leftLogicalPlan.outputs()),
-            leftLogicalPlan.estimatedRowSize(),
-            leftLogicalPlan.numExpectedRows());
+            joinInput,
+            leftHashInputs,
+            rightHashInputs,
+            Symbols.typeView(lhs.outputs()),
+            lhs.estimatedRowSize(),
+            lhs.numExpectedRows());
         return new Join(
             joinPhase,
-            leftExecutionPlan,
-            rightExecutionPlan,
+            left,
+            right,
             TopN.NO_LIMIT,
             0,
             TopN.NO_LIMIT,
@@ -193,32 +181,9 @@ class HashJoin extends TwoInputPlan {
         );
     }
 
-    private Tuple<List<Symbol>, List<Symbol>> extractHashJoinInputsFromJoinSymbolsAndSplitPerSide(boolean switchedTables) {
-        Map<AnalyzedRelation, List<Symbol>> hashJoinSymbols = HashJoinConditionSymbolsExtractor.extract(joinCondition);
-
-        // First extract the symbols that belong to the concrete relation
-        List<Symbol> hashJoinSymbolsForConcreteRelation = hashJoinSymbols.remove(concreteRelation);
-        List<Symbol> hashInputsForConcreteRelation = InputColumns.create(
-            hashJoinSymbolsForConcreteRelation,
-            new InputColumns.SourceSymbols(rhs.outputs()));
-
-        // All leftover extracted symbols belong to the other relation which might be a
-        // "concrete" relation too but can already be a tree of relation.
-        List<Symbol> hashJoinSymbolsForJoinTree =
-            hashJoinSymbols.values().stream().flatMap(List::stream).collect(Collectors.toList());
-        List<Symbol> hashInputsForJoinTree = InputColumns.create(
-            hashJoinSymbolsForJoinTree,
-            new InputColumns.SourceSymbols(lhs.outputs()));
-
-        if (switchedTables) {
-            return new Tuple<>(hashInputsForConcreteRelation, hashInputsForJoinTree);
-        }
-        return new Tuple<>(hashInputsForJoinTree, hashInputsForConcreteRelation);
-    }
-
     @Override
     protected LogicalPlan updateSources(LogicalPlan newLeftSource, LogicalPlan newRightSource) {
-        return new HashJoin(newLeftSource, newRightSource, joinCondition, concreteRelation, tableStats);
+        return new HashJoin(newLeftSource, newRightSource, joinCondition, topMostLeftRelation, rightRelation, tableStats);
     }
 
     @Override
