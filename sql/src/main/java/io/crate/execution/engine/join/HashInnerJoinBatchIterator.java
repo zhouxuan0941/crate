@@ -30,7 +30,9 @@ import io.crate.data.Row;
 import io.crate.data.UnsafeArrayRow;
 import io.crate.data.join.ElementCombiner;
 import io.crate.data.join.JoinBatchIterator;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.common.breaker.CircuitBreaker;
+import org.elasticsearch.common.logging.Loggers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -78,6 +80,8 @@ import java.util.function.Predicate;
  */
 public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends JoinBatchIterator<L, R, C> {
 
+    private static final Logger log = Loggers.getLogger(HashInnerJoinBatchIterator.class);
+
     @VisibleForTesting
     static final int DEFAULT_BLOCK_SIZE = Paging.PAGE_SIZE;
 
@@ -98,6 +102,7 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     private int numberOfRowsInBuffer = 0;
     private boolean leftBatchHasItems = false;
     private Iterator<Object[]> leftMatchingRowsIterator;
+    private int numberOfBlocks = 0;
 
     public HashInnerJoinBatchIterator(RamAccountingBatchIterator<L> left,
                                       BatchIterator<R> right,
@@ -115,6 +120,7 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
         this.circuitBreaker = cicuitBreaker;
         this.estimatedRowSizeForLeft = estimatedRowSizeForLeft;
         this.numberOfRowsForLeft = numberOfRowsForLeft;
+        log.info("HashJoinDebug - Creating HashJoinBatchIterator with estimated row size for left {} and number of rows for left {}", estimatedRowSizeForLeft, numberOfRowsForLeft);
         recreateBuffer();
         this.activeIt = left;
     }
@@ -159,6 +165,8 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
 
     private void recreateBuffer() {
         blockSize = calculateBlockSize(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft);
+        ++numberOfBlocks;
+        log.info("HashJoinDebug - Creating block number {} with SIZE: {}", numberOfBlocks, blockSize);
         this.buffer = new IntObjectHashMap<>(this.blockSize);
         numberOfRowsInBuffer = 0;
     }

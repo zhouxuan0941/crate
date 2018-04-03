@@ -45,7 +45,9 @@ import io.crate.planner.TableStats;
 import io.crate.planner.distribution.DistributionInfo;
 import io.crate.planner.node.dql.join.Join;
 import io.crate.planner.node.dql.join.JoinType;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.common.collect.Tuple;
+import org.elasticsearch.common.logging.Loggers;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -59,6 +61,8 @@ import java.util.stream.Collectors;
 import static io.crate.planner.operators.LogicalPlanner.NO_LIMIT;
 
 class HashJoin extends TwoInputPlan {
+
+    private static final Logger log = Loggers.getLogger(HashJoin.class);
 
     private final Symbol joinCondition;
     private final TableStats tableStats;
@@ -123,6 +127,8 @@ class HashJoin extends TwoInputPlan {
             ExecutionPlan tmp = leftExecutionPlan;
             leftExecutionPlan = rightExecutionPlan;
             rightExecutionPlan = tmp;
+
+            log.info("HashJoinDebug - Switched sides. Current left: [ {} ] and right: [ {} ]", leftLogicalPlan, rightLogicalPlan);
         }
 
         ResultDescription leftResultDesc = leftExecutionPlan.resultDescription();
