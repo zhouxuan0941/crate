@@ -131,15 +131,20 @@ class HashJoin extends TwoInputPlan {
             log.info("HashJoinDebug - Switched sides. Current left: [ {} ] and right: [ {} ]", leftLogicalPlan, rightLogicalPlan);
         }
 
-        ResultDescription leftResultDesc = leftExecutionPlan.resultDescription();
-        ResultDescription rightResultDesc = rightExecutionPlan.resultDescription();
-        Collection<String> nlExecutionNodes = ImmutableSet.of(plannerContext.handlerNode());
+        log.info("HashJoinDebug - Current left: [ {} ] and right: [ {} ]", leftLogicalPlan, rightLogicalPlan);
+
 
         MergePhase leftMerge = null;
         MergePhase rightMerge = null;
         leftExecutionPlan.setDistributionInfo(DistributionInfo.DEFAULT_BROADCAST);
+
+        ResultDescription leftResultDesc = leftExecutionPlan.resultDescription();
+        ResultDescription rightResultDesc = rightExecutionPlan.resultDescription();
+        Collection<String> nlExecutionNodes = ImmutableSet.of(plannerContext.handlerNode());
+        log.info("HashJoinDebug - Left broadcast!");
         if (JoinOperations.isMergePhaseNeeded(nlExecutionNodes, leftResultDesc, false)) {
             leftMerge = JoinOperations.buildMergePhaseForJoin(plannerContext, leftResultDesc, nlExecutionNodes);
+            log.info("HashJoinDebug - LeftMerge {}", leftMerge);
         }
         if (nlExecutionNodes.size() == 1
             && nlExecutionNodes.equals(rightResultDesc.nodeIds())
@@ -148,11 +153,14 @@ class HashJoin extends TwoInputPlan {
             // should be omitted. This is the case if the left and right table have only one shards which
             // are on the same node
             rightExecutionPlan.setDistributionInfo(DistributionInfo.DEFAULT_SAME_NODE);
+            log.info("HashJoinDebug - Right same node!");
         } else {
             if (JoinOperations.isMergePhaseNeeded(nlExecutionNodes, rightResultDesc, false)) {
                 rightMerge = JoinOperations.buildMergePhaseForJoin(plannerContext, rightResultDesc, nlExecutionNodes);
+                log.info("HashJoinDebug - RightMerge {}", rightMerge);
             }
             rightExecutionPlan.setDistributionInfo(DistributionInfo.DEFAULT_BROADCAST);
+            log.info("HashJoinDebug - Right broadcast!");
         }
 
         Symbol joinConditionInput = InputColumns.create(
@@ -167,8 +175,8 @@ class HashJoin extends TwoInputPlan {
         // and must produce outputs that match the order of the original outputs, because a "parent" (eg. GROUP BY)
         // operator of the join expects the original outputs order.
         List<Symbol> projectionOutputs = InputColumns.create(
-                outputs,
-                new InputColumns.SourceSymbols(joinOutputs));
+            outputs,
+            new InputColumns.SourceSymbols(joinOutputs));
 
         HashJoinPhase joinPhase = new HashJoinPhase(
             plannerContext.jobId(),
