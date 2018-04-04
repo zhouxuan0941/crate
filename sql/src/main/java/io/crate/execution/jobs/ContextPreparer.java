@@ -56,10 +56,8 @@ import io.crate.execution.dsl.phases.NodeOperation;
 import io.crate.execution.dsl.phases.PKLookupPhase;
 import io.crate.execution.dsl.phases.RoutedCollectPhase;
 import io.crate.execution.dsl.phases.UpstreamPhase;
-import io.crate.execution.dsl.projection.OrderedTopNProjection;
 import io.crate.execution.dsl.projection.Projection;
 import io.crate.execution.dsl.projection.ProjectionType;
-import io.crate.execution.dsl.projection.TopNProjection;
 import io.crate.execution.engine.collect.JobCollectContext;
 import io.crate.execution.engine.collect.MapSideDataCollectOperation;
 import io.crate.execution.engine.collect.PKLookupOperation;
@@ -732,18 +730,6 @@ public class ContextPreparer extends AbstractComponent {
                 lastConsumer, phase.projections(), phase.jobId(), ramAccountingContext, projectorFactory);
             Predicate<Row> joinCondition = RowFilter.create(inputFactory, phase.joinCondition());
 
-            int limit = -1;
-            boolean ordered = false;
-            for (Projection projection : phase.projections()) {
-                if (projection.projectionType().equals(ProjectionType.TOPN_ORDERED)) {
-                    OrderedTopNProjection orderedTopNProjection = (OrderedTopNProjection) projection;
-                    limit = orderedTopNProjection.limit();
-                    ordered = true;
-                } else if (projection.projectionType().equals(ProjectionType.TOPN)) {
-                    limit = ((TopNProjection) projection).limit();
-                }
-            }
-
             HashJoinOperation joinOperation = new HashJoinOperation(
                 phase.numLeftOutputs(),
                 phase.numRightOutputs(),
@@ -760,8 +746,7 @@ public class ContextPreparer extends AbstractComponent {
                 circuitBreaker,
                 phase.estimatedRowSizeForLeft(),
                 phase.numberOfRowsForLeft(),
-                limit,
-                ordered);
+                hasTopNProjection(phase));
             PageDownstreamContext left = pageDownstreamContextForNestedLoop(
                 phase.phaseId(),
                 context,
@@ -791,6 +776,15 @@ public class ContextPreparer extends AbstractComponent {
                 right
             ));
             return true;
+        }
+
+        private boolean hasTopNProjection(HashJoinPhase phase) {
+            for (Projection projection : phase.projections()) {
+                if (projection.projectionType().equals(ProjectionType.TOPN)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Nullable

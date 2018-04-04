@@ -57,8 +57,7 @@ public class HashJoinOperation implements CompletionListenable {
                              CircuitBreaker circuitBreaker,
                              long estimatedRowSizeForLeft,
                              long numberOfRowsForLeft,
-                             int limit,
-                             boolean ordered) {
+                             boolean isTopN) {
 
         CompletableFuture.allOf(leftBatchIterator, rightBatchIterator)
             .whenComplete((result, failure) -> {
@@ -75,8 +74,7 @@ public class HashJoinOperation implements CompletionListenable {
                         circuitBreaker,
                         estimatedRowSizeForLeft,
                         numberOfRowsForLeft,
-                        limit,
-                        ordered
+                        isTopN
                     ), completionFuture);
                     nlResultConsumer.accept(joinIterator, null);
                 } else {
@@ -124,8 +122,7 @@ public class HashJoinOperation implements CompletionListenable {
                                                              CircuitBreaker circuitBreaker,
                                                              long estimatedRowSizeForLeft,
                                                              long numberOfRowsForLeft,
-                                                             int limit,
-                                                             boolean ordered) {
+                                                             boolean isTopN) {
         CombinedRow combiner = new CombinedRow(leftNumCols, rightNumCols);
         return new HashInnerJoinBatchIterator<>(
             new RamAccountingBatchIterator<>(left, rowAccounting),
@@ -137,7 +134,6 @@ public class HashJoinOperation implements CompletionListenable {
             circuitBreaker,
             estimatedRowSizeForLeft,
             numberOfRowsForLeft,
-            limit,
-            ordered);
+            isTopN);
     }
 }

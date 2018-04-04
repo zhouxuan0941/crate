@@ -96,8 +96,7 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     private final CircuitBreaker circuitBreaker;
     private final long estimatedRowSizeForLeft;
     private final long numberOfRowsForLeft;
-    private final int limit;
-    private final boolean ordered;
+    private final boolean isTopN;
 
     private IntObjectHashMap<List<Object[]>> buffer;
     private int blockSize;
@@ -115,8 +114,7 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
                                       CircuitBreaker cicuitBreaker,
                                       long estimatedRowSizeForLeft,
                                       long numberOfRowsForLeft,
-                                      int limit,
-                                      boolean ordered) {
+                                      boolean isTopN) {
         super(left, right, combiner);
         this.joinCondition = joinCondition;
         this.hashBuilderForLeft = hashBuilderForLeft;
@@ -125,10 +123,9 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
         this.estimatedRowSizeForLeft = estimatedRowSizeForLeft;
         this.numberOfRowsForLeft = numberOfRowsForLeft;
 
-        this.limit = limit;
-        this.ordered = ordered;
+        this.isTopN = isTopN;
         log.info("HashJoinDebug - Creating HashJoinBatchIterator with estimated row size for left {} and number of rows for left {}", estimatedRowSizeForLeft, numberOfRowsForLeft);
-        log.info("HashJoinDebug - limit? {} ordered? {}", limit, ordered);
+        log.info("HashJoinDebug - isTopN", isTopN);
         recreateBuffer();
         this.activeIt = left;
     }
@@ -172,7 +169,7 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     }
 
     private void recreateBuffer() {
-        blockSize = calculateBlockSize(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft, limit, ordered);
+        blockSize = calculateBlockSize(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft, isTopN);
         ++numberOfBlocks;
         log.info("HashJoinDebug - Creating block number {} with SIZE: {}", numberOfBlocks, blockSize);
         this.buffer = new IntObjectHashMap<>(this.blockSize);
@@ -183,17 +180,16 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     static int calculateBlockSize(CircuitBreaker circuitBreaker,
                                   long estimatedRowSizeForLeft,
                                   long numberOfRowsForLeft,
-                                  int limit,
-                                  boolean ordered) {
+                                  boolean isTopN) {
         if (statisticsUnavailable(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft)) {
             return DEFAULT_BLOCK_SIZE;
         }
 
         int blockSize = (int) ((circuitBreaker.getLimit() - circuitBreaker.getUsed()) / estimatedRowSizeForLeft);
         blockSize = (int) Math.min(numberOfRowsForLeft, blockSize);
-        if (limit > 0 && ordered == false) {
+        if (isTopN) {
             blockSize = Math.min(DEFAULT_BLOCK_SIZE, blockSize);
-            log.info("HashJoinDebug - Got limit {} and query not ordered so adjusted blockSize to: {}", limit, blockSize);
+            log.info("HashJoinDebug - Got topNProj {}", isTopN);
         }
 
         // In case no mem available from circuit breaker then still allocate a small blockSize,
@@ -203,8 +199,8 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     }
 
     private static boolean statisticsUnavailable(CircuitBreaker circuitBreaker,
-                                          long estimatedRowSizeForLeft,
-                                          long numberOfRowsForLeft) {
+                                                 long estimatedRowSizeForLeft,
+                                                 long numberOfRowsForLeft) {
         return estimatedRowSizeForLeft <= 0 || numberOfRowsForLeft <= 0 || circuitBreaker.getLimit() == -1;
     }
 

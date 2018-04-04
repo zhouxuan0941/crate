@@ -137,7 +137,8 @@ public class RowsBatchIteratorBenchmark {
             row -> Objects.hash(row.get(0)),
             NOOP_CIRCUIT_BREAKER,
             1000,
-            1000
+            1000,
+            false
         );
         while (leftJoin.moveNext()) {
             blackhole.consume(leftJoin.currentElement().get(0));
@@ -160,7 +161,8 @@ public class RowsBatchIteratorBenchmark {
             row -> (Integer) row.get(0) % 500,
             NOOP_CIRCUIT_BREAKER,
             1000,
-            1000
+            1000,
+            false
         );
         while (leftJoin.moveNext()) {
             blackhole.consume(leftJoin.currentElement().get(0));
