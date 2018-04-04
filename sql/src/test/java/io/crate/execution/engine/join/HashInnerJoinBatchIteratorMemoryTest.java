@@ -77,7 +77,9 @@ public class HashInnerJoinBatchIteratorMemoryTest {
             getHashForRight(),
             circuitBreaker,
             50, // blockSize = 100/50 = 2
-            100
+            100,
+            -1,
+            false
         );
         TestingRowConsumer consumer = new TestingRowConsumer();
         consumer.accept(it, null);
@@ -89,26 +91,26 @@ public class HashInnerJoinBatchIteratorMemoryTest {
     public void testCalculationOfBlockSize() {
         when(circuitBreaker.getLimit()).thenReturn(110L);
         when(circuitBreaker.getUsed()).thenReturn(10L);
-        assertThat(calculateBlockSize(circuitBreaker, 5, 100), is(20));
-        assertThat(calculateBlockSize(circuitBreaker, 5, 10), is(10));
+        assertThat(calculateBlockSize(circuitBreaker, 5, 100, -1, false), is(20));
+        assertThat(calculateBlockSize(circuitBreaker, 5, 10, -1, false), is(10));
     }
 
     @Test
     public void testCalculationOfBlockSizeWithMissingStats() {
         when(circuitBreaker.getLimit()).thenReturn(-1L);
-        assertThat(calculateBlockSize(circuitBreaker, 10, 10), is(HashInnerJoinBatchIterator.DEFAULT_BLOCK_SIZE));
+        assertThat(calculateBlockSize(circuitBreaker, 10, 10, -1, false), is(HashInnerJoinBatchIterator.DEFAULT_BLOCK_SIZE));
 
         when(circuitBreaker.getLimit()).thenReturn(110L);
         when(circuitBreaker.getUsed()).thenReturn(10L);
-        assertThat(calculateBlockSize(circuitBreaker, 10, -1), is(HashInnerJoinBatchIterator.DEFAULT_BLOCK_SIZE));
-        assertThat(calculateBlockSize(circuitBreaker, -1, 10), is(HashInnerJoinBatchIterator.DEFAULT_BLOCK_SIZE));
+        assertThat(calculateBlockSize(circuitBreaker, 10, -1, -1, false), is(HashInnerJoinBatchIterator.DEFAULT_BLOCK_SIZE));
+        assertThat(calculateBlockSize(circuitBreaker, -1, 10, -1, false), is(HashInnerJoinBatchIterator.DEFAULT_BLOCK_SIZE));
     }
 
     @Test
     public void testCalculationOfBlockSizeWithNoMemLeft() {
         when(circuitBreaker.getLimit()).thenReturn(110L);
         when(circuitBreaker.getUsed()).thenReturn(110L);
-        assertThat(calculateBlockSize(circuitBreaker, 10, 10), is(10));
+        assertThat(calculateBlockSize(circuitBreaker, 10, 10, -1, false), is(10));
     }
 
     private class TestRamAccountingBatchIterator extends RamAccountingBatchIterator<Row> {

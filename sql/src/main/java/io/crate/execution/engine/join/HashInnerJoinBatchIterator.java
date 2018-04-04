@@ -96,6 +96,8 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     private final CircuitBreaker circuitBreaker;
     private final long estimatedRowSizeForLeft;
     private final long numberOfRowsForLeft;
+    private final int limit;
+    private final boolean ordered;
 
     private IntObjectHashMap<List<Object[]>> buffer;
     private int blockSize;
@@ -112,7 +114,9 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
                                       Function<R, Integer> hashBuilderForRight,
                                       CircuitBreaker cicuitBreaker,
                                       long estimatedRowSizeForLeft,
-                                      long numberOfRowsForLeft) {
+                                      long numberOfRowsForLeft,
+                                      int limit,
+                                      boolean ordered) {
         super(left, right, combiner);
         this.joinCondition = joinCondition;
         this.hashBuilderForLeft = hashBuilderForLeft;
@@ -120,7 +124,11 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
         this.circuitBreaker = cicuitBreaker;
         this.estimatedRowSizeForLeft = estimatedRowSizeForLeft;
         this.numberOfRowsForLeft = numberOfRowsForLeft;
+
+        this.limit = limit;
+        this.ordered = ordered;
         log.info("HashJoinDebug - Creating HashJoinBatchIterator with estimated row size for left {} and number of rows for left {}", estimatedRowSizeForLeft, numberOfRowsForLeft);
+        log.info("HashJoinDebug - limit? {} ordered? {}", limit, ordered);
         recreateBuffer();
         this.activeIt = left;
     }
@@ -164,7 +172,7 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     }
 
     private void recreateBuffer() {
-        blockSize = calculateBlockSize(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft);
+        blockSize = calculateBlockSize(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft, limit, ordered);
         ++numberOfBlocks;
         log.info("HashJoinDebug - Creating block number {} with SIZE: {}", numberOfBlocks, blockSize);
         this.buffer = new IntObjectHashMap<>(this.blockSize);
@@ -174,13 +182,19 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     @VisibleForTesting
     static int calculateBlockSize(CircuitBreaker circuitBreaker,
                                   long estimatedRowSizeForLeft,
-                                  long numberOfRowsForLeft) {
+                                  long numberOfRowsForLeft,
+                                  int limit,
+                                  boolean ordered) {
         if (statisticsUnavailable(circuitBreaker, estimatedRowSizeForLeft, numberOfRowsForLeft)) {
             return DEFAULT_BLOCK_SIZE;
         }
 
         int blockSize = (int) ((circuitBreaker.getLimit() - circuitBreaker.getUsed()) / estimatedRowSizeForLeft);
         blockSize = (int) Math.min(numberOfRowsForLeft, blockSize);
+        if (limit > 0 && ordered == false) {
+            blockSize = Math.min(DEFAULT_BLOCK_SIZE, blockSize);
+            log.info("HashJoinDebug - Got limit {} and query not ordered so adjusted blockSize to: {}", limit, blockSize);
+        }
 
         // In case no mem available from circuit breaker then still allocate a small blockSize,
         // so that at least some rows (min 1) from the left side could be processed and
