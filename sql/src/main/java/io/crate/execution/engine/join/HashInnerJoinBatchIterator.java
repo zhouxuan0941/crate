@@ -28,6 +28,9 @@ import io.crate.data.Row;
 import io.crate.data.UnsafeArrayRow;
 import io.crate.data.join.ElementCombiner;
 import io.crate.data.join.JoinBatchIterator;
+import io.crate.exceptions.Exceptions;
+import org.apache.logging.log4j.Logger;
+import org.elasticsearch.common.logging.Loggers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -75,6 +78,8 @@ import java.util.function.Supplier;
  * caller to provide those two functions that operate on the left and right rows accordingly and return the hash values.
  */
 public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends JoinBatchIterator<L, R, C> {
+
+    private static final Logger LOGGER  = Loggers.getLogger(HashInnerJoinBatchIterator.class);
 
     private final Predicate<C> joinCondition;
 
@@ -147,9 +152,15 @@ public class HashInnerJoinBatchIterator<L extends Row, R extends Row, C> extends
     }
 
     private void recreateBuffer() {
-        blockSize = blockSizeSupplier.get();
-        this.buffer = new IntObjectHashMap<>(this.blockSize);
-        numberOfRowsInBuffer = 0;
+        try {
+            blockSize = blockSizeSupplier.get();
+            LOGGER.info("RECALCULATED BLOCK SIZE TO {}", blockSize);
+            this.buffer = new IntObjectHashMap<>(this.blockSize);
+            numberOfRowsInBuffer = 0;
+        } catch (Throwable e) {
+            LOGGER.info("ENCOUNTERED EXCEPTION WHILE CALCULATING BLOCK SIZE!! {}", e.getMessage(), e);
+            Exceptions.rethrowUnchecked(e);
+        }
     }
 
     private boolean buildBufferAndMatchRight() {
