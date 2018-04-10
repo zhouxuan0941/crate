@@ -126,13 +126,18 @@ public class DistributingConsumer implements RowConsumer {
         if (allLoaded) {
             forwardResults(it, true);
         } else {
-            it.loadNextBatch().whenComplete((r, t) -> {
-                if (t == null) {
-                    consumeIt(it);
-                } else {
-                    forwardFailure(it, t);
-                }
-            });
+            try {
+                it.loadNextBatch().whenComplete((r, t) -> {
+                    if (t == null) {
+                        consumeIt(it);
+                    } else {
+                        forwardFailure(it, t);
+                    }
+                });
+            } catch (Throwable t) {
+                logger.error(t.getMessage(), t);
+                forwardFailure(it, t);
+            }
         }
     }
 
@@ -239,6 +244,9 @@ public class DistributingConsumer implements RowConsumer {
 
                 // The NodeDisconnectJobMonitorService takes care of node disconnects, so we don't have to manage
                 // that scenario.
+                if (failure != null) {
+                    logger.error(failure.getMessage(), failure);
+                }
                 it.close();
             }
         }
