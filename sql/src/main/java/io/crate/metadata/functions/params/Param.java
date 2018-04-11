@@ -222,7 +222,7 @@ public final class Param {
         }
         FuncArg convertedType = convertTypes(newTarget, bound);
         if (convertedType == null) {
-            throw new ConversionException(newTarget, boundType);
+            throw new ConversionException(newTarget.valueType(), boundType);
         }
         return convertedType;
     }

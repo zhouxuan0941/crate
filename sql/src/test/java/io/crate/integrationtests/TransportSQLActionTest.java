@@ -563,18 +563,18 @@ public class TransportSQLActionTest extends SQLTransportIntegrationTest {
         detail1.put("names", new Object[]{"Arthur", "Trillian"});
 
         Map<String, Object> detail2 = new HashMap<>();
-        detail2.put("names", new Object[]{"Ford", "Slarti"});
+        // duplicate value in array to make sure we're selecting from the source and not lucene terms
+        detail2.put("names", new Object[]{"Ford", "Slarti", "Slarti"});
 
         List<Map<String, Object>> details = Arrays.asList(detail1, detail2);
 
         execute("insert into t1 (id, details) values (?, ?)", new Object[]{1, details});
         refresh();
 
-        expectedException.expect(SQLActionException.class);
-        expectedException.expectMessage("cannot query for arrays inside object arrays explicitly");
-
-        execute("select details['names'] from t1");
-
+        assertThat(
+            printedTable(execute("select details['names'] from t1").rows()),
+            is("[[Arthur, Trillian], [Ford, Slarti, Slarti]]\n")
+        );
     }
 
     @Test

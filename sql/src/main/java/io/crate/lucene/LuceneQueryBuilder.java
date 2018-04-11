@@ -390,6 +390,9 @@ public class LuceneQueryBuilder {
                     }
                     return Queries.newMatchNoDocsQuery("column doesn't exist in this index");
                 }
+                if (literal.valueType() instanceof CollectionType) {
+                    return null;
+                }
                 return fieldType.termQuery(literal.value(), null);
             }
 
