@@ -150,7 +150,7 @@ public class Planner extends AnalyzedStatementVisitor<PlannerContext, Plan> {
     @Override
     protected Plan visitInsertFromValuesStatement(InsertFromValuesAnalyzedStatement statement, PlannerContext context) {
         Preconditions.checkState(!statement.sourceMaps().isEmpty(), "no values given");
-        return processInsertStatement(statement, context);
+        return processInsertStatement(statement);
     }
 
     @Override
@@ -300,7 +300,7 @@ public class Planner extends AnalyzedStatementVisitor<PlannerContext, Plan> {
         return new DropViewPlan(dropViewStmt);
     }
 
-    private LegacyUpsertById processInsertStatement(InsertFromValuesAnalyzedStatement analysis, PlannerContext context) {
+    private static LegacyUpsertById processInsertStatement(InsertFromValuesAnalyzedStatement analysis) {
         String[] onDuplicateKeyAssignmentsColumns = null;
         if (analysis.onDuplicateKeyAssignmentsColumns().size() > 0) {
             onDuplicateKeyAssignmentsColumns = analysis.onDuplicateKeyAssignmentsColumns().get(0);
