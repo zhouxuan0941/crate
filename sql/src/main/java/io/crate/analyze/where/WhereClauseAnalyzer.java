@@ -65,7 +65,11 @@ public class WhereClauseAnalyzer {
                                              Functions functions,
                                              TransactionContext transactionContext) {
         if (where.hasQuery()) {
-            Function<Symbol, Symbol> bind = s -> SubQueryAndParamBinder.convert(s, params, subQueryValues);
+            EvaluatingNormalizer normalizer = new EvaluatingNormalizer(functions, RowGranularity.CLUSTER, null, tableRelation);
+            Function<Symbol, Symbol> bind = s -> normalizer.normalize(
+                SubQueryAndParamBinder.convert(s, params, subQueryValues),
+                transactionContext
+            );
             Symbol query = bind.apply(where.query());
             Set<Symbol> clusteredBy = where.clusteredBy().stream().map(bind).collect(Collectors.toSet());
             if (tableRelation instanceof DocTableRelation) {
