@@ -29,7 +29,6 @@ import org.elasticsearch.common.io.PathUtils;
 import org.elasticsearch.common.network.NetworkModule;
 import org.elasticsearch.common.network.NetworkService;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.env.Environment;
 import org.elasticsearch.http.HttpTransportSettings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.transport.Netty4Plugin;
@@ -140,6 +139,7 @@ public class CrateSettingsPreparerTest {
     public void testClusterNameMissingFromConfigFile() throws Exception {
         Settings.Builder builder = Settings.builder();
         builder.put("path.home", ".");
+        builder.put("path.conf", PathUtils.get(getClass().getResource("config").toURI()));
         builder.put("cluster.name", "clusterName");
         Settings finalSettings = CrateSettingsPreparer.prepareEnvironment(Settings.EMPTY, builder.internalMap()).settings();
         assertThat(finalSettings.get("cluster.name", null), is("clusterName"));
@@ -149,6 +149,7 @@ public class CrateSettingsPreparerTest {
     public void testClusterNameMissingFromBothConfigFileAndCommandLineArgs() throws Exception {
         Settings.Builder builder = Settings.builder();
         builder.put("path.home", ".");
+        builder.put("path.conf", PathUtils.get(getClass().getResource("config").toURI()));
         builder.put("cluster.name", "elasticsearch");
         Settings finalSettings = CrateSettingsPreparer.prepareEnvironment(Settings.EMPTY, builder.internalMap()).settings();
         assertThat(finalSettings.get("cluster.name", null), is("crate"));
