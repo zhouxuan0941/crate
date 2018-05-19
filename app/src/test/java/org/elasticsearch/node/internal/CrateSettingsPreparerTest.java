@@ -49,6 +49,20 @@ public class CrateSettingsPreparerTest {
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
+    private String expectedPath() {
+        if (org.apache.lucene.util.Constants.WINDOWS) {
+            return "C:\\some\\path";
+        }
+        return "/some/path";
+    }
+
+    private String expectedOtherPath() {
+        if (org.apache.lucene.util.Constants.WINDOWS) {
+            return "C:\\some\\other\\path";
+        }
+        return "/some/other/path";
+    }
+
     @Test
     public void testValidateKnownSettings() {
         Settings.Builder builder = Settings.builder()
@@ -108,7 +122,7 @@ public class CrateSettingsPreparerTest {
         // Overriding value from crate.yml
         assertThat(finalSettings.get("cluster.name", null), is("clusterNameOverridden"));
         // Value kept from crate.yml
-        assertThat(finalSettings.get("path.logs"), is("/some/other/path"));
+        assertThat(finalSettings.get("path.logs"), is(expectedOtherPath()));
     }
 
     @Test
@@ -119,7 +133,7 @@ public class CrateSettingsPreparerTest {
         Settings settings = CrateSettingsPreparer.prepareEnvironment(Settings.EMPTY, builder.internalMap()).settings();
         // Values from crate.yml
         assertThat(settings.get("cluster.name", null), is("testCluster"));
-        assertThat(settings.get("path.logs"), is("/some/path"));
+        assertThat(settings.get("path.logs"), is(expectedPath()));
     }
 
     @Test
