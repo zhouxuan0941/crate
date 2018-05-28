@@ -8,7 +8,7 @@ CrateDB ships with sensible defaults, so configuration is typically not needed
 for basic, single node use.
 
 CrateDB can be configured via configuration files. These files are located in
-the ``config`` directory at the root of your CrateDB install.
+the ``config`` directory inside the :ref:`env-crate-home` directory.
 
 The configuration directory can changed via the ``path.conf`` setting, like so:
 
