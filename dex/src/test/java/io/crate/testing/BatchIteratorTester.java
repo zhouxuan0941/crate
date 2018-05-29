@@ -39,7 +39,10 @@ import java.util.stream.Collectors;
 
 import static io.crate.concurrent.CompletableFutures.failedFuture;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
@@ -122,8 +125,19 @@ public class BatchIteratorTester {
                 return firstElement.materialize();
             }, executor);
 
-            assertThat(firstRow.get(10, TimeUnit.SECONDS), is(expectedResult.get(0)));
-            assertThat(secondRow.get(10, TimeUnit.SECONDS), is(expectedResult.get(1)));
+            Object[] firstItem = firstRow.get(10, TimeUnit.SECONDS);
+            Object[] secondItem = secondRow.get(10, TimeUnit.SECONDS);
+            assertThat(expectedResult, hasItem(firstItem));
+            assertThat(expectedResult, hasItem(secondItem));
+
+            // retrieve and check the remaining items
+            TestingRowConsumer consumer = new TestingRowConsumer();
+            consumer.accept(it, null);
+            List<Object[]> result = consumer.getResult();
+            assertThat(result.size(), is(expectedResult.size() - 2));
+            result.add(firstItem);
+            result.add(secondItem);
+            assertThat(expectedResult, containsInAnyOrder(result.toArray()));
         } finally {
             executor.shutdownNow();
             executor.awaitTermination(5, TimeUnit.SECONDS);
@@ -173,7 +187,7 @@ public class BatchIteratorTester {
         if (expected.isEmpty()) {
             assertThat(actual, empty());
         } else {
-            assertThat(actual, Matchers.contains(expected.toArray(new Object[0])));
+            assertThat(actual, containsInAnyOrder(expected.toArray()));
         }
     }
 
