@@ -80,7 +80,7 @@ public class CrossJoinBlockNLBatchIterator<L, R, C> extends JoinBatchIterator<L,
     }
 
     private void resizeBlockBuffer() {
-        blockBufferMaxSize = blockSizeCalculator.calculateBlockSize();
+        blockBufferMaxSize = 1000;
         blockBuffer.clear();
         blockBuffer.ensureCapacity(blockBufferMaxSize);
         bufferPos = -1;
