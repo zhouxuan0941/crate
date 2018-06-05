@@ -749,11 +749,16 @@ public class CopyIntegrationTest extends SQLHttpIntegrationTest {
         execute("copy t1 from ? return summary", new Object[]{tmpDirStr + filename});
         assertThat(response.rowCount(), is((long) internalCluster().numDataNodes()));
 
+        boolean isRunningOnWindows = System.getProperty("os.name").startsWith("Windows");
+        String expected = "(No such file or directory)";
+        if (isRunningOnWindows) {
+            expected = "(The system cannot find the file specified)";
+        }
         for (Object[] row : response.rows()) {
             assertThat((String) row[1], endsWith(filename));
             assertThat(row[2], nullValue());
             assertThat(row[3], nullValue());
-            assertThat(((Map<String, Object>) row[4]).keySet(), contains(containsString("(No such file or directory)")));
+            assertThat(((Map<String, Object>) row[4]).keySet(), contains(containsString(expected)));
         }
 
         // with shared=true, only 1 data node must try to process the uri
@@ -764,7 +769,7 @@ public class CopyIntegrationTest extends SQLHttpIntegrationTest {
             assertThat((String) row[1], endsWith(filename));
             assertThat(row[2], nullValue());
             assertThat(row[3], nullValue());
-            assertThat(((Map<String, Object>) row[4]).keySet(), contains(containsString("(No such file or directory)")));
+            assertThat(((Map<String, Object>) row[4]).keySet(), contains(containsString(expected)));
         }
 
         // with shared=true and wildcards all nodes will try to match a file
