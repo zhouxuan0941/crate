@@ -53,7 +53,6 @@ public class CollectTask extends AbstractTask {
     private final SharedShardContexts sharedShardContexts;
 
     private final IntObjectHashMap<Engine.Searcher> searchers = new IntObjectHashMap<>();
-    private final Object subContextLock = new Object();
     private final String threadPoolName;
 
     private CrateCollector collector = null;
@@ -73,20 +72,20 @@ public class CollectTask extends AbstractTask {
         this.threadPoolName = threadPoolName(collectPhase);
     }
 
-    public void addSearcher(int searcherId, Engine.Searcher searcher) {
+    void addSearcher(int searcherId, Engine.Searcher searcher) {
         if (isClosed()) {
             // if this is closed and addContext is called this means the context got killed.
             searcher.close();
             return;
         }
 
-        synchronized (subContextLock) {
+        synchronized (searchers) {
             Engine.Searcher replacedSearcher = searchers.put(searcherId, searcher);
             if (replacedSearcher != null) {
                 replacedSearcher.close();
                 searcher.close();
                 throw new IllegalArgumentException(String.format(Locale.ENGLISH,
-                    "ShardCollectContext for %d already added", searcherId));
+                    "Engine.Searcher for %d already added", searcherId));
             }
         }
     }
@@ -103,7 +102,7 @@ public class CollectTask extends AbstractTask {
     }
 
     private void closeSearchContexts() {
-        synchronized (subContextLock) {
+        synchronized (searchers) {
             for (ObjectCursor<Engine.Searcher> cursor : searchers.values()) {
                 cursor.value.close();
             }
@@ -131,7 +130,7 @@ public class CollectTask extends AbstractTask {
                "id=" + id +
                ", sharedContexts=" + sharedShardContexts +
                ", consumer=" + consumer +
-               ", searchContexts=" + searchers.keys() +
+               ", searchers=" + searchers.keys() +
                ", closed=" + isClosed() +
                '}';
     }
